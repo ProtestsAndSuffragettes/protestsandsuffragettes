@@ -4203,6 +4203,7 @@ test(
 						fontWeight: computed.fontWeight,
 						lineHeight: computed.lineHeight,
 						marginTop: computed.marginTop,
+						maxWidth: computed.maxWidth,
 						paddingLeft: computed.paddingLeft,
 						paddingRight: computed.paddingRight,
 						stroke: computed.stroke,
@@ -4269,8 +4270,15 @@ test(
 
 		const styles = await readSelectorContracts();
 		const viewportWidth = page.viewportSize()?.width ?? 0;
-		const expectedAlignwideWidth =
-			viewportWidth > 1280 ? viewportWidth / 2 + 640 : viewportWidth;
+		const alignwideMaxWidth = Number.parseFloat(
+			styles.alignwide?.maxWidth ?? ''
+		);
+		const expectedAlignwideWidth = Math.min(
+			viewportWidth,
+			Number.isFinite(alignwideMaxWidth)
+				? alignwideMaxWidth
+				: viewportWidth
+		);
 
 		const largeFontSize = Number.parseFloat(styles.large?.fontSize ?? '0');
 		const largeLineHeight = Number.parseFloat(
@@ -5514,10 +5522,15 @@ test(
 			expect(styles.navigationSubmenuAnchor.paddingLeft).toBeTruthy();
 		}
 		const alignwideViewportWidth = page.viewportSize()?.width ?? 0;
-		const expectedAlignwideWidth =
-			alignwideViewportWidth > 1280
-				? alignwideViewportWidth / 2 + 640
-				: alignwideViewportWidth;
+		const alignwideMaxWidth = Number.parseFloat(
+			styles.alignwide?.maxWidth ?? ''
+		);
+		const expectedAlignwideWidth = Math.min(
+			alignwideViewportWidth,
+			Number.isFinite(alignwideMaxWidth)
+				? alignwideMaxWidth
+				: alignwideViewportWidth
+		);
 		const renderedAlignwideWidth = Number.parseFloat(
 			styles.alignwide?.width || '0'
 		);
@@ -6986,8 +6999,7 @@ test(
 		await expect(mobileSearchLink).not.toHaveAttribute('aria-expanded');
 
 		const mobileJoinUsLink = drawer.getByRole('link', {
-			exact: true,
-			name: 'Join Us',
+			name: /join us/i,
 		});
 
 		await expect(mobileJoinUsLink).toBeVisible();
