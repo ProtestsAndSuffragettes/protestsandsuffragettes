@@ -54,7 +54,7 @@ still has the expected post type and slug.
 
 == CSS Cascade Policy ==
 
-CSS architecture is documented in `docs/css/README.md`. The short version:
+CSS architecture is documented in `docs/architecture/css.md`. The short version:
 cascade layers are for low-conflict theme defaults, not for every stylesheet.
 WordPress core, Global Styles, block supports, editor runtime CSS, and plugins
 often output unlayered or inline styles. When the theme must intentionally beat
