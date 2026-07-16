@@ -1,0 +1,19 @@
+{
+	"$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+	"bootstrap-sha": "92dad61ea3210545591a7382334489227bfb9e18",
+	"packages": {
+		".": {
+			"release-type": "node",
+			"package-name": "pns-theme",
+			"changelog-path": "CHANGELOG.md",
+			"include-component-in-tag": false,
+			"include-v-in-tag": true,
+			"extra-files": [
+				{
+					"type": "generic",
+					"path": "style.css"
+				}
+			]
+		}
+	}
+}

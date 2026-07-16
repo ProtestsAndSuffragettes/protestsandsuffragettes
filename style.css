@@ -6,7 +6,9 @@ Description: Block theme for Protests and Suffragettes.
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
+x-release-please-start-version
 Version: 0.2.0
+x-release-please-end
 License: GNU General Public License v2 or later
 License URI: https://raw.githubusercontent.com/Automattic/themes/trunk/LICENSE
 Text Domain: protestsandsuffragettes
