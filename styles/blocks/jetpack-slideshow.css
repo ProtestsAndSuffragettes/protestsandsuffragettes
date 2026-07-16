@@ -73,7 +73,10 @@
 
 .wp-block-jetpack-slideshow
 	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
-	:is(.wp-block-jetpack-slideshow_slide figure, .wp-block-jetpack-slideshow_image) {
+	:is(
+		.wp-block-jetpack-slideshow_slide figure,
+		.wp-block-jetpack-slideshow_image
+	) {
 	min-block-size: 0 !important;
 	block-size: auto !important;
 	height: auto !important;

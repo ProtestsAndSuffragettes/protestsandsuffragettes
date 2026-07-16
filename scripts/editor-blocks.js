@@ -23,8 +23,7 @@
 		'single-full-width-news',
 	]);
 	const fullWidthNewsTemplates = new Set(['single-full-width-news']);
-	const featuredImageFocusSettings =
-		window.pnsThemeFeaturedImageFocus || {};
+	const featuredImageFocusSettings = window.pnsThemeFeaturedImageFocus || {};
 	const featuredImageFocusMetaKeys =
 		featuredImageFocusSettings.metaKeys || {};
 	const featuredImageFocusPostTypes = new Set(
@@ -628,19 +627,13 @@
 			{
 				className: 'pns-featured-image-focus-panel',
 				name: 'pns-featured-image-focus',
-				title: __(
-					'Featured image focus',
-					'protestsandsuffragettes'
-				),
+				title: __('Featured image focus', 'protestsandsuffragettes'),
 			},
 			createElement(
 				Fragment,
 				null,
 				createElement(FocalPointPicker, {
-					label: __(
-						'Focus point',
-						'protestsandsuffragettes'
-					),
+					label: __('Focus point', 'protestsandsuffragettes'),
 					url: imageUrl,
 					value: focusPoint,
 					onChange(value) {

@@ -208,7 +208,9 @@
 }
 
 .pns-template > .wp-block-ran-enhanced-cover:first-child,
-.pns-template .wp-block-post-content > .wp-block-ran-enhanced-cover:first-child {
+.pns-template
+	.wp-block-post-content
+	> .wp-block-ran-enhanced-cover:first-child {
 	/* The first RAN Video Cover has the same viewport-art contract as Core Cover, regardless of an optional author class. */
 	padding: 0;
 }
@@ -249,8 +251,8 @@
 
 @media only screen and (max-width: 1360px) {
 	.wp-block-post-template.is-layout-grid.columns-3:has(
-		> li > .pns-archive-card
-	) {
+			> li > .pns-archive-card
+		) {
 		/* Core serializes three tracks into saved Query Loops; PNS vertical cards need a wider two-card reading measure before they become overly tall. */
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -258,8 +260,8 @@
 
 @media only screen and (max-width: 800px) {
 	.wp-block-post-template.is-layout-grid.columns-3:has(
-		> li > .pns-archive-card
-	) {
+			> li > .pns-archive-card
+		) {
 		/* Preserve readable card copy on narrow screens instead of squeezing three editorial cards across the content rail. */
 		grid-template-columns: 1fr;
 	}

@@ -1,6 +1,5 @@
 .editor-styles-wrapper .wp-block.pns-pattern-qa,
-.editor-styles-wrapper
-	.wp-block.pns-section:not(.pns-site-frame-panel) {
+.editor-styles-wrapper .wp-block.pns-section:not(.pns-site-frame-panel) {
 	/* Gutenberg keeps an alignfull attribute out of some editor block class lists. The explicit PNS section contract is the stable signal: non-panel sections own the available editor canvas, while their child frame chooses the readable/wide measure. */
 	box-sizing: border-box;
 	inline-size: 100%;
@@ -8,8 +7,12 @@
 	max-inline-size: none;
 }
 
-.editor-styles-wrapper .wp-block.pns-section.pns-text-only-section > .pns-section-inner,
-.editor-styles-wrapper .wp-block.pns-section.pns-text-only-section > .pns-section-frame,
+.editor-styles-wrapper
+	.wp-block.pns-section.pns-text-only-section
+	> .pns-section-inner,
+.editor-styles-wrapper
+	.wp-block.pns-section.pns-text-only-section
+	> .pns-section-frame,
 .editor-styles-wrapper
 	.wp-block.pns-section.pns-text-only-section
 	> .block-editor-inner-blocks,

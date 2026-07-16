@@ -299,7 +299,8 @@ test.describe('@site-frame-next future site-frame contracts', () => {
 			const root = document.querySelector<HTMLElement>(
 				'.pns-template-single-full-width-news .wp-block-cover.pns-page-hero'
 			);
-			const inner = root?.querySelector<HTMLElement>('.pns-section-inner');
+			const inner =
+				root?.querySelector<HTMLElement>('.pns-section-inner');
 			const copy = root?.querySelector<HTMLElement>('.pns-hero-copy');
 			const heading = root?.querySelector<HTMLElement>(
 				'.pns-hero-copy .wp-block-post-title'
