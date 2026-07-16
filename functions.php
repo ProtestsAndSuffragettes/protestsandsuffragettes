@@ -14,6 +14,7 @@ $pns_theme_includes = array(
 	'inc/blog-permalinks.php',
 	'inc/block-styles.php',
 	'inc/theme-lifecycle.php',
+	'inc/dependencies.php',
 	'inc/footer-social-links.php',
 	'inc/media.php',
 	'inc/block-filters.php',

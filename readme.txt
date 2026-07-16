@@ -10,6 +10,35 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Block theme for the Protests and Suffragettes site.
 
+== PNS Site Dependencies ==
+
+This theme owns the dependency contract for the Protests and Suffragettes site
+bundle. It is not a generic dependency declaration for every installation of
+the plugins below: each plugin remains independently usable according to its
+own documentation.
+
+The following plugins must be installed and active for the current PNS site to
+provide its expected content and integrations:
+
+* PNS Blocks — PNS site block layouts, including split sections.
+* PNS Herstories — Herstories content and presentation.
+* RAN Enhanced Cover — enhanced cover blocks used by PNS content.
+* RAN Ecwid Shop Teaser — the PNS shop teaser block.
+* RAN Octopus Forms — PNS contact and newsletter forms.
+* Jetpack — consent controls and slideshow content used by the site.
+* Ecwid by Lightspeed Ecommerce Shopping Cart — the native PNS shop integration.
+* EmailOctopus — required only while the legacy hosted newsletter embed remains
+  in site content. Reclassify it when that fixture is migrated to RAN Octopus
+  Forms or retired.
+
+Jetpack Boost is optional performance tooling. It is not part of the required
+site contract and does not affect the theme's dependency health check.
+
+When a required plugin is missing or inactive, the theme shows a persistent
+administrator warning and a critical Tools > Site Health result. These checks
+verify installation and activation only; they do not impose plugin version
+requirements or change third-party plugin configuration.
+
 == Source Of Truth ==
 
 This theme ships file-backed templates, parts, navigation fixtures, and synced
