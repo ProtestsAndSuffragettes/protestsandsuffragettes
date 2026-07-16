@@ -1,0 +1,12 @@
+/*
+ * Load path: unlayered block conflict tail via styles/blocks/overrides.css and
+ * styles/blocks/editor-overrides.css.
+ * Not block-registered; keep here while this tiny editor/frontend fix remains global.
+ * Keep unlayered because this targets Jetpack plugin markup, not a core block
+ * default owned by the blocks layer.
+ */
+@media only screen and (max-width: 782px) {
+	.wp-block-jetpack-contact-form > * {
+		flex-basis: fit-content;
+	}
+}

@@ -1,0 +1,20 @@
+/*
+ * Load path: layered frontend component barrel imported by styles/frontend.css.
+ * Mirror shared component imports from styles/components/index.css; keep frontend-only imports here with a manifest reason.
+ * Conflict-sensitive components are imported unlayered from the entrypoint so
+ * this barrel can stay a low-conflict component layer.
+ */
+@import "archive-cards.css";
+@import "footer-layout.css";
+@import "header.css";
+@import "hero.css";
+@import "logos.css";
+@import "membership-tiers.css";
+@import "motion.css";
+@import "template-reveal.css";
+@import "search-results.css";
+@import "text-sections.css";
+@import "style-guide.css";
+@import "synced-sections.css";
+@import "taxonomy-pills.css";
+@import "single-post.css";

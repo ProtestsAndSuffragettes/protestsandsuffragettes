@@ -1,0 +1,147 @@
+.editor-styles-wrapper .wp-block.pns-pattern-qa,
+.editor-styles-wrapper
+	.wp-block.pns-section:not(.pns-site-frame-panel) {
+	/* Gutenberg keeps an alignfull attribute out of some editor block class lists. The explicit PNS section contract is the stable signal: non-panel sections own the available editor canvas, while their child frame chooses the readable/wide measure. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	margin-block: 0;
+	max-inline-size: none;
+}
+
+.editor-styles-wrapper .wp-block.pns-section.pns-text-only-section > .pns-section-inner,
+.editor-styles-wrapper .wp-block.pns-section.pns-text-only-section > .pns-section-frame,
+.editor-styles-wrapper
+	.wp-block.pns-section.pns-text-only-section
+	> .block-editor-inner-blocks,
+.editor-styles-wrapper
+	.wp-block.pns-section.pns-text-only-section
+	> .block-editor-inner-blocks
+	> .block-editor-block-list__layout {
+	/* Gutenberg puts inner blocks behind a legacy content-width wrapper in the editor. Text-only sections own a wide section frame, so make that wrapper expose the same canvas as the saved frontend block tree. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: none;
+}
+
+.editor-styles-wrapper .wp-block.pns-site-frame-panel:not(.pns-page-hero) {
+	/* The class is the panel contract; saved Groups do not need an alignfull utility to use the shared site frame. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--wide-size);
+	margin-inline: auto;
+}
+
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block-block.is-reusable:has(> .pns-site-frame-panel) {
+	/* Core caps reusable-block editor wrappers at a legacy 720px. A reusable section that explicitly declares the shared panel contract must expose the same canvas to that panel as directly-authored content. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: none;
+	margin-inline: 0;
+}
+
+/*
+ * The page editor exposes post content directly, without the frontend
+ * `main.pns-template` wrapper. Mirror the opening-hero breakout here so a
+ * first Cover or Video Cover uses the available editor canvas while later
+ * Covers continue to use their authored alignment.
+ */
+.editor-styles-wrapper
+	.is-root-container
+	> :is(.wp-block-cover, .wp-block-ran-enhanced-cover):first-child {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: none;
+	margin-inline: 0;
+}
+
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block-ran-enhanced-cover:first-child {
+	padding: 0;
+}
+
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content {
+	inline-size: 100%;
+}
+
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content:not(:has(> .pns-hero__inner)) {
+	/* Bare opening Video Covers use the shared frame and configurable rails. */
+	box-sizing: border-box;
+	inline-size: min(100%, var(--pns--layout--section-frame-size));
+	max-inline-size: var(--pns--layout--section-frame-size);
+	margin-inline: auto;
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+/* The post editor exposes saved content without the frontend template shell, so mirror the content-owned RAN hero/body rhythm on its root block list. */
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block-ran-enhanced-cover.pns-page-hero:first-child
+	+ * {
+	margin-block-start: var(--wp--preset--spacing--generous);
+}
+
+.editor-styles-wrapper .wp-block-navigation {
+	background: var(--wp--custom--color--surface--default);
+	color: var(--wp--custom--color--link--default);
+}
+
+.editor-styles-wrapper .wp-block-navigation .wp-block-navigation-item__content {
+	color: inherit;
+}
+
+.editor-styles-wrapper.is-pns-light-surface-template,
+.editor-styles-wrapper:has(> .is-root-container > main.pns-light-surface),
+.editor-styles-wrapper .is-root-container:has(> main.pns-light-surface) {
+	background-color: var(--wp--custom--color--surface--default);
+	color: var(--wp--custom--color--text--default);
+}
+
+.block-editor-block-preview__content-iframe:has(
+	> body.editor-styles-wrapper
+		> .is-root-container.is-preview-mode:not(.wp-block-post-content)
+		> main
+),
+.block-editor-block-preview__content-iframe
+	> body.editor-styles-wrapper:has(
+		> .is-root-container.is-preview-mode:not(.wp-block-post-content) > main
+	) {
+	/* Site Editor template cards render a 1200px-wide miniature, so short full-page previews need a square-page floor after scaling. */
+	min-block-size: max(100dvh, 100vw);
+}
+
+.editor-styles-wrapper
+	.is-root-container.is-preview-mode:not(.wp-block-post-content):has(> main) {
+	min-block-size: max(100dvh, 100vw);
+	position: relative;
+}
+
+.editor-styles-wrapper
+	.is-root-container.is-preview-mode:not(.wp-block-post-content):has(> main)
+	> main {
+	flex: initial;
+	min-block-size: 0;
+}
+
+.editor-styles-wrapper
+	.is-root-container.is-preview-mode:not(.wp-block-post-content):has(> main)
+	> .wp-block-template-part:last-child {
+	inset-block-end: 0;
+	inset-inline: 0;
+	position: absolute;
+	z-index: 1000;
+}
+
+.editor-styles-wrapper
+	.pns-section
+	:where(.wp-block-button__link, .wp-element-button) {
+	border-radius: var(--pns--button--border-radius);
+}

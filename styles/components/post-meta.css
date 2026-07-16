@@ -1,0 +1,98 @@
+/*
+ * Load path: imported unlayered after light-surface.css by both entrypoints.
+ * Owner: shared date-and-author metadata used by standard-post templates and
+ * cards. Keep this unlayered so nested Core author markup cannot be reset by
+ * the surface's generic paragraph or link rules.
+ */
+.pns-post-meta,
+.pns-featured-post__meta {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: baseline;
+	gap: var(--wp--preset--spacing--tight);
+	color: var(--pns-surface-text, var(--wp--custom--color--text--default));
+	font-size: var(--wp--preset--font-size--text-small);
+	font-weight: 400;
+	line-height: var(--wp--custom--typography--line-height--paragraph);
+}
+
+.wp-block-pns-post-details {
+	display: grid;
+	gap: var(--wp--preset--spacing--tight);
+}
+
+.wp-block-pns-post-details > .pns-single-terms {
+	margin-block: 0;
+}
+
+.wp-block-pns-post-details .pns-single-terms {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.pns-post-meta,
+.pns-featured-post__meta
+	:is(
+		.wp-block-post-date,
+		.wp-block-post-author,
+		.wp-block-post-author__content,
+		.wp-block-post-author__name,
+		time
+	) {
+	margin-block: 0;
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+}
+
+.wp-block-pns-post-details > .pns-post-metadata {
+	margin-block: 0;
+}
+
+.pns-post-card__meta {
+	/* Keep card metadata cohesive above the synopsis. */
+	flex-wrap: wrap;
+	margin-block-start: var(--wp--preset--spacing--regular);
+	row-gap: var(--wp--preset--spacing--hairline);
+}
+
+.pns-post-card__meta > :is(.wp-block-post-date, .wp-block-post-author) {
+	flex: 0 0 auto;
+	max-inline-size: 100%;
+}
+
+:is(.pns-post-meta, .pns-featured-post__meta) .wp-block-post-author {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--wp--preset--spacing--hairline);
+}
+
+:is(.pns-post-meta, .pns-featured-post__meta) a {
+	color: inherit;
+	text-decoration: none;
+}
+
+:is(.pns-post-meta, .pns-featured-post__meta) a:where(:hover, :focus-visible) {
+	color: inherit;
+	text-decoration-line: underline;
+	text-decoration-thickness: 0.1em;
+}
+
+.pns-page-hero .pns-post-meta {
+	--pns-surface-text: var(--wp--custom--color--text--inverse);
+	color: var(--wp--custom--color--text--inverse);
+}
+
+.pns-page-hero
+	.pns-post-meta
+	:is(
+		.wp-block-post-date,
+		.wp-block-post-author,
+		.wp-block-post-author__content,
+		.wp-block-post-author__name,
+		time,
+		a
+	) {
+	color: inherit;
+}

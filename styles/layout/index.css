@@ -1,0 +1,39 @@
+@media only screen and (max-width: 782px) {
+	.alignwide {
+		padding-inline: var(--pns--layout--content-rail);
+	}
+
+	.alignwide.alignfull {
+		padding: 0 0;
+	}
+}
+
+.alignwide {
+	/* Permanent theme layout and saved-content compatibility contract. */
+	max-inline-size: var(--pns--layout--wide-size);
+	margin: 0 auto;
+}
+
+html,
+body {
+	min-block-size: 100%;
+}
+
+body > .wp-site-blocks,
+.editor-styles-wrapper .wp-site-blocks {
+	display: flex;
+	flex-direction: column;
+	min-block-size: 100vh;
+	min-block-size: 100dvh;
+}
+
+.wp-site-blocks > :is(main, footer) {
+	/* Site-shell owner: WordPress generated template spacing must not add gaps between root template parts. */
+	margin-block-start: 0;
+}
+
+.wp-site-blocks > main {
+	/* Site-shell owner: content may extend horizontally while entering, but should never create page-level scroll. */
+	flex: 1 0 auto;
+	overflow-x: clip;
+}

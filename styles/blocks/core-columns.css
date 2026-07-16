@@ -1,0 +1,20 @@
+/*
+ * Load path: block-scoped only via inc/assets.php for core/columns.
+ * Do not import from styles/blocks/index.css unless this block must be bundled.
+ * Keep unlayered while this remains a standalone block-scoped override path.
+ */
+.wp-block-columns {
+	margin-block-end: 0;
+}
+
+.pns-footer .wp-block-columns.is-layout-flex,
+.pns-footer-bottom-bar .wp-block-columns.is-layout-flex {
+	/* Fixed template-part owner: footer column rhythm is not an author-facing block gap surface. */
+	gap: 0;
+}
+
+@media only screen and (max-width: 782px) {
+	.alignfull .wp-block-columns {
+		padding: 0 0;
+	}
+}

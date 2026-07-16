@@ -1,0 +1,138 @@
+/*
+ * EmailOctopus form
+ * https://protestsandsuffragettes.com/edu-giveaway/
+ *
+ * Keep this file unlayered: EmailOctopus outputs hosted embed CSS after markup
+ * hydration, and these scoped rules preserve PNS layout, focus, and form rhythm.
+ * Removal gate: delete individual adapters when the hosted form is replaced by
+ * a project-owned form block or EmailOctopus exposes equivalent layout/focus
+ * controls without injected utility wrappers.
+ */
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"] {
+	--pns-emailoctopus-field-margin: var(--wp--preset--spacing--hairline);
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"] .nurture-container {
+	/* Theme-owned layout: suppress EmailOctopus' default two-column giveaway embed; remove when the form config can emit a single-column embed. */
+	grid-template-columns: 1fr !important;
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"]
+	:is(
+		.inline-container,
+		.nurture-container,
+		.align-mid.pt-5.pb-5,
+		.p-3,
+		.emailoctopus-form-wrapper,
+		.emailoctopus-form,
+		.emailoctopus-form-row
+	) {
+	/* Theme-owned responsive containment: hosted fixed-width wrappers overflow narrow split sections; remove when the embed ships responsive wrappers. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"] .inline-container {
+	/* Vendor-owned wrapper: EmailOctopus injects this class; keep centering scoped to the hosted form. */
+	margin-inline: auto;
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"] .align-mid.pt-5.pb-5 {
+	/* Theme-owned spacing: EmailOctopus utility classes are reset so page rhythm stays in the standalone theme. */
+	padding-block-end: 0 !important;
+	padding-block-start: 0 !important;
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"]
+	.nurture-container
+	> div:nth-child(2) {
+	/* Hosted-form bridge: EmailOctopus injects a secondary media/marketing column for this form. Hide it in the theme until the hosted form config can disable that column or the legacy embed is retired. */
+	display: none;
+}
+
+.emailoctopus-form input:focus,
+.emailoctopus-form input:focus-visible {
+	border-width: var(--pns--form-field--focus-border-width);
+	border-color: var(--pns--form-field--focus-border-color);
+}
+
+.emailoctopus-form .form-control:focus {
+	background-color: var(--pns--form-field--background);
+
+	/* Theme-owned focus style for hosted EmailOctopus controls. */
+	border-color: var(--pns--form-field--focus-border-color) !important;
+	box-shadow: 0 0 0 var(--pns--form-field--focus-ring-width)
+		var(--pns--form-field--focus-border-color) !important;
+	color: #495057;
+	outline: 0;
+}
+
+.emailoctopus-form input[type="text"],
+.emailoctopus-form input[type="email"],
+.emailoctopus-form input[type="tel"],
+.emailoctopus-form input[type="url"],
+.emailoctopus-form input[type="number"],
+.emailoctopus-form textarea {
+	border: var(--pns--form-field--border-width) solid
+		var(--pns--form-field--border-color);
+	border-radius: var(--pns--form-field--border-radius);
+	box-sizing: border-box;
+	font: inherit;
+	padding: var(--pns--form-field--padding);
+	width: 100%;
+}
+
+.emailoctopus-form label {
+	display: block;
+	float: none;
+	font-weight: 700;
+	margin-block-end: 0.25em;
+}
+
+:is(.pns-contact-form, .pns-contact-form-octopus) .form-container {
+	/* EmailOctopus centers its 520px embed; PNS contact sections align the form to the visual column's right edge. Remove when the form block owns column alignment. */
+	inline-size: min(100%, 32.5rem);
+	margin-inline-start: auto;
+	margin-inline-end: 0;
+	max-inline-size: 32.5rem;
+}
+
+:is(.pns-contact-form, .pns-contact-form-octopus) .inline-container {
+	margin-inline-start: auto;
+	margin-inline-end: 0;
+}
+
+:is(.pns-contact-form, .pns-contact-form-octopus) .background-image {
+	/* EmailOctopus ships this spacing inside the hydrated embed; the PNS section frame already owns the visual-column padding. */
+	padding-inline: 0 !important;
+}
+
+.emailoctopus-form-wrapper
+	> :is(.emailoctopus-success-message, .emailoctopus-error-message) {
+	/* EmailOctopus injects status paragraphs with inline margin resets; keep their hidden-message spacing scoped to the vendor wrapper. */
+	margin-block-end: var(--wp--preset--spacing--compact) !important;
+}
+
+[eo-block="powered-by"] {
+	/* Theme-owned embed cleanup: hide the powered-by output injected by the hosted form. */
+	display: none !important;
+	visibility: hidden;
+}
+
+[data-form="5e60a222-ff72-11ef-8552-6b8c59d486cb"]
+	.emailoctopus-form
+	input:not([type="submit"]) {
+	background-color: var(--pns--form-field--background);
+	border-color: var(--pns--form-field--border-color);
+	font-size: var(--wp--preset--font-size--text-base);
+	line-height: var(--wp--custom--typography--line-height--paragraph);
+	margin: var(--pns-emailoctopus-field-margin);
+}
+
+.emailoctopus-form input[type="submit"] {
+	border-radius: var(--pns--button--border-radius);
+	padding: var(--pns--button--padding-block)
+		var(--pns--button--padding-inline);
+}

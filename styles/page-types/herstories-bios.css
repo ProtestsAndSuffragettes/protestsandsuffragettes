@@ -1,0 +1,139 @@
+/*
+ * Herstories biography pattern components.
+ * Owner: transitional theme support for the Herstories CPT/pattern contract.
+ * Keep only named biography components here, not route/page fixes. Remove or
+ * move these rules when the Herstories plugin, CPT templates, or explicit
+ * block styles own active dates, fact lists, stats, and image-strip markup.
+ */
+
+.active-dates,
+.active-dates .is-not-stacked-on-mobile {
+	gap: 1rem;
+}
+
+.active-dates.is-layout-flex,
+.active-dates .is-not-stacked-on-mobile.is-layout-flex {
+	/* Transitional compatibility: saved active-date flex blocks still serialize Core flex layout classes; remove after the Herstories pattern/block owner emits its own compact stack. */
+	gap: 0;
+}
+
+.active-dates {
+	/* Herstories pattern bridge: saved active-date groups can carry generated Core layout width styles, so the CPT pattern owner pins a compact measure here until pns-herstories or a dedicated block owns the active-date component. */
+	max-width: 20rem !important;
+	max-inline-size: 20rem !important;
+	margin-block: 0;
+	font-family: var(--wp--preset--font-family--rubik);
+	font-weight: 600;
+
+	& strong {
+		font-family: var(--wp--preset--font-family--rubik);
+		font-weight: 800;
+	}
+
+	& ul {
+		margin-inline-start: 0.75rem;
+	}
+}
+
+.pns-suffragette-facts__copy-column {
+	/* Herstories fact panels are reusable biography components, not arbitrary page columns. */
+	display: grid;
+}
+
+.pns-suffragette-facts > .wp-block-columns {
+	/* Live saved Facts content has a Core alignfull Columns child without an inner frame marker. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	margin-inline: 0;
+}
+
+.pns-suffragette-facts__copy {
+	align-self: center;
+	max-inline-size: var(--pns--layout--content-size);
+	padding-block: var(--wp--preset--spacing--regular);
+	padding-inline: var(--pns--layout--content-rail);
+	margin: auto;
+}
+
+@media (max-width: 782px) {
+	.pns-suffragette-facts__copy {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}
+
+@media only screen and (min-width: 782px) {
+	.pns-suffragette-facts__copy {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}
+
+.active-dates p:has(strong) {
+	margin-block-end: 0.5rem;
+}
+
+.is-layout-flow .active-dates ul {
+	margin-inline-start: 0;
+	padding: 0;
+}
+
+.pns-suffragette-facts > .wp-block-columns,
+.pns-herstories > .wp-block-columns,
+.pns-suffragette-stats > .wp-block-columns,
+.pns-suffragette-image-strip {
+	/* Legacy Herstories pattern reset: remove after these panels are regenerated with explicit block gap attributes or plugin-owned block styles. */
+	gap: 0;
+	margin-block-start: 0;
+}
+
+.pns-image-strip,
+.pns-suffragette-image-strip {
+	/* Image-strip component compatibility: generic and Suffragette strips share saved Core Columns markup; move to a neutral block style when reused outside Herstories. */
+	gap: 0;
+	margin-block-start: 0;
+}
+
+.pns-image-strip > .wp-block-column,
+.pns-image-strip .wp-block-image,
+.pns-suffragette-image-strip > .wp-block-column,
+.pns-suffragette-image-strip .wp-block-image {
+	margin: 0;
+}
+
+.pns-image-strip > .wp-block-column,
+.pns-suffragette-image-strip > .wp-block-column {
+	line-height: 0;
+}
+
+.pns-suffragette-image-strip .wp-block-image img {
+	display: block;
+	inline-size: 100%;
+}
+
+.pns-image-strip .wp-block-image img {
+	display: block;
+}
+
+.fun-facts {
+	/* Reusable biography fact-list marker style; move to a Herstories block style if editors need this outside the existing CPT patterns. */
+	padding-inline-start: 1em;
+
+	& li {
+		line-height: var(--pns--content-rhythm--paragraph-line-height);
+		list-style: none;
+		margin-block-end: 1rem;
+	}
+
+	& li + li {
+		margin-block-start: 0;
+	}
+
+	& li::before {
+		content: "\2022";
+		color: var(--wp--preset--color--accent-mint);
+		font-weight: 700;
+		display: inline-block;
+		inline-size: 1em;
+		margin-inline-start: -1em;
+	}
+}

@@ -1,0 +1,240 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+.pns-footer .wp-block-heading {
+	font-weight: 600;
+}
+
+.pns-footer .wp-block-separator {
+	/* Footer contact divider follows the production footer rhythm without forcing the full widened contact column. */
+	inline-size: 100%;
+	max-inline-size: 25rem;
+}
+
+.pns-footer > .pns-footer__inner {
+	box-sizing: border-box;
+	max-inline-size: var(--pns--layout--section-frame-size);
+	margin-inline: auto;
+	padding-block-start: var(--wp--preset--spacing--regular);
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+.pns-footer__columns,
+.pns-footer__details-columns {
+	align-items: flex-start;
+}
+
+.pns-footer__details-columns {
+	justify-content: flex-end;
+}
+
+.pns-footer__columns > *,
+.pns-footer__details-columns > * {
+	min-inline-size: 0;
+}
+
+.pns-footer > .pns-footer__inner > .pns-footer__columns,
+.pns-footer-bottom-bar > .alignwide > .wp-block-columns.alignwide {
+	inline-size: 100%;
+	max-inline-size: 100%;
+	margin-inline: 0;
+}
+
+.wp-block-template-part > .pns-footer-bottom-bar,
+footer.alignwide > .pns-footer-bottom-bar {
+	inline-size: 100vw;
+	max-inline-size: none;
+	margin-inline: calc(50% - 50vw);
+}
+
+.wp-block-template-part > .pns-footer-bottom-bar > .alignwide,
+footer.alignwide > .pns-footer-bottom-bar > .alignwide {
+	box-sizing: border-box;
+	max-inline-size: var(--pns--layout--section-frame-size);
+	margin-inline: auto;
+	padding-block-start: var(--wp--preset--spacing--regular);
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+.pns-footer .wp-block-social-links {
+	justify-content: flex-start;
+}
+
+.pns-footer .wp-block-navigation.is-content-justification-right {
+	padding-inline-end: 0;
+}
+
+.pns-footer .wp-block-navigation__container {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	padding-inline-start: 0;
+}
+
+.pns-footer .wp-block-navigation-item {
+	padding: 0;
+}
+
+.pns-footer
+	.wp-block-navigation__container.is-vertical
+	> .wp-block-navigation-item {
+	inline-size: 100%;
+}
+
+.pns-footer
+	.wp-block-navigation
+	.wp-block-navigation__container
+	> .wp-block-navigation-item {
+	padding-inline-start: 0;
+}
+
+.pns-footer .wp-block-navigation .wp-block-navigation-item__content {
+	font-variation-settings: "wght" 600;
+	line-height: 1.35;
+	max-inline-size: 100%;
+	overflow-wrap: break-word;
+	padding-block: 0.1rem;
+	padding-inline: 0;
+}
+
+.pns-footer
+	.wp-block-navigation.has-text-lead-font-size
+	.wp-block-navigation-item__content {
+	font-size: var(--pns--navigation--font-size);
+}
+
+.pns-footer
+	.wp-block-navigation:not([style*="font-size"]):not(
+		[class*="has-"][class*="-font-size"]
+	)
+	.wp-block-navigation-item__content {
+	font-size: var(--pns--navigation--font-size);
+}
+
+@media only screen and (min-width: 48.875rem) {
+	.pns-footer > .pns-footer__inner,
+	.wp-block-template-part > .pns-footer-bottom-bar > .alignwide,
+	footer.alignwide > .pns-footer-bottom-bar > .alignwide {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}
+
+@media only screen and (min-width: 96rem) {
+	.pns-footer .pns-footer__contact > .wp-block-group {
+		/* Wide footer rhythm: keep the production-like right-side cluster without changing the tablet block widths. */
+		inline-size: min(
+			30rem,
+			calc(100% - var(--wp--preset--spacing--generous))
+		);
+		margin-inline-start: auto;
+		margin-inline-end: var(--wp--preset--spacing--generous);
+	}
+}
+
+@media only screen and (min-width: 56.001rem) and (max-width: 68rem) {
+	.pns-footer .pns-footer__brand {
+		/* Template-part bridge: saved Core Columns serialize footer widths inline, and WordPress has no breakpoint-specific column-width control. Keep priority in the footer owner until the footer is rebuilt as a dedicated block/template part with breakpoint-safe attributes. */
+		flex-basis: 25% !important;
+	}
+
+	.pns-footer .pns-footer__details {
+		flex-basis: 75% !important;
+	}
+
+	.pns-footer .pns-footer__contact {
+		flex-basis: 72% !important;
+	}
+
+	.pns-footer .pns-footer__nav {
+		flex-basis: 28% !important;
+	}
+}
+
+@media only screen and (min-width: 48.875rem) and (max-width: 56rem) {
+	.pns-footer .pns-footer__columns,
+	.pns-footer .pns-footer__details-columns {
+		flex-direction: column;
+	}
+
+	.pns-footer .pns-footer__brand,
+	.pns-footer .pns-footer__details,
+	.pns-footer .pns-footer__contact,
+	.pns-footer .pns-footer__nav {
+		/* Template-part bridge: stack before nav/social links become too narrow, overriding saved inline Core Column widths that cannot be moved into CSS layers. Remove when the footer owns responsive layout outside serialized block support styles. */
+		flex-basis: 100% !important;
+	}
+}
+
+@media only screen and (max-width: 56rem) {
+	.pns-footer .wp-block-navigation__container {
+		margin-inline-start: 0;
+		margin-inline-end: auto;
+	}
+}
+
+.wp-site-blocks > .wp-block-template-part {
+	margin-block-start: 0;
+}
+
+.footer-wt,
+.footer-wt p {
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.footer-wt p {
+	margin-block-start: var(--wp--preset--spacing--regular);
+	margin-block-end: var(--wp--preset--spacing--compact);
+}
+
+.pns-footer
+	.pns-footer__contact
+	> .wp-block-group.is-layout-constrained
+	> .wp-block-heading,
+.pns-footer .pns-footer__contact > .wp-block-group.is-layout-constrained > p,
+.pns-footer
+	.pns-footer__contact
+	> .wp-block-group.is-layout-constrained
+	> .wp-block-separator
+	+ .wp-block-heading,
+.pns-footer
+	.pns-footer__contact
+	> .wp-block-group.is-layout-constrained
+	> .wp-block-social-links {
+	/* Intentional template-part rhythm owner; remove when footer contact markup serializes explicit block spacing or moves to a dedicated footer/contact block. */
+	margin-block-start: var(--wp--preset--spacing--spacious);
+}
+
+.pns-footer .pns-footer__contact > .wp-block-group.is-layout-constrained > p {
+	margin-block-end: var(--wp--preset--spacing--compact);
+}
+
+.pns-footer
+	.pns-footer__contact
+	> .wp-block-group.is-layout-constrained
+	> .wp-block-separator {
+	/* Footer separator owner; remove when the template part carries this as block spacing or a footer/contact block owns the divider. */
+	margin-block-start: var(--wp--preset--spacing--roomy);
+}
+
+.footer-logo img {
+	display: block;
+	max-inline-size: 10rem;
+	/* Counter the footer frame's own top padding so the logo starts at the same 1rem inner-frame inset as the header mark. */
+	margin-block-start: calc(-1 * var(--wp--preset--spacing--regular));
+	margin-block-end: var(--wp--preset--spacing--regular);
+	margin-inline-start: 0;
+}
+
+@media only screen and (max-width: 781px) {
+	.footer-logo img {
+		/* Below the footer's 782px padding increase, the negative offset would cancel the entire top inset. */
+		margin-block-start: 0;
+	}
+}
+
+@media only screen and (max-width: 780px) {
+	.footer-logo img {
+		max-inline-size: 7rem;
+	}
+}

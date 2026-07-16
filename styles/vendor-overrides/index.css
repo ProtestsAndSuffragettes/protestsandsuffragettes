@@ -1,0 +1,8 @@
+/*
+ * Vendor override imports intentionally remain unlayered.
+ * Ecwid and EmailOctopus ship unlayered runtime CSS, so these theme adapters
+ * must stay in the normal author cascade unless a focused vendor proof says
+ * otherwise.
+ */
+@import "ecwid.css";
+@import "emailoctopus.css";

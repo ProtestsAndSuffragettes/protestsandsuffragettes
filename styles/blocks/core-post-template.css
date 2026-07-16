@@ -1,0 +1,9 @@
+/*
+ * Load path: bundled via styles/blocks/index.css and styles/blocks/editor.css
+ * inside the blocks cascade layer.
+ * Query Loop post templates render as lists, but grid/list cards should align
+ * with their container rather than inheriting prose list indentation.
+ */
+.wp-block-post-template {
+	padding-inline-start: 0;
+}

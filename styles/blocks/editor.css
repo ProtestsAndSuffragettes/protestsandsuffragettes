@@ -1,0 +1,9 @@
+/*
+ * Load path: layered editor block defaults imported by styles/editor.css.
+ * Keep this as the explicit low-conflict editor subset; use
+ * styles/blocks/index.css for the frontend block bundle. Core Cover,
+ * Navigation, and Jetpack conflict rules are imported unlayered by the
+ * entrypoint.
+ */
+
+@import "core-post-template.css";

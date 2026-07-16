@@ -1,0 +1,35 @@
+/*
+ * Template and vendor layout stability.
+ * Owner: frontend-only template chrome and the Ecwid storefront host. These
+ * are not arbitrary page-content spacing rules. Remove the template floors
+ * when the affected templates gain enough intrinsic content; remove the Ecwid
+ * reservation when Ecwid or a PNS product-grid block provides stable height
+ * before hydration.
+ */
+body:not(.editor-styles-wrapper)
+	main.pns-template-page-light-surface-no-contact-form {
+	min-block-size: clamp(42rem, 82vh, 52rem);
+}
+
+body:not(.editor-styles-wrapper)
+	main:is(
+		.pns-template-page-search,
+		.pns-template-search,
+		.pns-template-404
+	) {
+	min-block-size: clamp(28rem, 52vh, 36rem);
+}
+
+body:not(.editor-styles-wrapper) .pns-shop-storefront {
+	/*
+	 * Conservative Ecwid reservation: reduce the first hydration jump without
+	 * reserving the full settled product grid height on every viewport.
+	 */
+	min-block-size: min(120rem, max(72rem, 180vh, 115vw));
+}
+
+@media only screen and (max-width: 48.874rem) {
+	body:not(.editor-styles-wrapper) .pns-shop-storefront {
+		min-block-size: min(150rem, max(90rem, 240vh, 400vw));
+	}
+}

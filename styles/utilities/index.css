@@ -1,0 +1,38 @@
+.pns-section-inner {
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--section-frame-size);
+	margin-inline: auto;
+}
+
+.pns-site-frame-panel {
+	/* Explicit outer visual surface: its background, padding, and margins end at the shared site frame. */
+	--pns-site-frame-panel-half: calc(var(--pns--layout--wide-size) / 2);
+	box-sizing: border-box;
+	inline-size: min(100vw, var(--pns--layout--wide-size));
+	max-inline-size: var(--pns--layout--wide-size);
+	margin-inline: calc(50% - min(50vw, var(--pns-site-frame-panel-half)));
+}
+
+.pns-content-frame {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--content-size);
+	padding-inline: var(--pns--layout--content-rail);
+	margin-inline: auto;
+}
+
+.pns-section-frame {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--section-frame-size);
+	padding-inline: var(--pns--layout--content-rail);
+	margin-inline: auto;
+}
+
+.pns-copy-column {
+	max-inline-size: var(--pns--layout--content-size);
+}
+
+.is-content-justification-right {
+	padding-inline-end: var(--pns--layout--content-rail);
+}

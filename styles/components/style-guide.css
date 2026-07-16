@@ -1,0 +1,142 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Private style-guide presentation helpers for the PNS Style Guide page.
+ * Owner: internal documentation UI, not public page rhythm. These classes may
+ * remain theme-owned while the private style guide is a WP page; delete them
+ * if the style guide is retired or moved to external documentation.
+ */
+.pns-style-guide-button-examples {
+	display: grid;
+	gap: var(--wp--preset--spacing--spacious);
+}
+
+.pns-style-guide-button-group {
+	display: grid;
+	gap: var(--wp--preset--spacing--regular);
+}
+
+.pns-style-guide-button-group__title {
+	margin-block: 0;
+	color: var(--wp--custom--color--text--heading);
+	font-size: var(--wp--preset--font-size--title-small);
+	font-weight: 800;
+	line-height: var(--wp--custom--typography--line-height--heading);
+	text-transform: uppercase;
+}
+
+.pns-style-guide-button-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	gap: var(--wp--preset--spacing--regular);
+	align-items: stretch;
+}
+
+.pns-style-guide-duotone-preset-card-grid-v2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+	gap: var(--wp--preset--spacing--regular);
+	margin-block-start: var(--wp--preset--spacing--spacious);
+}
+
+.pns-style-guide-duotone-preset-card {
+	display: grid;
+	gap: 0;
+	min-inline-size: 0;
+	overflow: hidden;
+	border: 1px solid var(--wp--custom--color--border--subtle);
+	background-color: var(--wp--custom--color--surface--default);
+}
+
+.pns-style-guide-duotone-preset-card__swatch {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	min-block-size: 6rem;
+	overflow: hidden;
+}
+
+.pns-style-guide-duotone-preset-card .wp-block-image {
+	margin: 0;
+}
+
+.pns-style-guide-duotone-preset-card img {
+	display: block;
+	inline-size: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+
+.pns-style-guide-duotone-preset-card__description {
+	margin: 0;
+	padding: var(--wp--preset--spacing--compact);
+	color: var(--wp--custom--color--text--heading);
+	font-size: var(--wp--preset--font-size--text-small);
+	font-weight: 700;
+	line-height: var(--wp--custom--typography--line-height--heading);
+}
+
+.pns-style-guide-sample {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-rows: auto 1fr;
+	gap: var(--wp--preset--spacing--regular);
+	min-block-size: 12rem;
+	padding: var(--wp--preset--spacing--regular);
+	border: 1px solid var(--wp--custom--color--border--subtle);
+	background-color: var(--wp--custom--color--surface--default);
+}
+
+.pns-style-guide-sample__label {
+	margin-block: 0;
+	color: var(--wp--custom--color--text--heading);
+	font-size: var(--wp--preset--font-size--text-base);
+	font-weight: 700;
+	line-height: var(--wp--custom--typography--line-height--heading);
+}
+
+.pns-style-guide-sample__preview {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	min-block-size: 6rem;
+}
+
+.pns-style-guide-sample__preview--dark {
+	box-sizing: border-box;
+	padding: var(--wp--preset--spacing--regular);
+	background-color: var(--wp--preset--color--brand-purple);
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.pns-style-guide-details {
+	--pns-surface-background: var(--wp--custom--color--surface--default);
+	--pns-surface-text: var(--wp--custom--color--text--default);
+	--pns-surface-heading: var(--wp--custom--color--text--heading);
+	--pns-surface-border: var(--wp--custom--color--border--subtle);
+	--pns-section-text: var(--pns-surface-text);
+	--pns-section-heading: var(--pns-surface-heading);
+
+	box-sizing: border-box;
+	padding: var(--wp--preset--spacing--regular);
+	border: 1px solid var(--pns-surface-border);
+	background-color: var(--pns-surface-background);
+	color: var(--pns-surface-text);
+}
+
+:is(.pns-content-frame, .pns-section-frame) > .pns-style-guide-details {
+	margin-block-start: var(--wp--preset--spacing--regular);
+}
+
+.pns-style-guide-details > summary {
+	color: var(--pns-surface-heading);
+	cursor: pointer;
+	font-weight: 700;
+}
+
+.pns-style-guide-details[open] > summary {
+	margin-block-end: var(--wp--preset--spacing--regular);
+}
+
+.pns-style-guide-details :where(p, li, code) {
+	color: inherit;
+}

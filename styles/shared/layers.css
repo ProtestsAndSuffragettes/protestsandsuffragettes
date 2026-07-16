@@ -1,0 +1,6 @@
+/*
+ * Keep layers for low-conflict theme defaults only. WordPress/plugin conflict
+ * surfaces such as Navigation, buttons, editor shims, and vendor adapters stay
+ * unlayered at the entrypoint so they can beat unlayered runtime CSS.
+ */
+@layer settings, base, layout, blocks, components, utilities;

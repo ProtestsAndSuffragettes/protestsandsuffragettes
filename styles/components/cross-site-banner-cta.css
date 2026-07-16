@@ -1,0 +1,147 @@
+/*
+ * Load path: unlayered import from styles/frontend.css and styles/editor.css.
+ * Keep unlayered: this header Navigation CTA must beat unlayered WordPress
+ * core Navigation/global output while staying out of the generic Navigation
+ * partials.
+ */
+.pns-header nav.pns-cross-site-banner-cta {
+	--pns--cross-site-banner-cta-notch-size: clamp(1rem, 1.6vw, 1.35rem);
+	--pns--cross-site-banner-cta-gap: 0.5rem clamp(1.25rem, 7vw, 2.75rem);
+
+	position: relative;
+	z-index: 2;
+	inline-size: auto;
+	max-inline-size: none;
+	padding: var(--pns--cross-site-banner-cta-notch-size);
+
+	/* Header-owned CTA shape: the header scope beats WordPress's generated constrained-layout last-child margin reset. */
+	margin-block-start: 0;
+	margin-block-end: calc(var(--pns--cross-site-banner-cta-notch-size) * -1);
+	/* Header-owned alignfull reset: the banner already spans the viewport, so it should not inherit constrained-child side offsets. */
+	margin-inline: 0;
+
+	background: var(--wp--preset--color--brand-yellow);
+	clip-path: polygon(
+		0 0,
+		100% 0,
+		100% calc(100% - var(--pns--cross-site-banner-cta-notch-size)),
+		50% 100%,
+		0 calc(100% - var(--pns--cross-site-banner-cta-notch-size))
+	);
+}
+
+nav.pns-cross-site-banner-cta:not(:has(.wp-block-navigation-item)):not(
+		:has(:where(p a[href], button, input, select, svg))
+	) {
+	display: none;
+}
+
+nav.pns-cross-site-banner-cta:not(.has-text-color) {
+	color: var(--wp--preset--color--brand-red);
+}
+
+nav.pns-cross-site-banner-cta:not([class*="-font-family"]) {
+	font-family: var(--wp--preset--font-family--libre-franklin);
+}
+
+nav.pns-cross-site-banner-cta > .wp-block-navigation__container {
+	/* Core serializes the nested list as another Navigation with alignfull styles. The outer notched banner has local padding, so calculate this frame from the viewport rather than its padded content box. */
+	box-sizing: border-box;
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	/* Core's duplicated Navigation class adds flex: 1 1 auto, which otherwise grows this list beyond its rail frame. */
+	flex: 0 1 auto !important;
+	gap: var(--pns--cross-site-banner-cta-gap);
+	inline-size: min(
+		calc(
+			100vw - var(--pns--layout--content-rail) -
+				var(--pns--layout--content-rail)
+		),
+		var(--pns--layout--wide-size)
+	) !important;
+	margin-inline: auto;
+}
+
+nav.pns-cross-site-banner-cta .wp-block-navigation-item {
+	min-inline-size: max-content;
+	padding: 0;
+}
+
+nav.pns-cross-site-banner-cta .wp-block-navigation-item__content {
+	color: inherit;
+	font-size: clamp(1rem, 1.25rem, 1.8rem);
+	font-weight: 800;
+	line-height: 1.15;
+	padding-block: 0.125rem;
+	text-decoration-line: underline;
+	text-decoration-thickness: 0.08em;
+	text-underline-offset: 0.14em;
+	text-transform: uppercase;
+	transition:
+		color var(--pns--motion--duration-interaction)
+			var(--pns--motion--easing-standard),
+		text-decoration-thickness var(--pns--motion--duration-interaction)
+			var(--pns--motion--easing-standard);
+}
+
+nav.pns-cross-site-banner-cta:where(
+		[style*="font-size"],
+		[class*="has-"][class*="-font-size"]
+	)
+	.wp-block-navigation-item__content {
+	font-size: inherit;
+}
+
+nav.pns-cross-site-banner-cta:where([style*="font-style"])
+	.wp-block-navigation-item__content {
+	font-style: inherit;
+}
+
+nav.pns-cross-site-banner-cta:where([style*="font-weight"])
+	.wp-block-navigation-item__content {
+	font-weight: inherit;
+}
+
+nav.pns-cross-site-banner-cta:where([style*="letter-spacing"])
+	.wp-block-navigation-item__content {
+	letter-spacing: inherit;
+}
+
+nav.pns-cross-site-banner-cta:where([style*="line-height"])
+	.wp-block-navigation-item__content {
+	line-height: inherit;
+}
+
+nav.pns-cross-site-banner-cta:where([style*="text-transform"])
+	.wp-block-navigation-item__content {
+	text-transform: inherit;
+}
+
+nav.pns-cross-site-banner-cta .wp-block-navigation-item__content:hover,
+nav.pns-cross-site-banner-cta .wp-block-navigation-item__content:focus-visible {
+	color: inherit;
+	text-decoration-thickness: 0.14em;
+}
+
+nav.pns-cross-site-banner-cta .wp-block-navigation-item__content:focus-visible {
+	border-radius: 2px;
+	outline: 3px solid currentcolor;
+	outline-offset: 0.25rem;
+}
+
+@media only screen and (max-width: 28rem) {
+	nav.pns-cross-site-banner-cta .wp-block-navigation-item {
+		inline-size: 100%;
+		justify-content: center;
+		text-align: center;
+	}
+
+	nav.pns-cross-site-banner-cta .wp-block-navigation-item__content {
+		justify-content: center;
+		inline-size: 100%;
+	}
+}

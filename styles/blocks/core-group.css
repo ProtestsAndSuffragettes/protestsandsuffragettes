@@ -1,0 +1,21 @@
+/*
+ * Load path: block-scoped only via inc/assets.php for core/group.
+ * Do not import from styles/blocks/index.css unless this block must be bundled.
+ * Keep unlayered while this remains a standalone block-scoped override path.
+ */
+.wp-block-group.has-background:is(
+		.pns-section,
+		.pns-header__surface,
+		.pns-footer,
+		.pns-footer-bottom-bar
+	) {
+	padding: 0;
+}
+
+.wp-block-group.has-background:is(
+		.pns-news-more-section,
+		.pns-herstories-more-section
+	) {
+	/* These named related-post panels own their inline inset; Core's generic background padding is not a layout rail. */
+	padding-inline: var(--pns--layout--content-rail);
+}

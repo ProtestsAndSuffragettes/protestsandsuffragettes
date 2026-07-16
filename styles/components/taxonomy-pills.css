@@ -1,0 +1,76 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+.pns-taxonomy-pills {
+	gap: var(--wp--preset--spacing--hairline);
+}
+
+:is(
+	.pns-taxonomy-pills :where(.wp-block-post-terms),
+	.pns-taxonomy-pills__list
+) {
+	display: contents;
+}
+
+.pns-taxonomy-pills :where(.wp-block-post-terms__separator) {
+	display: none;
+}
+
+:is(.pns-taxonomy-pills :where(.wp-block-post-terms), .pns-taxonomy-pills__list)
+	a {
+	display: inline-flex;
+	align-items: center;
+	min-block-size: 1.5rem;
+	padding: 0 var(--wp--preset--spacing--tight);
+	border: 1px solid currentcolor;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	font-weight: 700;
+	line-height: var(--wp--custom--typography--line-height--heading);
+	text-decoration: none;
+}
+
+:is(
+		.pns-taxonomy-pills :is(.taxonomy-category),
+		.pns-taxonomy-pills__list.taxonomy-category
+	)
+	a {
+	border-color: var(--wp--preset--color--heritage-green);
+	background-color: var(--wp--preset--color--heritage-green);
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.pns-taxonomy-pills
+	:is([class~="taxonomy-post_tag"], [class~="taxonomy-herstory_tag"])
+	a {
+	border-color: var(--wp--preset--color--deep-purple);
+	background-color: var(--wp--preset--color--deep-purple);
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.pns-taxonomy-pills__list:is(
+		[class~="taxonomy-post_tag"],
+		[class~="taxonomy-herstory_tag"]
+	)
+	a {
+	border-color: var(--wp--preset--color--deep-purple);
+	background-color: var(--wp--preset--color--deep-purple);
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.pns-taxonomy-pills
+	:is(
+		.taxonomy-category,
+		[class~="taxonomy-post_tag"],
+		[class~="taxonomy-herstory_tag"]
+	)
+	a:where(:hover, :focus-visible) {
+	color: var(--wp--preset--color--brand-yellow);
+	text-decoration: none;
+}
+
+.pns-taxonomy-pills :where(.wp-block-post-terms) a:focus-visible {
+	outline: 3px solid currentcolor;
+	outline-offset: 0.15rem;
+}

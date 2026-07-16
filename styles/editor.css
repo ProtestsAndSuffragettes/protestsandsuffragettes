@@ -1,0 +1,25 @@
+@import "shared/layers.css";
+@import "shared/fonts.css";
+@import "shared/settings.css" layer(settings);
+/* Unlayered: site-shell layout must beat WordPress generated editor spacing. */
+@import "layout/index.css";
+@import "base/elements.css" layer(base);
+@import "base/forms.css" layer(base);
+@import "blocks/core-navigation.css";
+@import "blocks/editor.css" layer(blocks);
+@import "page-types/index.css";
+@import "components/index.css" layer(components);
+/*
+ * Unlayered conflict tail: these files intentionally beat unlayered
+ * WordPress/editor output. Do not move them into layers without a focused
+ * cascade proof and editor/front-end parity coverage.
+ */
+@import "components/cross-site-banner-cta.css";
+@import "components/buttons.css";
+@import "components/section-theme.css";
+@import "components/light-surface.css";
+@import "components/post-meta.css";
+@import "blocks/editor-overrides.css";
+@import "components/priority-overrides.css";
+@import "utilities/index.css" layer(utilities);
+@import "editor-canvas.css";

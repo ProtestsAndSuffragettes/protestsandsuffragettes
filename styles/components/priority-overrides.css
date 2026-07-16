@@ -1,0 +1,266 @@
+/*
+ * Load path: unlayered override tail imported after the components layer.
+ * Keep this file tiny. Rules here must name the unlayered WordPress/plugin
+ * pressure that prevents the normal component-layer rule from winning.
+ *
+ * This file is a pragmatic landing zone, not a styling pattern to copy. The
+ * desired endpoint is for project-owned blocks to ship their structural CSS
+ * from their block package, with the theme supplying tokens and visual system
+ * choices. Rules should leave this file when the owning block/theme component
+ * can win without fighting unlayered WordPress or plugin CSS.
+ */
+
+.pns-footer
+	.pns-footer__contact
+	> .wp-block-group.is-layout-constrained
+	> .wp-block-separator {
+	/* Owner: footer-layout.css. External pressure: Core Separator CSS stays unlayered through wp_enqueue_block_style(). Removal gate: delete after the component rule wins in frontend and editor cascade checks. */
+	inline-size: 100%;
+	max-inline-size: 25rem;
+}
+
+.footer-wt,
+.footer-wt p {
+	/* Owner: footer-layout.css. External pressure: WordPress/global paragraph color can arrive outside component layers. Removal gate: delete after the component color wins in the homepage footer contract. */
+	color: var(--wp--preset--color--neutral-0);
+}
+
+:root
+	:where(.is-layout-constrained)
+	> :where(
+		.pns-section,
+		.wp-block-template-part,
+		.pns-section-inner,
+		.pns-section-frame,
+		.pns-content-frame,
+		.pns-query-pagination,
+		.pns-entry-navigation__controls,
+		.pns-taxonomy-pills
+	) {
+	/* Owner: component/layout roots. External pressure: WordPress generated constrained-layout CSS adds compact start margins. Removal gate: delete after the individual roots win without this unlayered reset. */
+	margin-block-start: 0;
+}
+
+.pns-template-single .wp-block-post-content > .pns-page-hero + * {
+	/* Owner: single-post.css. External pressure: the unlayered constrained-layout reset above removes the authored hero-to-body separation. */
+	margin-block-start: var(--wp--preset--spacing--generous);
+}
+
+.pns-template-single-full-width-news .pns-entry-navigation {
+	/* Owner: entry-post-navigation.php. External pressure: Core's saved preset background utility is !important; full-width news navigation belongs on the inherited page surface. */
+	background-color: transparent !important;
+}
+
+.pns-template-single > .wp-block-post-content + .pns-entry-navigation {
+	/* Owner: single-post.css. External pressure: Core's unlayered constrained-layout margin reset otherwise removes post-body bottom spacing. */
+	margin-block-start: var(--wp--preset--spacing--generous);
+}
+
+@media only screen and (min-width: 48.875rem) {
+	.pns-template-single
+		.wp-block-post-content
+		> .pns-text-only-section
+		> .pns-content-frame {
+		/* Owner: utilities/index.css. External pressure: the unlayered shared frame rail would otherwise reduce desktop post prose below theme.json contentSize; mobile retains its essential viewport gutter. */
+		padding-inline: 0;
+	}
+}
+
+.pns-query-pagination.wp-block-query-pagination {
+	/* Owner: buttons.css. External pressure: WordPress generated flex layout CSS is unlayered. Removal gate: delete after the component grid wins at all archive boundaries. */
+	display: grid;
+}
+
+.wp-block-post.type-page .pns-post-card__meta {
+	/* Owner: archive-cards.css. External pressure: WordPress generated layout CSS can re-apply flex outside component layers. Removal gate: delete after page-result metadata remains hidden without the tail. */
+	display: none;
+}
+
+.pns-featured-post
+	.pns-split-section__media-column
+	.wp-block-post-featured-image {
+	/* Owner: archive-cards.css. External pressure: WordPress generated block spacing is unlayered. Removal gate: delete after featured-post media stays flush without the tail. */
+	margin-block: 0;
+}
+
+:is(
+		.pns-taxonomy-pills :is(.taxonomy-category),
+		.pns-taxonomy-pills__list.taxonomy-category,
+		.pns-taxonomy-pills
+			:is([class~="taxonomy-post_tag"], [class~="taxonomy-herstory_tag"]),
+		.pns-taxonomy-pills__list:is(
+			[class~="taxonomy-post_tag"],
+			[class~="taxonomy-herstory_tag"]
+		)
+	)
+	a {
+	/* Owner: taxonomy-pills.css. External pressure: WordPress global link color is unlayered. Removal gate: delete after inverse pill text survives frontend and editor cascade checks. */
+	color: var(--wp--preset--color--neutral-0);
+}
+
+:is(
+		.pns-taxonomy-pills :is(.taxonomy-category),
+		.pns-taxonomy-pills__list.taxonomy-category,
+		.pns-taxonomy-pills
+			:is([class~="taxonomy-post_tag"], [class~="taxonomy-herstory_tag"]),
+		.pns-taxonomy-pills__list:is(
+			[class~="taxonomy-post_tag"],
+			[class~="taxonomy-herstory_tag"]
+		)
+	)
+	a:where(:hover, :focus-visible) {
+	color: var(--wp--preset--color--brand-yellow);
+}
+
+.pns-header__surface > .pns-header__inner {
+	/* Owner: header.css. External pressure: WordPress constrained-layout output is unlayered. Removal gate: delete after the header width survives desktop and mobile navigation checks. */
+	width: min(
+		calc(
+			100% - var(--pns--layout--content-rail) -
+				var(--pns--layout--content-rail)
+		),
+		var(--pns--layout--wide-size)
+	);
+	inline-size: min(
+		calc(
+			100% - var(--pns--layout--content-rail) -
+				var(--pns--layout--content-rail)
+		),
+		var(--pns--layout--wide-size)
+	);
+	max-width: var(--pns--layout--wide-size);
+	max-inline-size: var(--pns--layout--wide-size);
+}
+
+.pns-connect-social__columns {
+	/* Owner: synced-sections.css. External pressure: Core's alignfull output is unlayered; keep this DB-backed synced block inside the shared site frame. */
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--wide-size);
+	margin-inline: auto;
+}
+
+.pns-site-frame-panel {
+	/* Owner: utilities/index.css. External pressure: Core alignfull output is unlayered; this opt-in body-panel contract caps the entire visual surface without naming individual components. */
+	--pns-site-frame-panel-half: calc(var(--pns--layout--wide-size) / 2);
+	width: min(100vw, var(--pns--layout--wide-size));
+	inline-size: min(100vw, var(--pns--layout--wide-size));
+	max-width: var(--pns--layout--wide-size);
+	max-inline-size: var(--pns--layout--wide-size);
+	margin-inline: calc(50% - min(50vw, var(--pns-site-frame-panel-half)));
+}
+
+.pns-template > :is(.wp-block-cover, .wp-block-ran-enhanced-cover):first-child,
+.pns-template
+	.wp-block-post-content
+	> :is(.wp-block-cover, .wp-block-ran-enhanced-cover):first-child {
+	/* A hero is viewport art only when it opens the content flow; later Covers retain the capped panel contract. */
+	inline-size: 100vw;
+	max-inline-size: none;
+	margin-inline: calc(50% - 50vw);
+}
+
+.pns-suffragette-facts > .wp-block-columns {
+	/* Owner: herstories-bios.css. External pressure: saved Core Columns output is alignfull and otherwise escapes its newly capped Facts panel. */
+	width: 100%;
+	inline-size: 100%;
+	max-width: 100%;
+	max-inline-size: 100%;
+	margin-inline: 0;
+}
+
+.pns-header__surface > .pns-header__inner > .pands-logo {
+	/* Owner: logos.css. External pressure: WordPress layout output is unlayered. Removal gate: delete after the logo overlap survives the header cascade without this tail. */
+	margin-block-end: calc(
+		var(--pns-header-logo-visible-block-size) - var(--pns-header-logo-size)
+	);
+}
+
+.pands-logo .custom-logo {
+	/* Core Site Logo CSS is unlayered, so this tail keeps the responsive header mark's authored size effective. */
+	inline-size: var(--pns-header-logo-size);
+	max-inline-size: var(--pns-header-logo-size);
+}
+
+.footer-logo .custom-logo {
+	/* Same Core Site Logo bridge as the header, using the footer's independent desktop measure. */
+	inline-size: 10rem;
+	max-inline-size: 10rem;
+}
+
+@media only screen and (max-width: 780px) {
+	.pands-logo {
+		/* 150px header mark reduced by 30%. */
+		--pns-header-logo-size: 6.5625rem;
+	}
+
+	.footer-logo .custom-logo {
+		/* 160px footer mark reduced by 30%. */
+		inline-size: 7rem;
+		max-inline-size: 7rem;
+	}
+}
+
+@media only screen and (min-width: 64.75rem) and (max-width: 80.874rem) {
+	.pns-header__inner > .pns-primary-navigation {
+		/* Core's generated font-size utility is !important; keep the newly expanded desktop list compact until its wider 1294px spacing contract takes over. */
+		font-size: var(--pns--navigation--font-size-compact) !important;
+	}
+}
+
+.pns-template > .wp-block-ran-enhanced-cover:first-child,
+.pns-template .wp-block-post-content > .wp-block-ran-enhanced-cover:first-child {
+	/* The first RAN Video Cover has the same viewport-art contract as Core Cover, regardless of an optional author class. */
+	padding: 0;
+}
+
+.pns-template
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content,
+.pns-template
+	.wp-block-post-content
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content {
+	/* The custom block's flex child otherwise shrink-wraps instead of exposing the shared section frame. */
+	inline-size: 100%;
+}
+
+.pns-template
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content:not(:has(> .pns-hero__inner)),
+.pns-template
+	.wp-block-post-content
+	> .wp-block-ran-enhanced-cover:first-child
+	> .ran-video-cover__content:not(:has(> .pns-hero__inner)) {
+	/* Bare opening Video Covers get the same centred frame and configurable rail as an explicitly structured page hero. */
+	box-sizing: border-box;
+	inline-size: min(100%, var(--pns--layout--section-frame-size));
+	max-inline-size: var(--pns--layout--section-frame-size);
+	margin-inline: auto;
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+@media only screen and (min-width: 80.875rem) {
+	.pns-header__inner > .pns-primary-navigation {
+		/* Owner: header.css. External pressure: the header shell is unlayered Core layout. Keep desktop navigation aligned to the configurable content rail. */
+		margin-inline-end: var(--pns--layout--content-rail);
+		margin-inline-start: auto;
+	}
+}
+
+@media only screen and (max-width: 1360px) {
+	.wp-block-post-template.is-layout-grid.columns-3:has(
+		> li > .pns-archive-card
+	) {
+		/* Core serializes three tracks into saved Query Loops; PNS vertical cards need a wider two-card reading measure before they become overly tall. */
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.wp-block-post-template.is-layout-grid.columns-3:has(
+		> li > .pns-archive-card
+	) {
+		/* Preserve readable card copy on narrow screens instead of squeezing three editorial cards across the content rail. */
+		grid-template-columns: 1fr;
+	}
+}

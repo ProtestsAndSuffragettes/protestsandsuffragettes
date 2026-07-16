@@ -1,0 +1,52 @@
+[
+	{
+		"title": "PNS - Contact Form",
+		"slug": "contact-form",
+		"status": "publish",
+		"category": {
+			"name": "PNS Synced Sections",
+			"slug": "pns-synced"
+		},
+		"file": "contact-form.html"
+	},
+	{
+		"title": "PNS - Connect Social",
+		"slug": "connect-social",
+		"status": "publish",
+		"category": {
+			"name": "PNS Synced Sections",
+			"slug": "pns-synced"
+		},
+		"file": "connect-social.html"
+	},
+	{
+		"title": "PNS - Read All About It",
+		"slug": "read-all-about-it",
+		"status": "publish",
+		"category": {
+			"name": "PNS Synced Sections",
+			"slug": "pns-synced"
+		},
+		"file": "read-all-about-it.html"
+	},
+	{
+		"title": "PNS - Read All About It - Workshops",
+		"slug": "read-all-about-it-workshops",
+		"status": "publish",
+		"category": {
+			"name": "PNS Synced Sections",
+			"slug": "pns-synced"
+		},
+		"file": "read-all-about-it-workshops.html"
+	},
+	{
+		"title": "PNS - Shop Intro",
+		"slug": "shop-intro",
+		"status": "publish",
+		"category": {
+			"name": "PNS Synced Sections",
+			"slug": "pns-synced"
+		},
+		"file": "shop-intro.html"
+	}
+]

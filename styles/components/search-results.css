@@ -1,0 +1,117 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ * Owner: reusable query-result component classes. Do not reintroduce
+ * template-prefix selectors here unless the template chrome, not the result
+ * card, is the actual owner.
+ */
+.pns-search-results__list {
+	display: grid;
+	gap: 0;
+}
+
+.pns-search-result {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--wp--preset--spacing--spacious);
+	padding-block: var(--wp--preset--spacing--spacious);
+	border-block-start: 1px solid var(--pns-surface-border);
+}
+
+.pns-search-result > * {
+	margin-block: 0;
+}
+
+.pns-search-results__list > li:last-child .pns-search-result {
+	border-block-end: 1px solid var(--pns-surface-border);
+}
+
+.pns-query-pagination.wp-block-query-pagination {
+	padding-block: 3rem;
+}
+
+.pns-search-result__thumbnail {
+	inline-size: 100%;
+	margin-block: 0;
+}
+
+.pns-search-result__thumbnail a,
+.pns-search-result__thumbnail img {
+	display: block;
+	inline-size: 100%;
+}
+
+.pns-search-result__thumbnail a {
+	overflow: hidden;
+}
+
+.pns-search-result__thumbnail img {
+	border: 1px solid
+		var(--pns-surface-border, var(--wp--custom--color--border--subtle));
+	box-sizing: border-box;
+	block-size: 100%;
+	object-fit: cover;
+}
+
+.pns-search-result__body {
+	min-inline-size: 0;
+}
+
+.pns-search-result__body > * + * {
+	margin-block-start: var(--wp--preset--spacing--regular);
+}
+
+.pns-search-result__body .wp-block-post-title {
+	font-size: var(--wp--preset--font-size--text-lead);
+	line-height: var(--pns--typography--line-height--heading-compact);
+}
+
+:is(
+	.pns-search-result__thumbnail a,
+	.pns-search-result__body .wp-block-post-title a,
+	.pns-search-result__term-list a
+):where(:hover, :focus-visible) {
+	text-decoration-line: underline;
+	text-decoration-thickness: 0.12em;
+}
+
+.pns-search-result__thumbnail a:where(:hover, :focus-visible) img {
+	filter: brightness(0.92) contrast(1.04);
+}
+
+@media only screen and (min-width: 60rem) {
+	.pns-search-result {
+		/* Keep the image adjacent to the editorial copy instead of the page edge. */
+		grid-template-columns:
+			clamp(16rem, 25vw, 28.25rem)
+			minmax(0, var(--pns--layout--content-size));
+		justify-content: center;
+	}
+
+	.pns-search-result__thumbnail {
+		/* This matches the full-height desktop card while the block keeps 1:1 media. */
+		align-self: start;
+	}
+
+	.pns-search-result__body {
+		align-self: stretch;
+		box-sizing: border-box;
+		display: grid;
+		grid-template-rows: auto auto minmax(0, 1fr) auto;
+		padding-block-end: var(--wp--preset--spacing--compact);
+	}
+
+	/* Keep the excerpt divider and taxonomy pills at the visual card base. */
+	.pns-search-result__body > .wp-block-post-excerpt {
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		min-block-size: 0;
+	}
+
+	.pns-search-result__body
+		> .wp-block-post-excerpt
+		> .wp-block-post-excerpt__excerpt {
+		flex: 1;
+	}
+}

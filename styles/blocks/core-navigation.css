@@ -1,0 +1,10 @@
+/*
+ * Load path: unlayered navigation barrel imported by styles/frontend.css and
+ * styles/editor.css.
+ * Import navigation partials here; do not add selector rules to this wrapper.
+ * Keep unlayered: the private partials include priority-sensitive overrides for
+ * unlayered WordPress core submenu and responsive-container output.
+ */
+@import "core-navigation-base.css";
+@import "core-navigation-desktop.css";
+@import "core-navigation-core-drawer.css";

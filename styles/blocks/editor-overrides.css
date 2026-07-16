@@ -1,0 +1,55 @@
+/*
+ * Load path: unlayered editor block conflict tail imported late by
+ * styles/editor.css after the layered editor block and component defaults.
+ *
+ * These rules target core/plugin CSS that WordPress applies outside the theme
+ * layer stack. Keep editor parity fixes here instead of mirroring them in the
+ * component priority tail.
+ */
+
+@import "core-cover.css";
+@import "core-quote.css";
+@import "jetpack-contact-form.css";
+
+/* Gutenberg renders empty-block guidance as ordinary paragraph text, so give it the dark PNS surface token rather than inheriting the neutral copy colour. */
+.editor-styles-wrapper:not(.is-pns-light-surface-template)
+	> .is-root-container
+	> .block-list-appender
+	.block-editor-default-block-appender__content,
+.editor-styles-wrapper:not(.is-pns-light-surface-template)
+	> .is-root-container
+	> .block-editor-rich-text__editable[data-empty="true"],
+.editor-styles-wrapper:not(.is-pns-light-surface-template)
+	> .is-root-container
+	> .block-editor-rich-text__editable[data-empty="true"]
+	> [data-rich-text-placeholder],
+.editor-styles-wrapper
+	:is(
+		.pns-page-hero,
+		.has-brand-purple-background-color,
+		.has-deep-purple-background-color,
+		.has-neutral-800-background-color,
+		.pns-section:has(
+			.wp-block-cover__background:is(
+				.has-brand-purple-background-color,
+				.has-deep-purple-background-color,
+				.has-neutral-800-background-color
+			)
+		)
+	)
+	:is(
+		.block-editor-default-block-appender__content,
+		.block-editor-rich-text__editable[data-empty="true"],
+		.block-editor-rich-text__editable[data-empty="true"]
+			> [data-rich-text-placeholder]
+	) {
+	color: var(--wp--custom--color--text--inverse) !important;
+	opacity: 1;
+}
+
+.editor-styles-wrapper:not(.is-pns-light-surface-template)
+	> .is-root-container
+	> .block-list-appender
+	.block-editor-default-block-appender__content {
+	opacity: 1;
+}

@@ -1,0 +1,120 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 400;
+	margin-block: 0;
+}
+
+:is(
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p,
+		ul,
+		ol,
+		blockquote,
+		figure,
+		details,
+		table,
+		form,
+		.wp-block-heading,
+		.wp-block-buttons,
+		.wp-block-image,
+		.wp-block-quote,
+		.wp-block-details,
+		.wp-block-table
+	)
+	+ :is(
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p,
+		ul,
+		ol,
+		blockquote,
+		figure,
+		details,
+		table,
+		form,
+		.wp-block-heading,
+		.wp-block-buttons,
+		.wp-block-image,
+		.wp-block-quote,
+		.wp-block-details,
+		.wp-block-table
+	) {
+	margin-block-start: var(
+		--wp--style--block-gap,
+		var(--pns--content-rhythm--block-gap)
+	);
+}
+
+:is(p, ul, ol, blockquote, figure, details, .wp-block-quote, .wp-block-image)
+	+ :is(h2, h3, h4, h5, h6, .wp-block-heading) {
+	margin-block-start: var(--pns--content-rhythm--heading-lead-gap);
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--wp--preset--font-family--rubik);
+	font-weight: 800;
+	text-transform: uppercase;
+	text-wrap: balance;
+}
+
+h2,
+h2.wp-block-heading {
+	font-size: 46px;
+	font-size: var(--wp--preset--font-size--title-large);
+	line-height: 1.12;
+	line-height: var(--pns--typography--line-height--heading-compact);
+}
+
+h3,
+h3.wp-block-heading {
+	font-size: 34px;
+	font-size: var(--wp--preset--font-size--title-medium);
+	line-height: 1.12;
+	line-height: var(--pns--typography--line-height--heading-compact);
+}
+
+h1,
+h1.wp-block-heading {
+	line-height: 1.06;
+	line-height: var(--pns--typography--line-height--display-tight);
+}
+
+.has-title-large-font-size,
+.has-title-medium-font-size {
+	line-height: var(--pns--typography--line-height--heading-compact);
+}
+
+.has-title-display-font-size {
+	line-height: var(--pns--typography--line-height--display-tight);
+}
+
+p {
+	color: var(--wp--custom--color--text--default);
+	font-size: var(--wp--preset--font-size--text-base);
+	font-weight: 400;
+	line-height: var(--wp--custom--typography--line-height--paragraph);
+	margin-block-start: 0;
+	margin-block-end: var(--pns--content-rhythm--paragraph-margin-block-end);
+	text-wrap: pretty;
+}
+
+ul,
+ol {
+	margin-block: 0;
+}

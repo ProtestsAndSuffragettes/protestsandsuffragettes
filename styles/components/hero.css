@@ -1,0 +1,47 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+.pns-hero__inner {
+	display: grid;
+}
+
+.pns-hero-copy {
+	align-self: center;
+	max-inline-size: none;
+	margin: 0;
+	padding-block: var(--wp--preset--spacing--regular);
+	padding-inline-start: var(--pns--layout--content-rail);
+	padding-inline-end: 0;
+}
+
+.pns-page-hero .pns-editorial-strapline {
+	max-inline-size: var(--pns--layout--content-size);
+	margin-block: 0;
+}
+
+.pns-page-hero .pns-editorial-strapline:empty {
+	display: none;
+}
+
+.pns-editorial-strapline__content {
+	display: block;
+}
+
+.pns-editorial-strapline__content--align-center {
+	text-align: center;
+}
+
+.pns-editorial-strapline__content--align-right {
+	text-align: right;
+}
+
+.pns-editorial-strapline__content--align-justify {
+	text-align: justify;
+}
+
+@media only screen and (min-width: 782px) {
+	.pns-hero-copy {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}

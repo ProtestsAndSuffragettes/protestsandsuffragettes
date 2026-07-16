@@ -1,0 +1,107 @@
+/*
+ * Load path: private partial imported by styles/blocks/core-navigation.css.
+ * Owns desktop/header Navigation behavior only.
+ * Keep unlayered: this adapts WordPress Core Navigation for the theme header.
+ * It should not move to a plugin unless the site replaces Core Navigation with a
+ * project-owned nav block. Priority here is only for Core submenu padding that
+ * arrives outside the theme layer model.
+ */
+.pns-primary-navigation {
+	--pns--navigation--gap: var(
+		--pns--navigation--top-item-padding-inline-start
+	);
+
+	z-index: 10;
+}
+
+.pns-primary-navigation .wp-block-navigation-submenu .wp-block-navigation-item {
+	border-inline-end: var(--pns--navigation--submenu-item-border-inline-end)
+		solid transparent;
+	margin-inline: 0;
+	padding-inline: 0;
+}
+
+.pns-primary-navigation
+	.wp-block-navigation-item
+	.wp-block-navigation__submenu-container
+	a {
+	/* Core Navigation bridge: submenu link padding is emitted by Core outside the theme layer model; remove if Core exposes a block support/control for this spacing. */
+	padding: var(--pns--navigation--submenu-link-padding) !important;
+}
+
+.pns-primary-navigation
+	.wp-block-navigation-item
+	.wp-block-navigation__submenu-container
+	a:hover::after {
+	block-size: 0;
+}
+
+@media only screen and (min-width: 582px) {
+	header
+		.wp-block-navigation
+		.wp-block-navigation__container
+		> .wp-block-navigation-item {
+		padding-inline-start: var(
+			--pns--navigation--top-item-padding-inline-start
+		);
+	}
+}
+
+.pns-primary-navigation
+	.wp-block-navigation__container
+	> .wp-block-navigation-item {
+	padding-inline-start: 0;
+}
+
+@media only screen and (min-width: 600px) {
+	.pns-primary-navigation .wp-block-navigation__submenu-icon {
+		inset-block-end: -7px;
+		inset-inline-start: auto;
+		margin-inline-start: 0;
+		position: absolute;
+	}
+
+	.pns-primary-navigation
+		.wp-block-navigation-item
+		> a.wp-block-navigation-item__content:hover::after,
+	.pns-primary-navigation
+		.wp-block-navigation-item
+		> button.wp-block-navigation-item__content:hover::after {
+		background: var(--wp--preset--color--brand-red);
+		content: "";
+		height: var(--pns--navigation--hover-marker-block-size);
+		inset-block-start: var(
+			--pns--navigation--hover-marker-inset-block-start
+		);
+		inset-inline-start: 0;
+		position: absolute;
+		width: var(--pns--navigation--hover-marker-inline-size);
+	}
+}
+
+@media only screen and (min-width: 990px) {
+	.wp-block-navigation
+		.wp-block-navigation__container
+		> .wp-block-navigation-item__content {
+		gap: 5px;
+		padding: 0 0.5rem;
+	}
+}
+
+/* Wide desktop spacing needs at least 1294px with the current saved primary nav. */
+@media only screen and (min-width: 80.875rem) {
+	.pns-primary-navigation {
+		--pns--navigation--gap: var(
+			--pns--navigation--top-item-padding-inline-start-wide
+		);
+	}
+
+	header
+		.wp-block-navigation:not(.pns-primary-navigation)
+		.wp-block-navigation__container
+		> .wp-block-navigation-item {
+		padding-inline-start: var(
+			--pns--navigation--top-item-padding-inline-start-wide
+		);
+	}
+}

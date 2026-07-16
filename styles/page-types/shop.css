@@ -1,0 +1,26 @@
+/*
+ * Shop content surface.
+ * Owner: saved Shop page storefront wrapper plus Ecwid adapter boundary.
+ * The intro rhythm is allowed because Phase 3 migrated it to semantic
+ * storefront content hooks. Keep Ecwid runtime fixes in vendor-overrides;
+ * remove this file if the storefront becomes a plugin/block-owned component.
+ */
+.pns-shop-storefront {
+	background-color: var(
+		--pns-surface-background,
+		var(--wp--custom--color--surface--default)
+	);
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--wide-size);
+	margin: 0 auto;
+}
+
+.pns-shop-storefront__intro > p {
+	margin-block-end: var(--wp--preset--spacing--compact);
+}
+
+.pns-shop-storefront__intro > p + p {
+	/* Intentional saved-content hook: Shop intro copy deviates from generic prose rhythm without teaching the theme about a page slug. */
+	margin-block-start: var(--wp--preset--spacing--spacious);
+}

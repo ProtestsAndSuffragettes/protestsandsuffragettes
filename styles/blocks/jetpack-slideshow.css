@@ -1,0 +1,120 @@
+/*
+ * Load path: block-scoped only via inc/assets.php for jetpack/slideshow.
+ * Vendor/plugin overrides belong here rather than in the global bundle.
+ * Keep unlayered unless a vendor cut proves these rules still beat Jetpack's
+ * unlayered plugin CSS.
+ */
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-next,
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-prev {
+	display: block;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container
+	> :is(
+		.wp-block-jetpack-slideshow_button-next,
+		.wp-block-jetpack-slideshow_button-prev
+	) {
+	inset-block-start: 50%;
+	margin-block-start: 0;
+	transform: translateY(-50%);
+}
+
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_image {
+	width: 100%;
+	max-width: unset;
+	max-height: unset;
+	object-fit: cover;
+}
+
+@media only screen and (min-width: 782px) {
+	.wp-block-jetpack-slideshow .swiper-container,
+	.wp-block-jetpack-slideshow .swiper-container div {
+		min-height: 500px;
+	}
+
+	.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide figure {
+		min-block-size: 50vw;
+		block-size: 50vw;
+	}
+}
+
+/*
+ * Failure-safe for a missing or delayed Jetpack/Swiper runtime. Without its
+ * `swiper-initialized` class, the split-section rules can make every slide
+ * inherit the full stacked wrapper height and visibly stretch the media.
+ * Keep one intrinsic first frame as a static fallback; these rules switch off
+ * automatically as soon as Jetpack successfully initialises the slideshow.
+ */
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized) {
+	overflow: hidden;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
+	.swiper-wrapper {
+	display: block !important;
+	block-size: auto !important;
+	height: auto !important;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
+	.wp-block-jetpack-slideshow_slide {
+	display: none !important;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
+	.wp-block-jetpack-slideshow_slide:first-child {
+	display: block !important;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
+	:is(.wp-block-jetpack-slideshow_slide figure, .wp-block-jetpack-slideshow_image) {
+	min-block-size: 0 !important;
+	block-size: auto !important;
+	height: auto !important;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container.swiper:not(.swiper-initialized)
+	:is(
+		.wp-block-jetpack-slideshow_button-next,
+		.wp-block-jetpack-slideshow_button-prev,
+		.wp-block-jetpack-slideshow_button-pause,
+		.wp-block-jetpack-slideshow_pagination
+	) {
+	display: none !important;
+}
+
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-prev {
+	inset-inline-start: 1rem;
+}
+
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-next {
+	inset-inline-end: 1rem;
+}
+
+.wp-block-jetpack-slideshow,
+.wp-block-jetpack-slideshow > * {
+	margin-block-end: 0;
+}
+
+.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_pagination {
+	/* Vendor bridge: Jetpack slideshow pagination is emitted by plugin runtime CSS, while the site design uses only image frame and arrows. Keep unlayered with priority until Jetpack exposes a per-block pagination setting or the slideshow is replaced by a project-owned media block. */
+	display: none !important;
+}
+
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container
+	.wp-block-jetpack-slideshow_slide
+	figure,
+.wp-block-jetpack-slideshow
+	.wp-block-jetpack-slideshow_container
+	.wp-block-jetpack-slideshow_image {
+	display: block;
+	line-height: 0;
+}

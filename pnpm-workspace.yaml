@@ -1,0 +1,10 @@
+packages:
+  - .
+
+verifyDepsBeforeRun: false
+
+allowBuilds:
+  lightningcss-cli: true
+
+onlyBuiltDependencies:
+  - lightningcss-cli

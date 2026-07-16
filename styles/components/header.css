@@ -1,0 +1,24 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+.pns-header__surface > .pns-header__inner {
+	box-sizing: border-box;
+	width: min(
+		calc(
+			100% - var(--pns--layout--content-rail) -
+				var(--pns--layout--content-rail)
+		),
+		var(--pns--layout--wide-size)
+	);
+	inline-size: min(
+		calc(
+			100% - var(--pns--layout--content-rail) -
+				var(--pns--layout--content-rail)
+		),
+		var(--pns--layout--wide-size)
+	);
+	margin-inline: auto;
+	max-width: var(--pns--layout--wide-size);
+	max-inline-size: var(--pns--layout--wide-size);
+}

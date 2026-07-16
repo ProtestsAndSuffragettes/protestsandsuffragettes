@@ -1,0 +1,82 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ * Owner: single post template chrome for headers, meta, comments, content
+ * frame, and entry navigation placement. This is stable theme ownership, not
+ * arbitrary page content. Removal gate: only move these rules if the
+ * standalone theme delegates single post templates to plugin-owned blocks or
+ * block styles.
+ */
+.pns-template-single {
+	--pns-single-header-spacing-block: var(--wp--preset--spacing--generous);
+	--pns-single-header-gap: var(--wp--preset--spacing--spacious);
+
+	background-color: var(--pns-surface-background);
+}
+
+.pns-single-header {
+	box-sizing: border-box;
+	padding: var(--pns-single-header-spacing-block)
+		var(--pns--layout--content-rail) var(--wp--preset--spacing--spacious);
+	border-block-end: 1px solid var(--pns-surface-border);
+}
+
+.pns-template-single > .wp-block-cover > .wp-block-cover__inner-container {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--content-size);
+	margin-inline: auto;
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+.pns-single-header__inner {
+	display: grid;
+	gap: var(--pns-single-header-gap);
+	max-inline-size: var(--pns--layout--content-size);
+	margin-inline: auto;
+}
+
+.pns-single-title {
+	max-inline-size: 24ch;
+	font-size: var(--wp--preset--font-size--title-medium);
+	line-height: var(--pns--typography--line-height--heading-compact);
+}
+
+.pns-single-meta > * + *::before {
+	content: "/";
+	margin-inline-end: var(--wp--preset--spacing--tight);
+	color: inherit;
+}
+
+.pns-single-featured-image {
+	block-size: 20rem;
+	inline-size: min(100%, var(--pns--layout--wide-size));
+	margin-block-start: var(--wp--preset--spacing--spacious);
+	margin-inline: auto;
+	overflow: hidden;
+}
+
+.pns-single-featured-image a,
+.pns-single-featured-image img {
+	display: block;
+	inline-size: 100%;
+}
+
+.pns-single-featured-image img {
+	block-size: 100%;
+	object-fit: cover;
+}
+
+.pns-single-content {
+	box-sizing: border-box;
+	padding-block: var(--wp--preset--spacing--generous);
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+.pns-template-single .pns-comments {
+	box-sizing: border-box;
+	max-inline-size: var(--pns--layout--content-size);
+	margin-inline: auto;
+	padding: var(--wp--preset--spacing--generous)
+		var(--pns--layout--content-rail);
+}

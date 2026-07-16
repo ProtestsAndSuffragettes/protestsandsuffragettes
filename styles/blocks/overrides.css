@@ -1,0 +1,12 @@
+/*
+ * Load path: unlayered frontend block conflict tail imported late by
+ * styles/frontend.css after the layered block and component defaults.
+ *
+ * WordPress core and Jetpack ship these block/runtime styles outside this
+ * theme's layers. Keep this file unlayered so the owning block rules can win
+ * directly instead of being duplicated in components/priority-overrides.css.
+ */
+
+@import "core-cover.css";
+@import "core-quote.css";
+@import "jetpack-contact-form.css";

@@ -1,0 +1,191 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ * Surface aliases are CSS-private adapters over public theme.json color roles.
+ * They let page templates and vendor adapters inherit one local contract
+ * without exposing implementation-only surface state as editor tokens.
+ */
+.pns-light-surface {
+	--pns-surface-background: var(--wp--custom--color--surface--default);
+	--pns-surface-text: var(--wp--custom--color--text--default);
+	--pns-surface-heading: var(--wp--custom--color--text--heading);
+	--pns-surface-muted: var(--wp--custom--color--text--muted);
+	--pns-surface-link: var(--wp--custom--color--link--default);
+	--pns-surface-link-hover: var(--wp--custom--color--link--hover);
+	--pns-surface-border: var(--wp--custom--color--border--subtle);
+	--pns-surface-button-background: var(
+		--wp--custom--color--button--background
+	);
+	--pns-surface-button-color: var(--wp--custom--color--button--text);
+	--pns-surface-button-shadow: var(--wp--custom--color--button--shadow);
+
+	background-color: var(--pns-surface-background);
+	color: var(--pns-surface-text);
+}
+
+/*
+ * The template reveal briefly exposes the site shell behind the overlapping
+ * header CTA. Match that backing surface to code-owned light templates so the
+ * global purple body cannot flash through the CTA notch.
+ */
+.wp-site-blocks:has(> main.pns-light-surface) {
+	background-color: var(--wp--custom--color--surface--default);
+}
+
+.pns-light-surface :where(p, li, figcaption):not(.has-text-color) {
+	color: var(--pns-surface-text);
+}
+
+.pns-light-surface
+	:where(h1, h2, h3, h4, h5, h6, .wp-block-heading, .wp-block-post-title):not(
+		.has-text-color
+	) {
+	color: var(--pns-surface-heading);
+}
+
+.pns-light-surface
+	:where(
+		.wp-block-post-date,
+		.wp-block-post-author,
+		.wp-block-post-terms,
+		.wp-block-post-excerpt,
+		.wp-block-query-pagination,
+		.wp-block-comment-date,
+		.wp-block-comment-edit-link
+	):not(.has-text-color) {
+	color: var(--pns-surface-muted);
+}
+
+.pns-light-surface :where(a:not(.wp-block-button__link)):not(.has-text-color) {
+	color: var(--pns-surface-link);
+}
+
+.pns-light-surface
+	:where(a:not(.wp-block-button__link)):where(:hover, :focus-visible) {
+	color: var(--pns-surface-link-hover);
+}
+
+.pns-light-surface :where(.wp-block-separator) {
+	border-color: var(--pns-surface-border);
+	color: var(--pns-surface-border);
+}
+
+.pns-light-surface .wp-block-button__link:not(.has-background) {
+	background-color: var(--pns-surface-button-background);
+	border-color: var(--pns-surface-button-background);
+	box-shadow: var(--pns--button--shadow-offset)
+		var(--pns--button--shadow-offset) 0 var(--pns-surface-button-shadow);
+}
+
+.pns-light-surface .wp-block-button__link:not(.has-text-color) {
+	color: var(--pns-surface-button-color);
+}
+
+.pns-light-surface .wp-block-button__link::after {
+	background-color: transparent;
+}
+
+.pns-light-surface
+	.pns-entry-navigation__action
+	.wp-block-button__link:not(.has-background) {
+	background-color: transparent;
+	border-color: transparent;
+	box-shadow: 0 0 0;
+}
+
+.pns-light-surface
+	.pns-entry-navigation__action
+	.wp-block-button__link:not(.has-text-color) {
+	color: var(--pns-surface-link);
+}
+
+.pns-light-surface .pns-entry-navigation__action .wp-block-button__link::after {
+	background-color: transparent;
+	box-shadow: 0 0 0;
+}
+
+.pns-light-surface
+	.pns-entry-navigation__action
+	.wp-block-button__link:not([aria-disabled="true"]):not(.disabled):where(
+		:hover,
+		:focus-visible,
+		:active
+	) {
+	background-color: transparent;
+	box-shadow: 0 0 0;
+	color: var(--pns-surface-link);
+	transform: translate(0, 0);
+}
+
+.pns-light-surface
+	.wp-block-button.is-style-outline
+	.wp-block-button__link:not(.has-background) {
+	background-color: transparent;
+	box-shadow: inset 0 0 0 2px var(--pns-surface-button-background);
+	color: var(--pns-surface-button-background);
+}
+
+.pns-light-surface
+	.wp-block-button.is-style-outline
+	.wp-block-button__link:is([aria-disabled="true"], .disabled) {
+	background-color: var(--wp--custom--color--surface--muted);
+	box-shadow: inset 0 0 0 2px var(--pns-surface-border);
+	color: var(--pns-surface-muted);
+	opacity: 1;
+}
+
+.pns-light-surface
+	.wp-block-button.is-style-outline
+	.wp-block-button__link:not([aria-disabled="true"]):not(.disabled):where(
+		:hover,
+		:focus-visible
+	) {
+	background-color: transparent;
+	color: var(--pns-surface-button-background);
+	box-shadow:
+		inset 0 0 0 2px var(--pns--button--hover-shadow),
+		var(--pns--button--shadow-offset) var(--pns--button--shadow-offset) 0
+			var(--pns--button--hover-shadow);
+}
+
+.pns-light-surface
+	.wp-block-button:not(.pns-entry-navigation__action):not(.is-style-outline)
+	.wp-block-button__link:not([aria-disabled="true"]):not(.disabled):where(
+		:hover,
+		:focus-visible
+	) {
+	background-color: var(--pns-surface-button-background);
+	color: var(--pns-surface-button-color);
+	box-shadow: var(--pns--button--shadow-offset)
+		var(--pns--button--shadow-offset) 0 var(--pns--button--hover-shadow);
+}
+
+.pns-light-surface
+	.wp-block-button.is-style-outline
+	.wp-block-button__link:not([aria-disabled="true"]):not(.disabled):active {
+	box-shadow: inset 0 0 0 2px var(--pns--button--hover-shadow);
+	transition-duration: 0s;
+	transform: translate(
+		var(--pns--button--shadow-offset),
+		var(--pns--button--shadow-offset)
+	);
+}
+
+.pns-light-surface
+	.wp-block-button:not(.pns-entry-navigation__action):not(.is-style-outline)
+	.wp-block-button__link:not([aria-disabled="true"]):not(.disabled):active {
+	box-shadow: 0 0 0 0;
+	transform: translate(
+		var(--pns--button--shadow-offset),
+		var(--pns--button--shadow-offset)
+	);
+}
+
+.pns-section.pns-light-surface {
+	--pns-section-text: var(--pns-surface-text);
+	--pns-section-heading: var(--pns-surface-heading);
+	--pns-section-button-background: var(--pns-surface-button-background);
+	--pns-section-button-color: var(--pns-surface-button-color);
+	--pns-section-button-shadow: var(--pns-surface-button-shadow);
+	--pns-section-text-action-color: var(--pns-surface-link);
+}

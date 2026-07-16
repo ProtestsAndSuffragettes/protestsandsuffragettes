@@ -1,0 +1,12 @@
+/*
+ * Load path: block-scoped only via inc/assets.php for core/image.
+ * Do not import from styles/blocks/index.css unless this block must be bundled.
+ * Keep unlayered while this remains a standalone block-scoped override path.
+ */
+.wp-block-image {
+	margin: 0 0 0;
+}
+
+.is-dark-theme .wp-block-image figcaption {
+	color: #222;
+}

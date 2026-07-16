@@ -1,0 +1,26 @@
+/*
+ * Load path: frontend-only via styles/components/frontend.css.
+ * Declared in styles/css-assets.json because the reveal is gated on frontend template body classes.
+ */
+@keyframes pns-template-reveal {
+	from {
+		opacity: 0.92;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+body.pns-template-reveal-enabled .wp-site-blocks > main.pns-template {
+	animation: pns-template-reveal var(--pns--motion--duration-page-reveal)
+		var(--pns--motion--easing-standard) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body.pns-template-reveal-enabled .wp-site-blocks > main.pns-template {
+		animation: none;
+		opacity: 1;
+		transform: none;
+	}
+}

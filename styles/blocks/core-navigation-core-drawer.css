@@ -1,0 +1,383 @@
+/*
+ * Load path: private partial imported by styles/blocks/core-navigation.css.
+ * Owns WordPress core responsive-container drawer overrides only.
+ * Keep unlayered: the Navigation block emits responsive-container structure and
+ * core drawer CSS outside the theme's layer model. This is theme header chrome,
+ * not a sidecar plugin block. Remove priority rules only when Core Navigation
+ * exposes equivalent drawer spacing/submenu controls or the header moves to a
+ * project-owned navigation block.
+ */
+.wp-block-navigation__responsive-container-open svg,
+.wp-block-navigation__responsive-container-close svg {
+	fill: var(--wp--preset--color--brand-red);
+}
+
+@keyframes pns-navigation-drawer-background-fade {
+	from {
+		background-color: transparent;
+	}
+
+	to {
+		background-color: var(--pns--navigation--drawer-background);
+	}
+}
+
+@keyframes pns-navigation-drawer-content-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(0.5em);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+html.has-modal-open {
+	overflow: hidden;
+}
+
+.pns-primary-navigation button[aria-label="Open menu"] {
+	padding-inline-end: var(--pns--navigation--open-button-padding-inline-end);
+}
+
+header
+	.pns-primary-navigation:has(
+		> .wp-block-navigation__responsive-container.is-menu-open
+	) {
+	position: relative;
+	z-index: var(--pns--navigation--drawer-z-index);
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open {
+	background: var(--pns--navigation--drawer-background);
+	box-sizing: border-box;
+	color: var(
+		--pns--navigation--drawer-color,
+		var(--wp--preset--color--neutral-950)
+	);
+	font-family: var(--pns--navigation--drawer-font-family, inherit);
+	inset: 0;
+	line-height: 1;
+	overflow-y: auto;
+	/* Core drawer CSS sets modal padding late; keep the PNS drawer frame aligned with header tokens. */
+	padding: var(--pns--navigation--drawer-padding) !important;
+	z-index: var(--pns--navigation--drawer-z-index);
+}
+
+@media not (prefers-reduced-motion) {
+	header
+		.pns-primary-navigation
+		> .wp-block-navigation__responsive-container.is-menu-open {
+		animation: pns-navigation-drawer-background-fade
+			var(--pns--navigation--drawer-motion-duration)
+			var(--pns--navigation--drawer-motion-easing) forwards;
+		transform: none;
+	}
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-close,
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-dialog {
+	min-height: 100%;
+	position: relative;
+	width: 100%;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-close {
+	animation: none;
+	inset-block-start: var(
+		--pns--navigation--drawer-close-block-start,
+		var(--pns--navigation--drawer-padding)
+	);
+	inset-inline-end: var(
+		--pns--navigation--drawer-close-inline-end,
+		var(--pns--navigation--drawer-padding)
+	);
+	position: fixed;
+	transform: none;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation__container,
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation__submenu-container {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content {
+	align-items: stretch;
+	padding-block-start: max(
+		var(--pns--navigation--drawer-content-padding-block-start),
+		calc(
+			var(
+					--pns--navigation--drawer-close-block-start,
+					var(--pns--navigation--drawer-padding)
+				) +
+				var(--pns--navigation--drawer-close-block-size, 24px) +
+				var(--wp--preset--spacing--regular) -
+				var(--pns--navigation--drawer-padding)
+		)
+	);
+	padding-inline: 0;
+}
+
+@media not (prefers-reduced-motion) {
+	header
+		.pns-primary-navigation
+		> .wp-block-navigation__responsive-container.is-menu-open
+		.wp-block-navigation__responsive-container-content {
+		animation: pns-navigation-drawer-content-reveal
+			var(--pns--navigation--drawer-motion-duration)
+			var(--pns--navigation--drawer-motion-easing) forwards;
+	}
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation__container {
+	align-items: stretch;
+	box-sizing: border-box;
+	gap: 0;
+	padding-inline-start: var(
+		--pns--navigation--drawer-list-padding-inline-start
+	);
+	width: 100%;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation__submenu-container {
+	/* Core Navigation bridge: submenu display/padding is controlled by unlayered drawer CSS; keep priority until Core exposes stable drawer submenu controls. */
+	border: 0;
+	display: none !important;
+	min-width: 0;
+	min-inline-size: 0;
+	padding-block: 0 !important;
+	padding-inline-start: var(
+		--pns--navigation--drawer-sublist-padding-inline-start
+	) !important;
+	padding-inline-end: 0 !important;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation-submenu__toggle[aria-expanded="true"]
+	+ .wp-block-navigation__submenu-container {
+	display: flex !important;
+	flex-direction: column;
+	height: auto;
+	opacity: 1;
+	overflow: visible;
+	position: static;
+	visibility: visible;
+	width: auto;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item {
+	border-inline-end: var(--pns--navigation--drawer-item-border-inline-end)
+		solid transparent;
+	box-sizing: border-box;
+	width: 100%;
+	margin-inline-end: var(--pns--navigation--drawer-item-margin-inline-end);
+	padding-inline-end: var(--pns--navigation--drawer-item-padding-inline-end);
+	position: relative;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item:hover {
+	border-inline-end: var(--pns--navigation--drawer-item-border-inline-end)
+		solid transparent;
+	position: relative;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation-item__content {
+	background: transparent;
+	border: 0;
+	box-sizing: border-box;
+	color: inherit;
+	display: flex;
+	font-size: var(
+		--pns--navigation--drawer-font-size,
+		var(--pns--navigation--font-size)
+	);
+	font-variation-settings: "wght" 600;
+	justify-content: space-between;
+	line-height: 1.2;
+	padding: var(--pns--navigation--link-padding-block)
+		var(--pns--navigation--drawer-row-padding-inline);
+	text-align: start;
+	text-decoration: none;
+	width: 100%;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item
+	> :is(a, button).wp-block-navigation-item__content:where(
+		:hover,
+		:focus-visible
+	)::after {
+	background: none;
+	content: none;
+	height: auto;
+	inset: auto;
+	position: static;
+	width: auto;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item.has-child
+	> .wp-block-navigation-item__content {
+	gap: 1ch;
+	justify-content: flex-start;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.wp-block-navigation-item:hover
+	> .wp-block-navigation-item__content {
+	background: var(--wp--preset--color--brand-red);
+	color: var(--wp--preset--color--neutral-0);
+	text-decoration: none;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item.has-child
+	> .wp-block-navigation-item__content::before {
+	background: none;
+	content: "+";
+	flex: 0 0 auto;
+	height: auto;
+	inset: auto;
+	position: static;
+	width: auto;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item.has-child:has(
+		> .wp-block-navigation-submenu__toggle[aria-expanded="true"]
+	)
+	> .wp-block-navigation-item__content {
+	background: var(--wp--preset--color--brand-red);
+	color: var(--wp--preset--color--neutral-0);
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item.has-child:has(
+		> .wp-block-navigation-submenu__toggle[aria-expanded="true"]
+	)
+	> .wp-block-navigation-item__content::before {
+	content: "-";
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item
+	.wp-block-navigation-item {
+	margin-inline-end: var(
+		--pns--navigation--drawer-nested-item-margin-inline-end
+	);
+	padding-inline-end: var(
+		--pns--navigation--drawer-nested-item-padding-inline-end
+	);
+}
+
+header
+	.pns-primary-navigation
+	.wp-block-navigation__responsive-container:not(.is-menu-open)
+	.wp-block-navigation-submenu
+	.wp-block-navigation-item:hover {
+	border-inline-end: var(--pns--navigation--submenu-item-border-inline-end)
+		solid var(--wp--preset--color--brand-red);
+	position: relative;
+}
+
+header
+	.pns-primary-navigation
+	.wp-block-navigation__responsive-container
+	.wp-block-navigation-submenu
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:hover::after,
+header
+	.pns-primary-navigation
+	.wp-block-navigation__responsive-container.is-open
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:hover::after,
+header
+	.pns-primary-navigation
+	.wp-block-navigation-submenu
+	.wp-block-navigation-item
+	> button.wp-block-navigation-item__content:hover::after {
+	content: none;
+}
+
+@media only screen and (max-width: 600px) {
+	.wp-block-navigation__responsive-container.is-menu-open
+		.wp-block-navigation__responsive-container-content
+		.wp-block-navigation-item__content {
+		padding: 0.5rem 0;
+	}
+}
+
+/* Keep the drawer through 1035px: the current saved primary nav wraps by a sub-pixel at this width. */
+@media only screen and (max-width: 1035px) {
+	.pns-primary-navigation
+		> .wp-block-navigation__responsive-container-open:not(.always-shown) {
+		display: flex;
+	}
+
+	.pns-primary-navigation
+		> .wp-block-navigation__responsive-container:not(.is-menu-open) {
+		display: none;
+	}
+}

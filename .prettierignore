@@ -1,0 +1,16 @@
+.cache/
+node_modules/
+playwright-report/
+test-results*/
+tests/visual/**/*.png
+tests/visual/**/*.snap
+styles/dist/
+*.min.css
+templates/
+patterns/
+parts/
+navigation/
+synced-patterns/
+prepros.config
+*.sublime-project
+*.sublime-workspace

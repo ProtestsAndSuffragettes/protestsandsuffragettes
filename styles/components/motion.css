@@ -1,0 +1,42 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+:is(
+	.pns-search-result__thumbnail a,
+	.pns-search-result__body .wp-block-post-title a,
+	.pns-search-result__term-list a
+),
+.pns-archive-card :is(.wp-block-post-featured-image a, .wp-block-post-title a) {
+	transition:
+		box-shadow var(--pns--motion--duration-interaction)
+			var(--pns--motion--easing-standard),
+		color var(--pns--motion--duration-interaction)
+			var(--pns--motion--easing-standard),
+		text-decoration-thickness var(--pns--motion--duration-interaction)
+			var(--pns--motion--easing-standard);
+}
+
+.pns-search-result__thumbnail img,
+.pns-archive-card .wp-block-post-featured-image img {
+	transition: filter var(--pns--motion--duration-interaction)
+		var(--pns--motion--easing-standard);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-group(*) {
+		animation-duration: 420ms;
+		animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 180ms;
+		animation-timing-function: ease-out;
+	}
+
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		border-radius: 0.375rem;
+	}
+}

@@ -1,0 +1,146 @@
+.entry-content > :where(.pns-section, .wp-block-template-part),
+.pns-template > :where(.pns-section, .wp-block-template-part),
+.pns-pattern-qa > * + * {
+	/* PNS section roots and private Pattern QA fixtures keep spacing with their component or pattern owner. Remove the QA hook if that fixture moves out of WP-authored content. */
+	margin-block-start: 0;
+}
+
+.editor-styles-wrapper .is-root-container > :first-child {
+	/* Editor root stack mirrors the frontend generated-flow baseline without hiding block-level spacing controls. */
+	margin-block-start: 0;
+}
+
+.editor-styles-wrapper .is-root-container > * + * {
+	margin-block-start: var(--wp--style--block-gap);
+}
+
+.editor-styles-wrapper .is-root-container > .wp-block.pns-section {
+	/* Match the frontend component-root contract: PNS sections, including synced patterns, own their own vertical spacing. */
+	margin-block-start: 0;
+}
+
+.editor-styles-wrapper
+	.is-root-container
+	> .wp-block.is-reusable.wp-block-block {
+	/* Current project-owned synced patterns render as reusable Core Block roots, so the wrapper—not its PNS section inside—must own the editor reset. */
+	margin-block-start: 0;
+}
+
+/*
+ * Retained paragraph-rhythm exclusions:
+ * - active-dates and split-section CTA have stable component/page hooks, but
+ *   their internal paragraph behavior is still coupled to saved block markup.
+ * - Navigation, social links, query pagination, buttons, search, and slideshow
+ *   are WordPress control blocks whose item rhythm is not prose rhythm.
+ * - EmailOctopus and Ecwid are vendor surfaces; keep them excluded until their
+ *   adapter files can prove full ownership with focused visual coverage.
+ */
+:is(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:is(p, .wp-block-paragraph):where(
+		:not(
+			.active-dates *,
+			.pns-split-section__cta,
+			.wp-block-navigation *,
+			.wp-block-social-links *,
+			.wp-block-query-pagination *,
+			.wp-block-buttons *,
+			.wp-block-jetpack-slideshow *,
+			.wp-block-search *,
+			.emailoctopus-form *,
+			.ec-store *,
+			.ecwid *
+		)
+	),
+.editor-styles-wrapper
+	.is-root-container
+	:is(p, .wp-block-paragraph):where(
+		:not(
+			.active-dates *,
+			.pns-split-section__cta,
+			.wp-block-navigation *,
+			.wp-block-social-links *,
+			.wp-block-query-pagination *,
+			.wp-block-buttons *,
+			.wp-block-jetpack-slideshow *,
+			.wp-block-search *,
+			.emailoctopus-form *,
+			.ec-store *,
+			.ecwid *
+		)
+	) {
+	/* WordPress generated flow/constrained layout CSS zeroes child block-end margins; ordinary prose keeps the PNS baseline rhythm. */
+	margin-block-end: var(--pns--content-rhythm--paragraph-margin-block-end);
+}
+
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(
+		.wp-block-navigation,
+		.wp-block-social-links,
+		.wp-block-query-pagination,
+		.wp-block-buttons,
+		.wp-block-jetpack-slideshow,
+		.wp-block-search,
+		.emailoctopus-form,
+		.ec-store,
+		.ecwid
+	)
+	:where(a, p, li) {
+	text-wrap: wrap;
+}
+
+/* Lists follow prose rhythm by default; generated controls and vendor widgets own their own list geometry. */
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(ul, ol, .wp-block-list):not(
+		.wp-block-navigation__container,
+		.wp-block-post-template,
+		.wp-block-social-links,
+		.wp-block-query-pagination,
+		.wp-block-jetpack-slideshow *,
+		.emailoctopus-form *,
+		.ec-store *,
+		.ecwid *
+	) {
+	line-height: var(--pns--content-rhythm--paragraph-line-height);
+	padding-inline-start: var(--pns--content-rhythm--list-padding-inline-start);
+	text-wrap: pretty;
+}
+
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(ul, ol)
+	:where(ul, ol),
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(li + li):not(
+		.wp-block-navigation-item,
+		.wp-social-link,
+		.wp-block-jetpack-slideshow *,
+		.emailoctopus-form *,
+		.ec-store *,
+		.ecwid *
+	) {
+	margin-block-start: var(--pns--content-rhythm--list-item-gap);
+}
+
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(li)::marker {
+	color: currentcolor;
+	font-weight: 700;
+}
+
+/* Reset generated control/vendor list scaffolding after applying prose defaults above. */
+:where(.wp-block-post-content, .entry-content, .editor-styles-wrapper)
+	:where(
+		.wp-block-navigation,
+		.wp-block-post-template,
+		.wp-block-social-links,
+		.wp-block-query-pagination,
+		.wp-block-buttons,
+		.wp-block-jetpack-slideshow,
+		.wp-block-search,
+		.emailoctopus-form,
+		.ec-store,
+		.ecwid
+	)
+	:where(ul, ol, li) {
+	margin-block: 0;
+	padding-inline-start: 0;
+}

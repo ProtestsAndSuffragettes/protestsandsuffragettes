@@ -1,0 +1,84 @@
+/*
+ * Load path: base form-control primitives imported by frontend.css and editor.css.
+ * Keep vendor-specific form layout in vendor-overrides; these rules define the site default controls.
+ * Field sizing and focus variables stay CSS-private until WordPress exposes a
+ * real editor control surface for native form controls.
+ */
+
+input:not([type]),
+input[type="date"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="url"],
+select,
+textarea {
+	background-color: var(--pns--form-field--background);
+	border: var(--pns--form-field--border-width) solid
+		var(--pns--form-field--border-color);
+	border-radius: var(--pns--form-field--border-radius);
+	box-sizing: border-box;
+	color: var(--wp--custom--color--text--default);
+	font: inherit;
+	inline-size: 100%;
+	line-height: var(--wp--custom--typography--line-height--paragraph);
+	padding: var(--pns--form-field--padding);
+}
+
+select {
+	min-block-size: calc(
+		1lh + var(--pns--form-field--padding) +
+			var(--pns--form-field--padding) +
+			var(--pns--form-field--border-width) +
+			var(--pns--form-field--border-width)
+	);
+}
+
+textarea {
+	min-block-size: 10rem;
+	resize: vertical;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+	background-color: var(--wp--custom--color--surface--muted);
+	cursor: not-allowed;
+	opacity: 0.68;
+}
+
+input:not([type]):focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="text"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+	border-color: var(--pns--form-field--focus-border-color);
+	border-width: var(--pns--form-field--focus-border-width);
+	box-shadow: 0 0 0 var(--pns--form-field--focus-ring-width)
+		var(--pns--form-field--focus-border-color);
+	outline: 0;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	accent-color: var(--wp--custom--color--button--background);
+	block-size: 1.125em;
+	font: inherit;
+	inline-size: 1.125em;
+	margin-inline-end: var(--wp--preset--spacing--tight);
+	vertical-align: -0.15em;
+}
+
+label,
+legend {
+	font-weight: 700;
+}

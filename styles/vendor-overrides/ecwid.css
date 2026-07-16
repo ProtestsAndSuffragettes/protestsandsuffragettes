@@ -1,0 +1,371 @@
+/*
+ * Ecwid runtime classes are third-party selectors.
+ * Keep this file unlayered: Ecwid outputs unlayered plugin CSS and many rules
+ * intentionally use priority to preserve the PNS storefront contract.
+ * Removal gate: delete individual adapters when Ecwid exposes equivalent
+ * settings, changes the runtime markup, or a project-owned product grid/cart
+ * replaces the third-party storefront.
+ */
+/* stylelint-disable selector-class-pattern -- Ecwid runtime classes are third-party selectors. */
+.ecwid,
+.ec-cart-widget,
+.ec-size .ec-store {
+	/* Ecwid owns its runtime markup; adapt it to the theme surface contract while keeping vendor-specific selectors isolated here. */
+	--ec-surface-background: var(
+		--pns-surface-background,
+		var(--wp--custom--color--surface--default)
+	);
+	--ec-surface-text: var(
+		--pns-surface-text,
+		var(--wp--custom--color--text--default)
+	);
+	--ec-surface-heading: var(
+		--pns-surface-heading,
+		var(--wp--custom--color--text--heading)
+	);
+	--ec-surface-button-background: var(
+		--pns-surface-button-background,
+		var(--wp--custom--color--button--background)
+	);
+	--ec-surface-button-color: var(
+		--pns-surface-button-color,
+		var(--wp--custom--color--button--text)
+	);
+	--ec-surface-button-shadow: var(
+		--pns-surface-button-shadow,
+		var(--wp--custom--color--button--shadow)
+	);
+	--ec-store-chrome-color: hsl(0 0% 0%);
+	--ec-color-text: var(--ec-store-chrome-color);
+	--ec-color-price: var(--ec-store-chrome-color);
+
+	color: var(--ec-color-text);
+}
+
+.ec-size .ec-store {
+	background-color: var(--ec-surface-background);
+}
+
+.ec-size .ec-store :where(p, li):not(.has-text-color) {
+	color: var(--ec-surface-text) !important;
+	-webkit-text-fill-color: var(--ec-surface-text) !important;
+}
+
+.ec-size .ec-store :is(.form-control__text, .form-control__select) {
+	color: var(--ec-color-text) !important;
+	-webkit-text-fill-color: var(--ec-color-text) !important;
+}
+
+.ec-size .ec-store .form-control__button {
+	background-color: var(--ec-surface-button-background) !important;
+	border-color: var(--ec-surface-button-background) !important;
+	color: var(--ec-surface-button-color) !important;
+	-webkit-text-fill-color: var(--ec-surface-button-color) !important;
+}
+
+.ec-size .ec-store .form-control__button::after {
+	background-color: var(--ec-surface-button-shadow) !important;
+}
+
+.ec-cart-widget :is(.ec-minicart__icon, .ec-minicart__icon svg) {
+	color: var(--ec-color-text) !important;
+	-webkit-text-fill-color: var(--ec-color-text) !important;
+}
+
+.ec-cart-widget .ec-minicart__icon svg [stroke="currentColor"] {
+	stroke: var(--ec-color-text) !important;
+}
+
+.pns-shop-storefront
+	.wp-block-group.is-nowrap:has(> .ec-cart-widget + .wp-block-paragraph) {
+	align-items: center;
+	column-gap: var(--pns-ecwid-inline-cart-gap, 0.75rem);
+	min-block-size: var(--pns-ecwid-inline-cart-slot-block-size, 3rem);
+}
+
+.pns-shop-storefront
+	.wp-block-group.is-nowrap:has(> .ec-cart-widget + .wp-block-paragraph)
+	> .ec-cart-widget {
+	/* Reserve a stable inline slot while Ecwid replaces the empty cart placeholder; remove when Ecwid SSR/hydration preserves the settled minicart dimensions. */
+	align-items: center;
+	block-size: var(--pns-ecwid-inline-cart-slot-block-size, 3rem) !important;
+	display: inline-flex !important;
+	flex: 0 0 var(--pns-ecwid-inline-cart-slot-inline-size, 4rem) !important;
+	inline-size: var(--pns-ecwid-inline-cart-slot-inline-size, 4rem) !important;
+	justify-content: center;
+}
+
+.ec-size
+	.ec-store
+	:is(
+		.ec-header-h1,
+		.ec-header-h2,
+		.ec-header-h3,
+		h2,
+		.product-details__product-title
+	) {
+	/* Theme-owned Ecwid typography: keep storefront styling visible in code, not hidden in Ecwid UI settings. */
+	font-family: var(--wp--preset--font-family--rubik) !important;
+	font-weight: 800 !important;
+}
+
+.ec-size .ec-store .product-details__product-description {
+	color: var(--ec-surface-text) !important;
+	-webkit-text-fill-color: var(--ec-surface-text) !important;
+}
+
+.ec-size .ec-store .product-details__product-description :is(p, li) {
+	color: var(--ec-surface-text) !important;
+	-webkit-text-fill-color: var(--ec-surface-text) !important;
+}
+
+.ec-size .ec-store .product-details__product-description :is(h2, h3, h4) {
+	color: var(--ec-color-text) !important;
+	font-family: var(--wp--preset--font-family--rubik) !important;
+	font-weight: 800 !important;
+	line-height: 1.3 !important;
+	-webkit-text-fill-color: var(--ec-color-text) !important;
+}
+
+.ec-size .ec-store .product-details__product-description h2 {
+	font-size: 1.75rem !important;
+}
+
+.ec-size .ec-store .product-details__product-description h3 {
+	font-size: 1.625rem !important;
+}
+
+.ec-size .ec-store .product-details__product-description h4 {
+	font-size: 1.25rem !important;
+}
+
+.ec-size .ec-store .grid__products {
+	font-family: var(--wp--preset--font-family--libre-franklin) !important;
+	line-height: 1.3 !important;
+}
+
+.pns-shop-storefront .ecwid-productBrowser {
+	/* Remove Ecwid's extra inline shell padding; remove when Ecwid no longer emits the productBrowser padding or the host block owns the frame. */
+	padding-inline: 0 !important;
+}
+
+@media only screen and (min-width: 48.875rem) {
+	.pns-shop-storefront
+		:is(
+			[id="static-ec-store-container"],
+			[id="dynamic-ec-store-container"]
+		):has(.ec-store__category-page) {
+		/* Ecwid's category shell lands 10px short on the inline end while the Shop frame has desktop/tablet padding; remove when Ecwid category media aligns to the host frame without compensation. */
+		--pns-ecwid-category-shell-end-compensation: 10px;
+
+		inline-size: calc(
+			100% + var(--pns-ecwid-category-shell-end-compensation)
+		) !important;
+	}
+}
+
+.pns-shop-storefront .ec-store.ec-store__category-page .grid__products {
+	/* Match Ecwid's per-card wrap gutter so visible media aligns with the Shop intro content edge; remove when Ecwid exposes gutter control or no longer wraps cards with hidden side gutters. */
+	--pns-ecwid-category-grid-gutter: 16px;
+
+	margin-inline: -16px !important;
+}
+
+.ec-size .ec-store .grid-product__price {
+	/* Theme-owned Ecwid price sizing; Ecwid runtime CSS requires priority. */
+	font-family: inherit !important;
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	line-height: 1.3 !important;
+}
+
+.ec-size .ec-store .grid-product__price-value {
+	font-family: inherit !important;
+	font-size: 1.75rem !important;
+	font-weight: 600 !important;
+	line-height: 1.3 !important;
+}
+
+.ec-size .ec-store .grid-product__title-inner {
+	/* Theme-owned Ecwid product title sizing; Ecwid runtime CSS requires priority. */
+	color: var(--ec-color-text) !important;
+	font-family: inherit !important;
+	font-size: var(--wp--preset--font-size--text-lead) !important;
+	line-height: 1.3 !important;
+	-webkit-text-fill-color: var(--ec-color-text) !important;
+}
+
+.ec-size .ec-store .grid-product__label .label__text {
+	font-family: inherit !important;
+	font-size: var(--wp--preset--font-size--text-base) !important;
+	font-weight: 600 !important;
+	line-height: 1.4 !important;
+	text-transform: uppercase !important;
+}
+
+[id="static-ec-store-container"] .ec-store {
+	/* Ecwid static SSR defaults to Root UI before the runtime storefront font stack applies. */
+	font-family: var(--wp--preset--font-family--libre-franklin) !important;
+}
+
+[id="static-ec-store-container"]
+	.ec-store
+	:is(
+		.grid-product__title,
+		.grid-product__title-inner,
+		.grid-product__price,
+		.grid-product__price-value,
+		.ec-price-item
+	) {
+	font-family: var(--wp--preset--font-family--libre-franklin) !important;
+}
+
+[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
+	/* Ecwid static SSR keeps data-cols="3"; match the hydrated responsive grid before JavaScript recalculates it. */
+	flex-basis: 33.333333% !important;
+	inline-size: 33.333333% !important;
+	max-inline-size: 33.333333% !important;
+}
+
+@media only screen and (min-width: 1600px) {
+	[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
+		flex-basis: 25% !important;
+		inline-size: 25% !important;
+		max-inline-size: 25% !important;
+	}
+}
+
+@media only screen and (max-width: 999px) {
+	[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
+		flex-basis: 50% !important;
+		inline-size: 50% !important;
+		max-inline-size: 50% !important;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
+		flex-basis: 100% !important;
+		inline-size: 100% !important;
+		max-inline-size: 100% !important;
+	}
+}
+
+.ec-size .ec-store .ec-related-products .grid-product__title-inner {
+	/* Ecwid cart recommendations render on white panels but can retain white text-fill from storefront defaults. */
+	color: var(--ec-surface-heading) !important;
+	-webkit-text-fill-color: var(--ec-surface-heading) !important;
+}
+
+.ec-size
+	.ec-store:is(.ec-store__product-page, .ec-store__cart-page)
+	.ec-related-products
+	.grid__products
+	> .grid-product {
+	/* Keep every related-product surface on the same four-card baseline; fewer items stay left-aligned, more items wrap. */
+	flex-basis: 25% !important;
+	inline-size: 25% !important;
+	max-inline-size: 25% !important;
+}
+
+@media only screen and (max-width: 999px) {
+	.ec-size
+		.ec-store:is(.ec-store__product-page, .ec-store__cart-page)
+		.ec-related-products
+		.grid__products
+		> .grid-product {
+		flex-basis: 50% !important;
+		inline-size: 50% !important;
+		max-inline-size: 50% !important;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.ec-size
+		.ec-store:is(.ec-store__product-page, .ec-store__cart-page)
+		.ec-related-products
+		.grid__products
+		> .grid-product {
+		flex-basis: 100% !important;
+		inline-size: 100% !important;
+		max-inline-size: 100% !important;
+	}
+}
+
+@keyframes pns-ecwid-loading-spin {
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+body[data-pns-ecwid-loading-stage="destination"],
+body[data-pns-ecwid-loading-stage="destination"] *,
+.pns-shop-storefront[data-pns-ecwid-loading],
+.pns-shop-storefront[data-pns-ecwid-loading] *,
+.ec-store[data-pns-ecwid-loading],
+.ec-store[data-pns-ecwid-loading] * {
+	/* Give the old storefront immediate mouse feedback; the blank destination is wholly pending. */
+	cursor: progress !important;
+}
+
+.ec-size .ec-store .grid-product[data-pns-ecwid-loading] {
+	opacity: 0.68;
+	transition: opacity 100ms ease-out;
+}
+
+.pns-ecwid-loading-status {
+	align-items: center;
+	background-color: var(--wp--preset--color--brand-purple);
+	border: 2px solid var(--wp--preset--color--neutral-0);
+	border-radius: 999px;
+	box-shadow: 0.25rem 0.25rem 0 var(--wp--preset--color--neutral-950);
+	color: var(--wp--preset--color--neutral-0);
+	display: flex;
+	font-family: var(--wp--preset--font-family--libre-franklin);
+	font-size: var(--wp--preset--font-size--text-small);
+	font-weight: 700;
+	gap: 0.625rem;
+	inset-block-end: var(--wp--preset--spacing--regular);
+	inset-inline-end: var(--wp--preset--spacing--regular);
+	line-height: 1.2;
+	max-inline-size: calc(100vw - 2 * var(--wp--preset--spacing--regular));
+	padding: 0.75rem 1rem;
+	position: fixed;
+	z-index: calc(var(--pns--navigation--drawer-z-index) + 1);
+}
+
+.pns-ecwid-loading-status[hidden] {
+	display: none;
+}
+
+body[data-pns-ecwid-loading-stage="destination"] .pns-ecwid-loading-status {
+	inset-block: 50% auto;
+	inset-inline: 50% auto;
+	min-inline-size: min(
+		18rem,
+		calc(100vw - 2 * var(--wp--preset--spacing--regular))
+	);
+	transform: translate(-50%, -50%);
+}
+
+.pns-ecwid-loading-status__spinner {
+	animation: pns-ecwid-loading-spin 700ms linear infinite;
+	aspect-ratio: 1;
+	border: 2px solid currentcolor;
+	border-inline-end-color: transparent;
+	border-radius: 50%;
+	flex: 0 0 auto;
+	inline-size: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pns-ecwid-loading-status__spinner {
+		animation: none;
+	}
+}
+
+.ec-fbmessenger-chat {
+	/* Theme-owned storefront cleanup for the Ecwid-injected Messenger widget; remove when the Ecwid/Facebook setting is disabled or the widget no longer renders. */
+	display: none !important;
+}
+/* stylelint-enable selector-class-pattern */

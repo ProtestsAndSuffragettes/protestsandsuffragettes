@@ -1,0 +1,89 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ *
+ * Owner: reusable synced-section fixtures that are edited in WordPress, not
+ * one-off page content. Retain only the named PNS synced sections below.
+ * Removal gate: when each synced section serializes explicit frame/copy/media
+ * internals with block-owned spacing, delete the compatibility selectors that
+ * reach through Core Columns or entry-content.
+ */
+.pns-contact-form .wp-block-columns,
+.pns-connect-social .wp-block-columns {
+	gap: 0;
+	margin-block-start: 0;
+}
+
+.entry-content
+	> .pns-section.pns-synced-section.alignfull.has-background:is(
+		.pns-contact-form,
+		.pns-connect-social,
+		.pns-read-all-about-it,
+		.pns-read-all-about-it-workshops,
+		.pns-shop-intro
+	) {
+	/* Compatibility BFC: contains saved first/last child margins inside the colored full-width synced-section background; remove after synced fixtures carry internal frames/spacers that cannot collapse through the root. */
+	display: flow-root;
+}
+
+.pns-connect-social__columns {
+	/* The columns follow their capped colored panel. */
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: var(--pns--layout--wide-size);
+	margin-inline: auto;
+}
+
+.pns-contact-form__copy-column,
+.pns-connect-social__copy-column {
+	display: grid;
+}
+
+.pns-connect-social__copy {
+	align-self: center;
+	max-inline-size: var(--pns--layout--content-size);
+	padding-block: var(--wp--preset--spacing--regular);
+	padding-inline: var(--pns--layout--content-rail);
+	margin-block: auto;
+	margin-inline: 0 auto;
+}
+
+.pns-connect-social__media-column {
+	line-height: 0;
+}
+
+.pns-contact-form > .pns-section-frame {
+	padding-block: var(--wp--preset--spacing--generous);
+}
+
+.pns-contact-form .pns-copy-column,
+.pns-contact-form .pns-copy-column > .wp-block-heading,
+.pns-read-all-about-it {
+	margin-block-start: 0;
+}
+
+.pns-contact-form .pns-copy-column > .wp-block-heading + p,
+.pns-connect-social .pns-copy-column > .wp-block-heading + p {
+	margin-block-start: var(--wp--preset--spacing--roomy);
+}
+
+@media (max-width: 782px) {
+	.pns-connect-social__copy {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}
+
+@media only screen and (min-width: 48.875rem) {
+	.pns-connect-social__image img {
+		/* The image fills its Columns track instead of retaining a viewport-half rail. */
+		inline-size: 100%;
+		max-width: 100%;
+		max-inline-size: 100%;
+	}
+}
+
+@media only screen and (min-width: 782px) {
+	.pns-connect-social__copy {
+		padding-block: var(--wp--preset--spacing--generous);
+	}
+}

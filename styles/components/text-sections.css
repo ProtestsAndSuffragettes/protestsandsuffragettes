@@ -1,0 +1,21 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Theme-owned section helpers for text-only and two-column patterns. Split
+ * Section structure is owned by the pns-blocks split-section block CSS.
+ */
+.pns-text-only-section {
+	box-sizing: border-box;
+}
+
+.pns-two-columns > .wp-block-columns {
+	gap: 0;
+	margin-block-start: 0;
+}
+
+.pns-text-only-section__inner {
+	box-sizing: border-box;
+	margin-inline: auto;
+	max-inline-size: var(--pns--layout--content-size);
+	padding: var(--wp--preset--spacing--generous)
+		var(--pns--layout--content-rail);
+}

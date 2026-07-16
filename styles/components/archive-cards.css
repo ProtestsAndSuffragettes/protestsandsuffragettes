@@ -1,0 +1,118 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ * Owner: reusable archive/post-card component classes. Page/archive templates
+ * may place these cards, but the styling contract is the card class itself.
+ */
+.pns-post-card__meta > * + *::before {
+	content: "|";
+	color: inherit;
+	margin-inline-end: var(--wp--preset--spacing--tight);
+}
+
+.pns-featured-post__footer {
+	display: flex;
+	flex-wrap: wrap;
+	padding-block-start: var(--wp--preset--spacing--regular);
+}
+
+.pns-featured-post .wp-block-post-featured-image {
+	background-color: var(--wp--preset--color--heritage-green);
+}
+
+.wp-block-post.type-page .pns-post-card__meta {
+	display: none;
+}
+
+.pns-archive-card .wp-block-post-featured-image,
+.pns-archive-card .wp-block-post-featured-image a {
+	display: block;
+	inline-size: 100%;
+}
+
+.pns-archive-card .wp-block-post-featured-image a {
+	block-size: 100%;
+	overflow: hidden;
+}
+
+.pns-archive-card .wp-block-post-featured-image {
+	background-color: var(--wp--preset--color--heritage-green);
+}
+
+.pns-featured-post
+	.pns-split-section__media-column
+	.wp-block-post-featured-image {
+	margin-block: 0;
+}
+
+.wp-block-post-template > li:has(> .pns-archive-card) {
+	display: flex;
+}
+
+.pns-archive-card {
+	border: 1px solid
+		var(--pns-surface-border, var(--wp--custom--color--border--subtle));
+	box-sizing: border-box;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.pns-archive-card
+	> :is(
+		.wp-block-post-title,
+		.pns-post-card__meta,
+		.wp-block-post-excerpt,
+		.pns-post-card__footer
+	) {
+	inline-size: 100%;
+}
+
+.pns-archive-card .wp-block-post-featured-image img {
+	block-size: 100%;
+	inline-size: 100%;
+	object-fit: cover;
+}
+
+.pns-archive-card > .wp-block-post-excerpt {
+	flex: 1;
+}
+
+.pns-archive-card > .wp-block-post-excerpt > .wp-block-post-excerpt__excerpt,
+.pns-search-result__body
+	> .wp-block-post-excerpt
+	> .wp-block-post-excerpt__excerpt {
+	border-block-start: 1px solid
+		var(--pns-surface-border, var(--wp--custom--color--border--subtle));
+	padding-block-start: var(--wp--preset--spacing--compact);
+}
+
+.pns-archive-card > .wp-block-post-excerpt,
+.pns-search-result__body > .wp-block-post-excerpt,
+.pns-featured-post .pns-split-section__copy > .wp-block-post-excerpt {
+	border-block-end: 1px solid
+		var(--pns-surface-border, var(--wp--custom--color--border--subtle));
+	padding-block-end: var(--wp--preset--spacing--regular);
+}
+
+.pns-archive-card > .pns-post-card__footer,
+.pns-search-result__footer {
+	padding-block-start: var(--wp--preset--spacing--regular);
+}
+
+.pns-archive-card
+	:is(.wp-block-post-featured-image a, .wp-block-post-title a):where(
+		:hover,
+		:focus-visible
+	) {
+	text-decoration-line: underline;
+	text-decoration-thickness: 0.12em;
+}
+
+.pns-archive-card
+	.wp-block-post-featured-image
+	a:where(:hover, :focus-visible)
+	img {
+	filter: brightness(0.92) contrast(1.04);
+}

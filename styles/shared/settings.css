@@ -1,0 +1,115 @@
+:root {
+	--pns--layout--content-size: var(--wp--style--global--content-size, 44rem);
+	/* WordPress's native wideSize is the one broad site-frame authority. */
+	--pns--layout--wide-size: var(--wp--style--global--wide-size, 1500px);
+	--pns--layout--section-frame-size: var(--pns--layout--wide-size);
+	/* Public theme rail settings resolve to one effective private layout value. */
+	--pns--layout--content-rail: var(
+		--wp--custom--layout--content-rail--base,
+		var(--wp--preset--spacing--regular)
+	);
+	--pns--typography--line-height--heading-compact: var(
+		--wp--custom--typography--line-height--heading-compact
+	);
+	--pns--typography--line-height--display-tight: var(
+		--wp--custom--typography--line-height--display-tight
+	);
+	/* Private rhythm units keep authored content spacing tied to the root text rhythm without exposing rlh/lh in editor controls. */
+	--pns--content-rhythm--paragraph-line-height: var(
+		--wp--custom--typography--line-height--paragraph
+	);
+	--pns--content-rhythm--paragraph-margin-block-end: 0.55555556rlh;
+	--pns--content-rhythm--block-gap: var(--wp--preset--spacing--roomy);
+	--pns--content-rhythm--heading-follow-gap: var(
+		--wp--style--block-gap,
+		var(--pns--content-rhythm--block-gap)
+	);
+	--pns--content-rhythm--heading-lead-gap: var(
+		--wp--preset--spacing--generous
+	);
+	--pns--content-rhythm--list-item-gap: 0.35lh;
+	--pns--content-rhythm--list-padding-inline-start: var(
+		--wp--preset--spacing--spacious
+	);
+	--pns--content-rhythm--quote-paragraph-line-height: var(
+		--wp--custom--typography--line-height--quote
+	);
+
+	/* Navigation shared shell metrics: consumed across primary header, desktop menus, drawer, and footer navigation. */
+	--pns--navigation--gap: 0;
+	--pns--navigation--header-padding-block: 1rem;
+	--pns--navigation--link-padding-block: 0.5rem;
+	--pns--navigation--link-padding-inline: 0;
+
+	/* Navigation type aliases stay private because footer/header nav use a smaller subset than the public type scale. */
+	--pns--navigation--font-size-small: var(
+		--wp--preset--font-size--text-small
+	);
+	--pns--navigation--font-size-medium: var(
+		--wp--preset--font-size--text-base
+	);
+	--pns--navigation--font-size-large: var(--wp--preset--font-size--text-lead);
+	--pns--navigation--font-size: var(--pns--navigation--font-size-medium);
+	--pns--navigation--font-size-compact: var(
+		--pns--navigation--font-size-small
+	);
+
+	/* Desktop Navigation spacing and submenu chrome. */
+	--pns--navigation--top-item-padding-inline-start: 0.8125rem;
+	--pns--navigation--top-item-padding-inline-start-wide: 2.8125rem;
+	--pns--navigation--submenu-link-padding: 0.5rem;
+	--pns--navigation--submenu-item-border-inline-end: 0.625rem;
+
+	/* Core responsive drawer layout, row spacing, and nested submenu geometry. */
+	--pns--navigation--drawer-padding: 2em;
+	--pns--navigation--drawer-item-border-inline-end: 6px;
+	--pns--navigation--drawer-item-margin-inline-end: 10px;
+	--pns--navigation--drawer-item-padding-inline-end: 10px;
+	--pns--navigation--drawer-list-padding-inline-start: 0.75rem;
+	--pns--navigation--drawer-row-padding-inline: 0.75rem;
+	--pns--navigation--drawer-nested-item-margin-inline-end: -12px;
+	--pns--navigation--drawer-nested-item-padding-inline-end: 25px;
+	--pns--navigation--drawer-sublist-padding-inline-start: 1rem;
+	--pns--navigation--drawer-content-padding-block-start: calc(
+		24px + var(--wp--preset--spacing--regular)
+	);
+
+	/* Drawer chrome and local motion are intentionally private to the core Navigation adapter. */
+	--pns--navigation--drawer-background: var(--wp--preset--color--neutral-0);
+	--pns--navigation--drawer-z-index: 100000;
+	--pns--navigation--drawer-motion-duration: 100ms;
+	--pns--navigation--drawer-motion-easing: ease-out;
+
+	/* Header open button and desktop hover marker metrics. */
+	--pns--navigation--open-button-padding-inline-end: 1em;
+	--pns--navigation--hover-marker-block-size: 10px;
+	--pns--navigation--hover-marker-inline-size: 28px;
+	--pns--navigation--hover-marker-inset-block-start: -0.8125rem;
+	--pns--motion--duration-interaction: 160ms;
+	--pns--motion--duration-page-reveal: 220ms;
+	--pns--motion--easing-standard: cubic-bezier(0.2, 0, 0, 1);
+	--pns--button--border-radius: var(--wp--custom--button-border-radius);
+	--pns--button--padding-compact: var(--wp--preset--spacing--compact);
+	--pns--button--padding-block: var(--wp--preset--spacing--roomy);
+	--pns--button--padding-inline: 1.875rem;
+	--pns--button--shadow-offset: var(--wp--preset--spacing--hairline);
+	--pns--button--hover-shadow: #1f9f72;
+	--pns--button--min-inline-size: 6.25rem;
+	--pns--form-field--background: var(--wp--preset--color--neutral-0);
+	--pns--form-field--border-color: #8c8f94;
+	--pns--form-field--border-radius: 0;
+	--pns--form-field--border-width: 1px;
+	--pns--form-field--padding: 1.625rem;
+	--pns--form-field--focus-border-color: #000;
+	--pns--form-field--focus-border-width: 2px;
+	--pns--form-field--focus-ring-width: 1px;
+}
+
+@media only screen and (min-width: 48.875rem) {
+	:root {
+		--pns--layout--content-rail: var(
+			--wp--custom--layout--content-rail--wide,
+			var(--wp--preset--spacing--generous)
+		);
+	}
+}

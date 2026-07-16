@@ -1,0 +1,28 @@
+/*
+ * Load path: bundled via styles/components/frontend.css and styles/components/index.css.
+ * Component CSS should be imported by both barrels unless intentionally frontend-only.
+ */
+.pands-logo {
+	--pns-header-logo-size: 150px;
+	--pns-header-logo-visible-block-size: 4rem;
+
+	line-height: 0;
+	z-index: 100;
+}
+
+.pns-header__surface > .pns-header__inner > .pands-logo {
+	margin-block-end: calc(
+		var(--pns-header-logo-visible-block-size) - var(--pns-header-logo-size)
+	);
+}
+
+.pands-logo .custom-logo {
+	display: block;
+	max-inline-size: var(--pns-header-logo-size);
+}
+
+@media only screen and (max-width: 780px) {
+	.pands-logo {
+		--pns-header-logo-size: 7rem;
+	}
+}

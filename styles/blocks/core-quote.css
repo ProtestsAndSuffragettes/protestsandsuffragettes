@@ -1,0 +1,34 @@
+/*
+ * Load path: unlayered block conflict tail via styles/blocks/overrides.css.
+ * Core Quote ships unlayered CSS; keep the PNS quote frame and type contract
+ * here instead of mirroring it in components/priority-overrides.css.
+ */
+.wp-block-quote {
+	border-inline-start: 0 solid;
+	padding-inline-end: var(--wp--preset--spacing--regular);
+	padding-inline-start: var(--wp--preset--spacing--regular);
+}
+
+/* Full-width PNS quote panels use the shared content rails; ordinary prose quotes retain their local inset. */
+.pns-quotes .wp-block-quote {
+	padding-inline: var(--pns--layout--content-rail);
+}
+
+.wp-block-quote p {
+	font-family: var(--wp--preset--font-family--rubik);
+	font-weight: 800;
+	font-variation-settings: "wght" 800;
+	line-height: var(--pns--content-rhythm--quote-paragraph-line-height);
+}
+
+.pns-quotes {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+
+@media (min-width: 600px) {
+	.wp-block-quote {
+		padding-inline-end: var(--wp--preset--spacing--generous);
+		padding-inline-start: var(--wp--preset--spacing--generous);
+	}
+}

@@ -1,0 +1,20 @@
+[
+	{
+		"title": "Top Nav",
+		"slug": "pns-primary-navigation",
+		"status": "publish",
+		"file": "primary.html"
+	},
+	{
+		"title": "Banner CTA Nav",
+		"slug": "pns-banner-cta-navigation",
+		"status": "publish",
+		"file": "banner-cta.html"
+	},
+	{
+		"title": "Footer Nav",
+		"slug": "pns-footer-navigation",
+		"status": "publish",
+		"file": "footer.html"
+	}
+]

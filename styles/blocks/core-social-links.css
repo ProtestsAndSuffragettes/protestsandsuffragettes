@@ -1,0 +1,30 @@
+/*
+ * Load path: block-scoped only via inc/assets.php for core/social-links.
+ * Do not import from styles/blocks/index.css unless this block must be bundled.
+ * Keep unlayered: WordPress Core Social Links emits list/link spacing outside
+ * the theme layer model. This is a Core block adapter, not plugin-owned code;
+ * remove priority only when Core block supports can serialize the same padding
+ * contract without a runtime override.
+ */
+.wp-block-social-links .wp-social-link a {
+	padding: 0.25rem 0.5rem 0.25rem 0;
+}
+
+.wp-block-social-links.is-style-logos-only .wp-social-link svg {
+	block-size: 3rem;
+	inline-size: 3rem;
+}
+
+.wp-block-social-links {
+	margin-block-end: 1rem;
+
+	/* Core Social Links bridge: Core list padding can arrive after normal theme defaults. */
+	padding-inline-start: 0 !important;
+}
+
+.pns-connect-social .wp-block-social-links.is-layout-flex,
+.pns-footer .wp-block-social-links.is-layout-flex {
+	/* Fixed section/template owner: current rendered Social Links spacing comes from link padding, not flex gap. */
+	gap: 0;
+	margin-block-start: 0;
+}

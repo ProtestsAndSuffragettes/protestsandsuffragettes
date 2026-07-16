@@ -1,0 +1,9 @@
+/*
+ * Load path: layered frontend block defaults imported by styles/frontend.css.
+ * Keep this barrel limited to low-conflict defaults. Core Cover, Quote,
+ * Navigation, and Jetpack conflict rules are imported unlayered by the
+ * entrypoint so they can beat unlayered WordPress/plugin CSS without being
+ * mirrored in priority-overrides.css.
+ */
+
+@import "core-post-template.css";

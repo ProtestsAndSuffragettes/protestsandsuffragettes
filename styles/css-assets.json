@@ -1,0 +1,16 @@
+{
+	"entrypoints": ["styles/frontend.css", "styles/editor.css"],
+	"blockRegistered": {
+		"core/columns": "styles/blocks/core-columns.css",
+		"core/group": "styles/blocks/core-group.css",
+		"core/image": "styles/blocks/core-image.css",
+		"core/separator": "styles/blocks/core-separator.css",
+		"core/social-links": "styles/blocks/core-social-links.css",
+		"jetpack/slideshow": "styles/blocks/jetpack-slideshow.css"
+	},
+	"frontendOnly": {
+		"styles/components/template-reveal.css": "Rollback-gated page reveal runs only on frontend template bodies."
+	},
+	"allowedDuplicateLoadPaths": {},
+	"dormant": {}
+}
