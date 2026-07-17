@@ -147,17 +147,24 @@ test.describe('@site-frame-next future site-frame contracts', () => {
 
 		await page.setViewportSize({ width: 390, height: 844 });
 
-		const narrowRail = await page.evaluate(() => {
-			const probe = document.createElement('div');
-			probe.style.cssText =
-				'position:absolute;visibility:hidden;inline-size:var(--pns--layout--content-rail, 0px);block-size:1px;';
-			document.body.append(probe);
-			const width = probe.getBoundingClientRect().width;
-			probe.remove();
-			return width;
+		const narrowRails = await page.evaluate(() => {
+			const probe = (inlineSize: string) => {
+				const element = document.createElement('div');
+				element.style.cssText = `position:absolute;visibility:hidden;inline-size:${inlineSize};block-size:1px;`;
+				document.body.append(element);
+				const width = element.getBoundingClientRect().width;
+				element.remove();
+				return width;
+			};
+
+			return {
+				contentRail: probe('var(--pns--layout--content-rail, 0px)'),
+				section: probe('var(--wp--preset--spacing--section, 0px)'),
+			};
 		});
 
-		expect(narrowRail).toBeGreaterThan(0);
+		expect(narrowRails.section).toBeGreaterThan(0);
+		expect(narrowRails.contentRail).toBeCloseTo(narrowRails.section, 0);
 	});
 
 	test('@site-frame-next header and footer retain viewport surfaces around centred inners', async ({
