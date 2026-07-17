@@ -23,5 +23,6 @@ jobs:
                   cache: pnpm
                   cache-dependency-path: pnpm-lock.yaml
             - run: pnpm install --frozen-lockfile
+            - run: pnpm lint:php:syntax
             - run: pnpm check
             - run: git diff --exit-code -- styles/dist/*.min.css
