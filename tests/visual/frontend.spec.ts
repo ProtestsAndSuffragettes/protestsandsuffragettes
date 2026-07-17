@@ -1762,6 +1762,8 @@ test(
 			'rgb(0, 107, 95)'
 		);
 		await expect(singleTermPill).toHaveCSS('color', 'rgb(255, 255, 255)');
+		await singleTermPill.hover();
+		await expect(singleTermPill).toHaveCSS('color', 'rgb(250, 208, 39)');
 		await expect(singleTermPill).toHaveCSS('font-weight', '700');
 		await expect(singleTermPill).toHaveCSS('text-decoration-line', 'none');
 		await expect(singleFeaturedImage.locator('img')).toHaveCSS(

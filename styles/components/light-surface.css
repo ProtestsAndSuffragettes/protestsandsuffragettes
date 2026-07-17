@@ -62,14 +62,16 @@
  * default for untouched links, but let either form of editor choice win.
  */
 .pns-light-surface
-	:where(a:not(.wp-block-button__link)):not(.has-text-color):not(
-		.has-link-color
-	):not(.has-link-color *) {
+	:where(a:not(.wp-block-button__link)):not(
+		:where(.pns-taxonomy-pills a)
+	):not(.has-text-color):not(.has-link-color):not(.has-link-color *) {
 	color: var(--pns-surface-link);
 }
 
 .pns-light-surface
-	:where(a:not(.wp-block-button__link)):where(:hover, :focus-visible) {
+	:where(a:not(.wp-block-button__link)):not(
+		:where(.pns-taxonomy-pills a)
+	):where(:hover, :focus-visible) {
 	color: var(--pns-surface-link-hover);
 }
 
