@@ -3990,6 +3990,50 @@ test(
 
 test(
 	taggedTitle(
+		'light surfaces preserve editor-owned link colors',
+		'fast',
+		'layout'
+	),
+	async ({ page }) => {
+		await page.goto('/about/');
+		await page.waitForLoadState('domcontentloaded');
+		await waitForContractReady(page);
+
+		const linkColor = await page.evaluate(() => {
+			const surface = document.querySelector('main.pns-light-surface');
+
+			if (!(surface instanceof HTMLElement)) {
+				return null;
+			}
+
+			const coreLinkStyles = document.createElement('style');
+			coreLinkStyles.textContent = [
+				'.wp-elements-pns-editor-link-choice a:where(:not(.wp-element-button)) {',
+				'\tcolor: rgb(212, 0, 15);',
+				'}',
+			].join('\n');
+			document.head.append(coreLinkStyles);
+
+			const fixture = document.createElement('p');
+			fixture.className =
+				'has-link-color wp-elements-pns-editor-link-choice';
+			fixture.innerHTML =
+				'<a href="#pns-editor-link-choice">Editor link colour</a>';
+			surface.append(fixture);
+
+			const color = getComputedStyle(fixture.querySelector('a')!).color;
+			fixture.remove();
+			coreLinkStyles.remove();
+
+			return color;
+		});
+
+		expect(linkColor).toBe('rgb(212, 0, 15)');
+	}
+);
+
+test(
+	taggedTitle(
 		'caption element defaults stay core-compatible until PNS caption design exists',
 		'audit',
 		'template'

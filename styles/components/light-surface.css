@@ -56,7 +56,15 @@
 	color: var(--pns-surface-muted);
 }
 
-.pns-light-surface :where(a:not(.wp-block-button__link)):not(.has-text-color) {
+/*
+ * Core saves a link-colour choice on the containing text block as
+ * `.has-link-color`, not necessarily on the anchor itself. Keep the surface
+ * default for untouched links, but let either form of editor choice win.
+ */
+.pns-light-surface
+	:where(a:not(.wp-block-button__link)):not(.has-text-color):not(
+		.has-link-color
+	):not(.has-link-color *) {
 	color: var(--pns-surface-link);
 }
 
