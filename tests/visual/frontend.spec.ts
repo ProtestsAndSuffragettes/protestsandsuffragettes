@@ -487,6 +487,84 @@ for (const route of routes) {
 
 test(
 	taggedTitle(
+		'membership text panels follow the split-section layout contract',
+		'fast',
+		'mobile-fast',
+		'mobile-full',
+		'layout'
+	),
+	async ({ page }) => {
+		for (const [width, expectedColumns] of [
+			[1450, 2],
+			[1024, 2],
+			[390, 1],
+		] as const) {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto('/membership/', { waitUntil: 'domcontentloaded' });
+			await waitForStableAssets(page);
+
+			const sections = page.locator(
+				'.pns-split-section.is-pns-text-text'
+			);
+			const panels = sections.locator('.pns-split-section__text-column');
+
+			await expect(sections).toHaveCount(2);
+			await expect(panels).toHaveCount(4);
+			await expect(
+				sections.locator('.pns-split-section__media-column')
+			).toHaveCount(0);
+			await expect(
+				sections.getByRole('link', { name: 'Become a member' })
+			).toHaveCount(2);
+
+			const layouts = await sections.evaluateAll((elements) =>
+				elements.map((section) => {
+					const columns = section.querySelector(
+						'.pns-split-section__columns'
+					);
+					const textPanels = Array.from(
+						section.querySelectorAll<HTMLElement>(
+							'.pns-split-section__text-column'
+						)
+					);
+
+					return {
+						columns: columns
+							? getComputedStyle(columns)
+									.gridTemplateColumns.trim()
+									.split(/\s+/).length
+							: 0,
+						panelWidths: textPanels.map((panel) =>
+							Math.round(panel.getBoundingClientRect().width)
+						),
+						sectionWidth: Math.round(
+							section.getBoundingClientRect().width
+						),
+					};
+				})
+			);
+
+			for (const layout of layouts) {
+				expect(layout.columns).toBe(expectedColumns);
+				expect(layout.panelWidths).toHaveLength(2);
+				expect(layout.sectionWidth).toBeLessThanOrEqual(width);
+
+				if (expectedColumns === 2) {
+					expect(
+						Math.abs(layout.panelWidths[0] - layout.panelWidths[1])
+					).toBeLessThanOrEqual(1);
+				}
+			}
+
+			expect(
+				await page.locator('html').evaluate((html) => html.scrollWidth)
+			).toBeLessThanOrEqual(width + 1);
+		}
+	}
+);
+
+test(
+	taggedTitle(
 		'membership tier cards retain their content, CTA, and responsive grid',
 		'fast',
 		'mobile-fast',

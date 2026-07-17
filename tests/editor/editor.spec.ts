@@ -78,6 +78,20 @@ const realPages = [
 		title: 'PNS Style Guide: General',
 		fallbackId: 6340,
 	},
+	{
+		name: 'membership',
+		env: 'PNS_EDITOR_MEMBERSHIP_ID',
+		slug: 'membership',
+		title: 'Membership',
+		fallbackId: 7020,
+	},
+	{
+		name: 'split-section-components',
+		env: 'PNS_EDITOR_SPLIT_SECTION_COMPONENTS_ID',
+		slug: 'pns-style-guide-split-section-components',
+		title: 'PNS Style Guide: Split Section Components',
+		fallbackId: 5654,
+	},
 ];
 const fullWidthNewsPost = {
 	env: 'PNS_EDITOR_FULL_WIDTH_NEWS_ID',
@@ -837,6 +851,202 @@ test.describe('editor CSS regression harness', () => {
 			}
 		});
 	}
+
+	test('Membership exposes two editable Text | Text Split Sections without recovery warnings', async ({
+		page,
+	}) => {
+		const membership = realPages.find(
+			(realPage) => realPage.name === 'membership'
+		);
+
+		expect(membership).toBeDefined();
+		await openEditor(page, await realPageId(page, membership!));
+
+		const editor = await editorDocument(page);
+		await waitForEditorContent(editor, '[data-type="pns/split-section"]');
+		await expectNoBlockRecoveryWarnings(editor);
+		await expect(
+			editor.locator('[data-type="pns/split-section"]')
+		).toHaveCount(2);
+
+		const blockState = await page.evaluate(() => {
+			const blocks = wp.data.select('core/block-editor').getBlocks();
+			const splitSections = blocks.filter(
+				(block: Record<string, unknown>) =>
+					block.name === 'pns/split-section'
+			);
+			const textVariation = wp.blocks
+				.getBlockVariations('pns/split-section')
+				.find(
+					(variation: Record<string, unknown>) =>
+						variation.name === 'text-text'
+				);
+
+			return {
+				columnCounts: splitSections.map(
+					(block: Record<string, unknown>) =>
+						(
+							(
+								block.innerBlocks as Array<
+									Record<string, unknown>
+								>
+							)[0]?.innerBlocks as Array<Record<string, unknown>>
+						)?.length ?? 0
+				),
+				layoutVariants: splitSections.map(
+					(block: Record<string, unknown>) =>
+						(block.attributes as Record<string, unknown>)
+							.layoutVariant
+				),
+				variationRegistered: Boolean(textVariation),
+			};
+		});
+
+		expect(blockState.layoutVariants).toEqual(['text-text', 'text-text']);
+		expect(blockState.columnCounts).toEqual([2, 2]);
+		expect(blockState.variationRegistered).toBe(true);
+	});
+
+	test('Split Section component guide exposes the complete Text | Text matrix', async ({
+		page,
+	}) => {
+		const componentGuide = realPages.find(
+			(realPage) => realPage.name === 'split-section-components'
+		);
+
+		expect(componentGuide).toBeDefined();
+		await openEditor(page, await realPageId(page, componentGuide!));
+
+		const editor = await editorDocument(page);
+		await waitForEditorContent(
+			editor,
+			'[data-type="pns/split-section"].is-pns-text-text'
+		);
+		await expectNoBlockRecoveryWarnings(editor);
+
+		const matrixState = await page.evaluate(() => {
+			const blocks = wp.data.select('core/block-editor').getBlocks();
+			const textSections = blocks.filter(
+				(block: Record<string, unknown>) =>
+					block.name === 'pns/split-section' &&
+					(block.attributes as Record<string, unknown>).mediaType ===
+						'text'
+			);
+
+			return textSections.map((block: Record<string, unknown>) => {
+				const columnsBlock = (
+					block.innerBlocks as Array<Record<string, unknown>>
+				)[0];
+				const columns =
+					(columnsBlock?.innerBlocks as Array<
+						Record<string, unknown>
+					>) || [];
+
+				return {
+					anchor: (block.attributes as Record<string, unknown>)
+						.anchor,
+					columnColours: columns.map((column) => ({
+						backgroundColor: (
+							column.attributes as Record<string, unknown>
+						).backgroundColor,
+						lock: (column.attributes as Record<string, unknown>)
+							.lock,
+						textColor: (
+							column.attributes as Record<string, unknown>
+						).textColor,
+					})),
+					columnCount: columns.length,
+					layoutVariant: (block.attributes as Record<string, unknown>)
+						.layoutVariant,
+					mediaType: (block.attributes as Record<string, unknown>)
+						.mediaType,
+				};
+			});
+		});
+
+		expect(matrixState).toHaveLength(8);
+		expect(
+			matrixState.filter(
+				(section) =>
+					section.layoutVariant === 'edge-media-left' ||
+					section.layoutVariant === 'edge-media-right'
+			)
+		).toHaveLength(4);
+		expect(
+			matrixState.filter(
+				(section) => section.layoutVariant === 'media-right'
+			)
+		).toHaveLength(4);
+		expect(
+			matrixState.every((section) => section.mediaType === 'text')
+		).toBe(true);
+		expect(matrixState.every((section) => section.columnCount === 2)).toBe(
+			true
+		);
+		expect(
+			matrixState.every(
+				(section) =>
+					section.columnColours[0].backgroundColor ===
+						'brand-purple' &&
+					section.columnColours[1].backgroundColor ===
+						'heritage-green' &&
+					section.columnColours.every(
+						(column) =>
+							column.textColor === 'neutral-0' && !column.lock
+					)
+			)
+		).toBe(true);
+		expect(
+			matrixState.every((section) =>
+				String(section.anchor).startsWith('pns-text-text-demo-')
+			)
+		).toBe(true);
+		expect(
+			matrixState.filter(
+				(section) => section.layoutVariant === 'edge-media-left'
+			)
+		).toEqual([
+			expect.objectContaining({
+				anchor: 'pns-text-text-demo-text-text-long-short',
+				mediaType: 'text',
+			}),
+		]);
+
+		await page.evaluate(() => {
+			const reversedBlock = wp.data
+				.select('core/block-editor')
+				.getBlocks()
+				.find(
+					(block: Record<string, unknown>) =>
+						(block.attributes as Record<string, unknown>).anchor ===
+						'pns-text-text-demo-text-text-long-short'
+				);
+
+			if (!reversedBlock) {
+				throw new Error(
+					'Could not find the reversed Text | Text demo.'
+				);
+			}
+
+			wp.data
+				.dispatch('core/block-editor')
+				.selectBlock(reversedBlock.clientId);
+		});
+
+		const settingsButton = page.locator('button[aria-label="Settings"]');
+
+		if ((await settingsButton.getAttribute('aria-pressed')) !== 'true') {
+			await settingsButton.click();
+		}
+
+		const blockInspector = page.locator('.interface-complementary-area');
+		await expect(
+			blockInspector.getByRole('combobox', { name: 'Layout' })
+		).toHaveValue('edge-media-left');
+		await expect(
+			blockInspector.getByRole('radio', { name: 'Text' })
+		).toHaveAttribute('aria-checked', 'true');
+	});
 
 	test('full-width news posts expose locked PNS Post Details inside the content-owned hero', async ({
 		page,
