@@ -13,6 +13,7 @@
 	const ctaNavigationClass = 'pns-cross-site-banner-cta';
 	const lightSurfaceEditorClass = 'is-pns-light-surface-template';
 	const fullWidthNewsEditorClass = 'is-pns-full-width-news-template';
+	const standardPostEditorClass = 'is-pns-standard-post';
 	const lightSurfaceTemplates = new Set([
 		'page',
 		'page-light-surface',
@@ -433,8 +434,19 @@
 		return defaultTemplateByPostType[postType] || '';
 	};
 
+	const getEditedPostType = () => {
+		const editorStore = wp.data.select('core/editor');
+
+		return (
+			editorStore?.getCurrentPostType?.() ||
+			editorStore?.getCurrentPost?.()?.type ||
+			''
+		);
+	};
+
 	const updateLightSurfaceEditorCanvas = () => {
 		const editedPostTemplate = getEditedPostTemplate();
+		const isStandardPost = 'post' === getEditedPostType();
 		const isLightSurfaceTemplate =
 			lightSurfaceTemplates.has(editedPostTemplate);
 		const isFullWidthNewsTemplate =
@@ -459,6 +471,11 @@
 		editorCanvasBody?.classList.toggle(
 			fullWidthNewsEditorClass,
 			isFullWidthNewsTemplate
+		);
+		document.body.classList.toggle(standardPostEditorClass, isStandardPost);
+		editorCanvasBody?.classList.toggle(
+			standardPostEditorClass,
+			isStandardPost
 		);
 	};
 

@@ -46,11 +46,6 @@
 	margin-block-start: var(--wp--preset--spacing--generous);
 }
 
-.pns-template-single-full-width-news .pns-entry-navigation {
-	/* Owner: entry-post-navigation.php. External pressure: Core's saved preset background utility is !important; full-width news navigation belongs on the inherited page surface. */
-	background-color: transparent !important;
-}
-
 .pns-template-single > .wp-block-post-content + .pns-entry-navigation {
 	/* Owner: single-post.css. External pressure: Core's unlayered constrained-layout margin reset otherwise removes post-body bottom spacing. */
 	margin-block-start: var(--wp--preset--spacing--generous);

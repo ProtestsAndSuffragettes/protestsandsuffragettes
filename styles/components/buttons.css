@@ -78,8 +78,14 @@
 
 :is(.pns-template-archive, .pns-template-search)
 	.pns-query-pagination.wp-block-query-pagination {
-	/* Archive result lists continue the surrounding light page surface. */
-	--pns-query-pagination-surface: var(--pns-surface-background);
+	/* Archive result pagination closes the page with the same neutral-50 panel as post navigation. */
+	--pns-query-pagination-surface: var(--wp--preset--color--neutral-50);
+}
+
+:is(.pns-template-archive, .pns-template-search)
+	.pns-query-pagination.wp-block-query-pagination::before {
+	/* The controls remain content-width while the closing panel reaches both viewport edges. */
+	inline-size: 100vw;
 }
 
 @media only screen and (min-width: 48.875rem) {
