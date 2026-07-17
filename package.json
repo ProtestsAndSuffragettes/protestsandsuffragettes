@@ -4,6 +4,8 @@
 	"private": true,
 	"description": "Project tooling for the Protests and Suffragettes WordPress theme.",
 	"scripts": {
+		"hooks:install": "git config core.hooksPath .githooks",
+		"prepare": "git config core.hooksPath .githooks",
 		"dev": "pnpm watch:css",
 		"format": "prettier --write \"**/*.{css,js,mjs,json,md,ts}\"",
 		"format:check": "prettier --check \"**/*.{css,js,mjs,json,md,ts}\"",
