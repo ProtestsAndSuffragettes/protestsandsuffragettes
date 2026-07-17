@@ -31,7 +31,7 @@ git describe --tags --always
 ```
 
 `style.css` is the WordPress-visible version source. Release Please updates it
-and maintains the intended release history; RAN GitHub Booster is the selected
+and maintains the intended release history; RAN Booster is the selected
 GitHub-only deployment basis. Its beta validation gate and deployment procedure
 are deliberately separate from release-note generation.
 

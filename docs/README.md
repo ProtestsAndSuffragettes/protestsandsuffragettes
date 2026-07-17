@@ -10,7 +10,7 @@ repository, WordPress installation path, and support boundary.
 ## Available guidance
 
 - [Development and release](operations/development-and-release.md) — local
-  setup, validation gates, WordPress-state checks, and the RAN GitHub Booster
+  setup, validation gates, WordPress-state checks, and the RAN Booster
   beta acceptance, deployment, and recovery procedure.
 - [Page rebuild lab](operations/page-rebuild-lab.md) — draft-only method for
   proving editor reconstruction before formalising templates or components.

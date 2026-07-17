@@ -926,6 +926,10 @@ test.describe('editor CSS regression harness', () => {
 
 		const matrixState = await page.evaluate(() => {
 			const blocks = wp.data.select('core/block-editor').getBlocks();
+			const splitSections = blocks.filter(
+				(block: Record<string, unknown>) =>
+					block.name === 'pns/split-section'
+			);
 			const textSections = blocks.filter(
 				(block: Record<string, unknown>) =>
 					block.name === 'pns/split-section' &&
@@ -933,58 +937,132 @@ test.describe('editor CSS regression harness', () => {
 						'text'
 			);
 
-			return textSections.map((block: Record<string, unknown>) => {
-				const columnsBlock = (
-					block.innerBlocks as Array<Record<string, unknown>>
-				)[0];
-				const columns =
-					(columnsBlock?.innerBlocks as Array<
-						Record<string, unknown>
-					>) || [];
+			const sections = textSections.map(
+				(block: Record<string, unknown>) => {
+					const columnsBlock = (
+						block.innerBlocks as Array<Record<string, unknown>>
+					)[0];
+					const columns =
+						(columnsBlock?.innerBlocks as Array<
+							Record<string, unknown>
+						>) || [];
 
-				return {
-					anchor: (block.attributes as Record<string, unknown>)
-						.anchor,
-					columnColours: columns.map((column) => ({
-						backgroundColor: (
-							column.attributes as Record<string, unknown>
-						).backgroundColor,
-						lock: (column.attributes as Record<string, unknown>)
-							.lock,
-						textColor: (
-							column.attributes as Record<string, unknown>
-						).textColor,
-					})),
-					columnCount: columns.length,
-					layoutVariant: (block.attributes as Record<string, unknown>)
-						.layoutVariant,
-					mediaType: (block.attributes as Record<string, unknown>)
-						.mediaType,
-				};
-			});
+					return {
+						anchor: (block.attributes as Record<string, unknown>)
+							.anchor,
+						clientId: block.clientId,
+						columnColours: columns.map((column) => ({
+							backgroundColor: (
+								column.attributes as Record<string, unknown>
+							).backgroundColor,
+							lock: (column.attributes as Record<string, unknown>)
+								.lock,
+							textColor: (
+								column.attributes as Record<string, unknown>
+							).textColor,
+						})),
+						columnCount: columns.length,
+						layoutVariant: (
+							block.attributes as Record<string, unknown>
+						).layoutVariant,
+						mediaType: (block.attributes as Record<string, unknown>)
+							.mediaType,
+						secondaryTextVerticalAlignment: (
+							block.attributes as Record<string, unknown>
+						).secondaryTextVerticalAlignment,
+						textVerticalAlignment: (
+							block.attributes as Record<string, unknown>
+						).textVerticalAlignment,
+					};
+				}
+			);
+			const copyGroups = splitSections.flatMap(
+				(block: Record<string, unknown>) => {
+					const anchor = (block.attributes as Record<string, unknown>)
+						.anchor;
+					const columnsBlock = (
+						block.innerBlocks as Array<Record<string, unknown>>
+					)[0];
+					const columns =
+						(columnsBlock?.innerBlocks as Array<
+							Record<string, unknown>
+						>) || [];
+
+					return columns.flatMap((column, panelIndex) => {
+						const copy = (
+							(column.innerBlocks as Array<
+								Record<string, unknown>
+							>) || []
+						).find(
+							(innerBlock) =>
+								innerBlock.name === 'core/group' &&
+								String(
+									(
+										innerBlock.attributes as Record<
+											string,
+											unknown
+										>
+									).className
+								).includes('pns-split-section__copy')
+						);
+
+						if (!copy) {
+							return [];
+						}
+
+						return [
+							{
+								anchor,
+								clientId: copy.clientId,
+								layout: (
+									copy.attributes as Record<string, unknown>
+								).layout as Record<string, unknown>,
+								panelIndex,
+							},
+						];
+					});
+				}
+			);
+
+			return {
+				copyGroups,
+				mediaSectionClientId: splitSections.find(
+					(block: Record<string, unknown>) =>
+						(block.attributes as Record<string, unknown>)
+							.mediaType === 'video'
+				)?.clientId,
+				sections,
+				topSectionClientId: sections.find(
+					(section) =>
+						section.anchor ===
+						'pns-text-text-demo-text-text-long-short'
+				)?.clientId,
+			};
 		});
 
-		expect(matrixState).toHaveLength(8);
+		expect(matrixState.sections).toHaveLength(8);
 		expect(
-			matrixState.filter(
+			matrixState.sections.filter(
 				(section) =>
 					section.layoutVariant === 'edge-media-left' ||
 					section.layoutVariant === 'edge-media-right'
 			)
 		).toHaveLength(4);
 		expect(
-			matrixState.filter(
+			matrixState.sections.filter(
 				(section) => section.layoutVariant === 'media-right'
 			)
 		).toHaveLength(4);
 		expect(
-			matrixState.every((section) => section.mediaType === 'text')
+			matrixState.sections.every(
+				(section) => section.mediaType === 'text'
+			)
 		).toBe(true);
-		expect(matrixState.every((section) => section.columnCount === 2)).toBe(
-			true
-		);
 		expect(
-			matrixState.every(
+			matrixState.sections.every((section) => section.columnCount === 2)
+		).toBe(true);
+		expect(
+			matrixState.sections.every(
 				(section) =>
 					section.columnColours[0].backgroundColor ===
 						'brand-purple' &&
@@ -997,12 +1075,12 @@ test.describe('editor CSS regression harness', () => {
 			)
 		).toBe(true);
 		expect(
-			matrixState.every((section) =>
+			matrixState.sections.every((section) =>
 				String(section.anchor).startsWith('pns-text-text-demo-')
 			)
 		).toBe(true);
 		expect(
-			matrixState.filter(
+			matrixState.sections.filter(
 				(section) => section.layoutVariant === 'edge-media-left'
 			)
 		).toEqual([
@@ -1011,6 +1089,22 @@ test.describe('editor CSS regression harness', () => {
 				mediaType: 'text',
 			}),
 		]);
+		expect(matrixState.copyGroups).toHaveLength(28);
+		expect(
+			matrixState.copyGroups.every((copy) => copy.layout?.type !== 'flex')
+		).toBe(true);
+		expect(
+			matrixState.sections.filter(
+				(section) => section.textVerticalAlignment === 'top'
+			)
+		).toHaveLength(2);
+		expect(
+			matrixState.sections.filter(
+				(section) => section.secondaryTextVerticalAlignment === 'top'
+			)
+		).toHaveLength(2);
+		expect(matrixState.topSectionClientId).toBeTruthy();
+		expect(matrixState.mediaSectionClientId).toBeTruthy();
 
 		await page.evaluate(() => {
 			const reversedBlock = wp.data
@@ -1046,6 +1140,46 @@ test.describe('editor CSS regression harness', () => {
 		await expect(
 			blockInspector.getByRole('radio', { name: 'Text' })
 		).toHaveAttribute('aria-checked', 'true');
+
+		const dimensionsButton = blockInspector.getByRole('button', {
+			name: 'Dimensions',
+		});
+		await expect(dimensionsButton).toBeVisible();
+
+		if ((await dimensionsButton.getAttribute('aria-expanded')) !== 'true') {
+			await dimensionsButton.click();
+		}
+
+		await expect(
+			blockInspector.getByRole('combobox', {
+				name: 'First text panel vertical alignment',
+			})
+		).toHaveValue('center');
+		await expect(
+			blockInspector.getByRole('combobox', {
+				name: 'Second text panel vertical alignment',
+			})
+		).toHaveValue('top');
+
+		await page.evaluate((clientId) => {
+			wp.data.dispatch('core/block-editor').selectBlock(clientId);
+		}, matrixState.mediaSectionClientId);
+
+		await expect(
+			blockInspector.getByRole('combobox', {
+				name: 'Text vertical alignment',
+			})
+		).toHaveValue('center');
+		await expect(
+			blockInspector.getByRole('combobox', {
+				name: 'Second text panel vertical alignment',
+			})
+		).toHaveCount(0);
+		await expect(
+			editor.locator(
+				'[data-type="pns/split-section"]:not(.is-pns-text-text)[class*="is-pns-secondary-text-align-"]'
+			)
+		).toHaveCount(0);
 	});
 
 	test('full-width news posts expose locked PNS Post Details inside the content-owned hero', async ({

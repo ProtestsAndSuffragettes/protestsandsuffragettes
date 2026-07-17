@@ -2,7 +2,7 @@
 
 This runbook covers development and controlled deployment of the Protests and
 Suffragettes theme. It assumes a Local WordPress environment for database and
-browser checks, and RAN GitHub Booster for GitHub-only deployment. It never
+browser checks, and RAN Booster for GitHub-only deployment. It never
 stores a repository credential, access token, webhook secret, hosting URL, or
 raw plugin export in this repository.
 
@@ -23,7 +23,7 @@ WordPress, visual, and deployment-plugin gates in this document.
 
 ## Current deployment status
 
-RAN GitHub Booster is the intended replacement for the retired deployment
+RAN Booster is the intended replacement for the retired deployment
 path. Local currently has version `0.1.0-dev` active, but it has no configured
 theme package, PAT, or webhook secret. Its installed checkout is not yet a
 pinned/released source revision. It is therefore **not production-ready**.
@@ -102,14 +102,14 @@ non-mutating handoff probe that protects administrator-owned navigation and
 social data. Do not use a repository file to overwrite those records without a
 reviewed migration and rendered-route verification.
 
-## RAN GitHub Booster acceptance gate
+## RAN Booster acceptance gate
 
 Complete this once for each deployment environment before registering the
 theme. The plugin can manage GitHub-hosted themes and plugins, link an existing
 package, install/update it through WordPress's normal upgrader path, and
 optionally handle signed GitHub push webhooks.
 
-1. Install a pinned, reviewable RAN GitHub Booster release; record its source
+1. Install a pinned, reviewable RAN Booster release; record its source
    repository, tag/commit, and WordPress/PHP test result. Do not use the
    current unpinned `0.1.0-dev` Local checkout as production evidence.
 2. Create a GitHub fine-grained PAT restricted to only the required repository
@@ -119,13 +119,13 @@ optionally handle signed GitHub push webhooks.
    genuinely needs them.
 3. Prefer host-managed constants `RAN_BOOSTER_GITHUB_TOKEN` and
    `RAN_BOOSTER_WEBHOOK_SECRET`. If the plugin sidecar is used instead, protect
-   `wp-content/ran-github-booster-secrets.php` with the plugin's `0600` mode,
+   `wp-content/ran-booster-secrets.php` with the plugin's `0600` mode,
    exclude it from Git, backups that are not access-controlled, logs, and
    deploy archives, and verify the host cannot serve PHP source.
-4. In **RAN GitHub Booster → GitHub**, save/verify credentials without placing
+4. In **RAN Booster → GitHub**, save/verify credentials without placing
    them in WordPress options or this repository. The plugin keeps its PAT
    server-side and writes sidecar values atomically when constants are absent.
-5. In **RAN GitHub Booster → Themes**, use **Link installed theme** for the
+5. In **RAN Booster → Themes**, use **Link installed theme** for the
    existing stylesheet. Register the repository, approved branch/ref, and any
    required subdirectory. Begin with manual updates; leave Push-to-Deploy off.
 6. On staging, deploy a known revision, verify the active theme and critical
@@ -162,7 +162,7 @@ avoids unnecessary permissions.
    ref. Use a manual staging update until the signed webhook path has passed
    its separate acceptance test.
 
-## Deploy with RAN GitHub Booster
+## Deploy with RAN Booster
 
 Only an approved release operator may deploy. The plugin is GitHub-only; it is
 not a general Git-target service.
@@ -170,7 +170,7 @@ not a general Git-target service.
 ### Manual staging deployment
 
 1. Confirm the installed theme package is linked to the approved repository
-   and intended branch/ref in **RAN GitHub Booster → Themes**.
+   and intended branch/ref in **RAN Booster → Themes**.
 2. Use the theme's update action to fetch the approved revision.
 3. Confirm the active theme, deployed commit/version, critical routes, and
    absence of PHP warnings/notices. Record the result in the access-controlled
@@ -183,7 +183,7 @@ not a general Git-target service.
 The webhook endpoint is:
 
 ```text
-/wp-json/ran-github-booster/v1/github/webhook
+/wp-json/ran-booster/v1/github/webhook
 ```
 
 Configure GitHub to send only `push` events. The plugin requires an

@@ -9,7 +9,7 @@ release notes and the WordPress theme version.
 ### Documentation
 
 - Added the developer/release handbook and the production-readiness plan,
-  including the RAN GitHub Booster beta deployment basis.
+  including the RAN Booster beta deployment basis.
 
 ## [0.3.0](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/compare/v0.2.0...v0.3.0) (2026-07-19)
 
