@@ -1623,6 +1623,159 @@ test(
 
 test(
 	taggedTitle(
+		'news pagination keeps compact rails, white page links, and responsive few/many-page stacks',
+		'mobile-fast',
+		'mobile-full',
+		'archive',
+		'navigation',
+		'mobile-layout'
+	),
+	async ({ page }) => {
+		await page.setViewportSize({ width: 390, height: 900 });
+		await page.goto('/news/?pns-visual-test=news-pagination');
+		await page.waitForLoadState('domcontentloaded');
+
+		const contract = await page.evaluate(() => {
+			const livePagination = document.querySelector<HTMLElement>(
+				'.pns-news-more-section .pns-query-pagination'
+			);
+			const firstCard = document.querySelector<HTMLElement>(
+				'.pns-news-more-section .pns-archive-card'
+			);
+
+			if (!livePagination || !firstCard) {
+				return null;
+			}
+
+			const manyPagination = livePagination.cloneNode(
+				true
+			) as HTMLElement;
+			const manyNumbers = manyPagination.querySelector<HTMLElement>(
+				'.wp-block-query-pagination-numbers'
+			);
+
+			if (!manyNumbers) {
+				return null;
+			}
+
+			manyPagination.classList.add('pns-pagination-test-many');
+			manyNumbers.innerHTML = Array.from({ length: 8 }, (_, index) => {
+				const pageNumber = index + 1;
+				return pageNumber === 4
+					? `<span aria-current="page" class="page-numbers current">${pageNumber}</span>`
+					: `<a class="page-numbers" href="#page-${pageNumber}">${pageNumber}</a>`;
+			}).join('');
+			livePagination.insertAdjacentElement('afterend', manyPagination);
+
+			const railProbe = document.createElement('div');
+			railProbe.style.cssText =
+				'position:absolute;visibility:hidden;inline-size:var(--pns--layout--content-rail);block-size:1px;';
+			document.body.append(railProbe);
+			const contentRail = railProbe.getBoundingClientRect().width;
+			railProbe.remove();
+
+			const readPagination = (pagination: HTMLElement) => {
+				const previous = pagination.querySelector<HTMLElement>(
+					'.wp-block-query-pagination-previous'
+				);
+				const numbers = pagination.querySelector<HTMLElement>(
+					'.wp-block-query-pagination-numbers'
+				);
+				const next = pagination.querySelector<HTMLElement>(
+					'.wp-block-query-pagination-next'
+				);
+				const rect = (element: HTMLElement | null) => {
+					const bounds = element?.getBoundingClientRect();
+					return bounds
+						? {
+								bottom: bounds.bottom,
+								left: bounds.left,
+								right: bounds.right,
+								top: bounds.top,
+							}
+						: null;
+				};
+
+				return {
+					linkColors: Array.from(
+						pagination.querySelectorAll<HTMLElement>(
+							'.wp-block-query-pagination-numbers a.page-numbers'
+						)
+					).map((link) => getComputedStyle(link).color),
+					next: rect(next),
+					numbers: rect(numbers),
+					pageRows: Array.from(
+						pagination.querySelectorAll<HTMLElement>(
+							'.page-numbers'
+						)
+					).map(
+						(pageNumber) => pageNumber.getBoundingClientRect().top
+					),
+					previous: rect(previous),
+				};
+			};
+
+			return {
+				cardLeft: firstCard.getBoundingClientRect().left,
+				contentRail,
+				few: readPagination(livePagination),
+				many: readPagination(manyPagination),
+			};
+		});
+
+		expect(contract).not.toBeNull();
+
+		if (!contract) {
+			return;
+		}
+
+		expect(contract.contentRail).toBeCloseTo(16, 0);
+		expect(contract.cardLeft).toBeLessThanOrEqual(contract.contentRail + 1);
+
+		for (const pagination of [contract.few, contract.many]) {
+			expect(pagination.previous).not.toBeNull();
+			expect(pagination.numbers).not.toBeNull();
+			expect(pagination.next).not.toBeNull();
+			expect(pagination.previous?.bottom ?? 0).toBeLessThanOrEqual(
+				(pagination.numbers?.top ?? 0) + 1
+			);
+			expect(pagination.numbers?.bottom ?? 0).toBeLessThanOrEqual(
+				(pagination.next?.top ?? 0) + 1
+			);
+			expect(
+				((pagination.previous?.left ?? 0) +
+					(pagination.previous?.right ?? 0)) /
+					2
+			).toBeCloseTo(
+				((pagination.numbers?.left ?? 0) +
+					(pagination.numbers?.right ?? 0)) /
+					2,
+				0
+			);
+			expect(
+				((pagination.next?.left ?? 0) + (pagination.next?.right ?? 0)) /
+					2
+			).toBeCloseTo(
+				((pagination.numbers?.left ?? 0) +
+					(pagination.numbers?.right ?? 0)) /
+					2,
+				0
+			);
+			expect(pagination.linkColors).not.toContain('rgb(61, 32, 126)');
+			expect(
+				pagination.linkColors.every(
+					(color) => color === 'rgb(255, 255, 255)'
+				)
+			).toBe(true);
+		}
+
+		expect(new Set(contract.few.pageRows).size).toBe(1);
+		expect(new Set(contract.many.pageRows).size).toBeGreaterThan(1);
+	}
+);
+
+test(
+	taggedTitle(
 		'news archive pagination omits the landing-page featured story',
 		'fast',
 		'archive',

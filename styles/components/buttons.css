@@ -121,6 +121,43 @@
 	justify-self: end;
 }
 
+@media only screen and (max-width: 40rem) {
+	.pns-query-pagination.wp-block-query-pagination {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.pns-query-pagination :where(.wp-block-query-pagination-previous) {
+		grid-column: 1;
+		grid-row: 1;
+		justify-self: center;
+		margin-inline: 0;
+	}
+
+	.pns-query-pagination .wp-block-query-pagination-numbers {
+		grid-column: 1;
+		grid-row: 2;
+		max-inline-size: 100%;
+	}
+
+	.pns-query-pagination :where(.wp-block-query-pagination-next) {
+		grid-column: 1;
+		grid-row: 3;
+		justify-self: center;
+		margin-inline: 0;
+	}
+
+	.pns-query-pagination.wp-block-query-pagination.is-content-justification-space-between
+		> .wp-block-query-pagination-previous:first-child {
+		/* Core pushes boundary controls to opposite edges; stacked mobile controls share one centre line. */
+		margin-inline-end: 0;
+	}
+
+	.pns-query-pagination.wp-block-query-pagination.is-content-justification-space-between
+		> .wp-block-query-pagination-next:last-of-type {
+		margin-inline-start: 0;
+	}
+}
+
 .pns-query-pagination a,
 .pns-query-pagination .page-numbers.current {
 	color: var(

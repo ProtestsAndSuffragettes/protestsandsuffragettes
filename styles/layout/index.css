@@ -3,6 +3,12 @@
 		padding-inline: var(--pns--layout--content-rail);
 	}
 
+	:is(.pns-news-more-section, .pns-herstories-more-section)
+		> .wp-block-query.alignwide {
+		/* The named panel already owns the mobile rail; do not inset its wide query twice. */
+		padding-inline: 0;
+	}
+
 	.alignwide.alignfull {
 		padding: 0 0;
 	}

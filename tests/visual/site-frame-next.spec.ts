@@ -159,12 +159,12 @@ test.describe('@site-frame-next future site-frame contracts', () => {
 
 			return {
 				contentRail: probe('var(--pns--layout--content-rail, 0px)'),
-				section: probe('var(--wp--preset--spacing--section, 0px)'),
+				regular: probe('var(--wp--preset--spacing--regular, 0px)'),
 			};
 		});
 
-		expect(narrowRails.section).toBeGreaterThan(0);
-		expect(narrowRails.contentRail).toBeCloseTo(narrowRails.section, 0);
+		expect(narrowRails.regular).toBeGreaterThan(0);
+		expect(narrowRails.contentRail).toBeCloseTo(narrowRails.regular, 0);
 	});
 
 	test('@site-frame-next header and footer retain viewport surfaces around centred inners', async ({
