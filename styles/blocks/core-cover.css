@@ -11,8 +11,10 @@
 
 .wp-block-cover.pns-page-hero,
 .wp-block-cover-image.pns-page-hero,
-.wp-block-ran-enhanced-cover.pns-page-hero {
-	/* Reusable imported-page hero contract, not a page route selector; remove when full-width news/page heroes move to a dedicated hero block style. */
+.wp-block-ran-enhanced-cover.pns-page-hero,
+.wp-block-cover.pns-suffragette-hero,
+.wp-block-cover-image.pns-suffragette-hero {
+	/* Reusable page and Herstory hero contract, not a page route selector; remove when full-width heroes move to a dedicated hero block style. */
 	background-color: var(--wp--preset--color--brand-purple);
 	color: var(--wp--custom--color--text--inverse);
 }
