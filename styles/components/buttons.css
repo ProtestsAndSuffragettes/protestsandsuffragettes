@@ -41,6 +41,30 @@
 	justify-self: end;
 }
 
+@media only screen and (max-width: 40rem) {
+	.pns-entry-navigation__controls {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.pns-entry-navigation__controls > .wp-block-post-navigation-link.previous {
+		grid-column: 1;
+		grid-row: 1;
+		justify-self: center;
+	}
+
+	.pns-entry-navigation__controls > .wp-block-buttons {
+		grid-column: 1;
+		grid-row: 2;
+		justify-self: center;
+	}
+
+	.pns-entry-navigation__controls > .wp-block-post-navigation-link.next {
+		grid-column: 1;
+		grid-row: 3;
+		justify-self: center;
+	}
+}
+
 .pns-query-pagination.wp-block-query-pagination {
 	--pns-query-pagination-surface: color-mix(
 		in srgb,

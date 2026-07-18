@@ -2268,6 +2268,89 @@ test(
 
 test(
 	taggedTitle(
+		'herstory entry navigation uses one centred mobile stack',
+		'mobile-fast',
+		'mobile-full',
+		'navigation',
+		'template',
+		'mobile-layout'
+	),
+	async ({ page }) => {
+		await page.setViewportSize({ width: 336, height: 900 });
+		await page.goto(
+			'/herstories/lila-clunas/?pns-visual-test=herstory-entry-navigation'
+		);
+		await page.waitForLoadState('domcontentloaded');
+
+		const contract = await page
+			.locator(
+				'.pns-template-herstory-single .pns-herstory-entry-navigation .pns-entry-navigation__controls'
+			)
+			.evaluate((controls) => {
+				const previous = controls.querySelector<HTMLElement>(
+					'.wp-block-post-navigation-link.previous'
+				);
+				const back =
+					controls.querySelector<HTMLElement>('.wp-block-buttons');
+				const next = controls.querySelector<HTMLElement>(
+					'.wp-block-post-navigation-link.next'
+				);
+				const rect = (element: HTMLElement | null) => {
+					const bounds = element?.getBoundingClientRect();
+					return bounds
+						? {
+								bottom: bounds.bottom,
+								left: bounds.left,
+								right: bounds.right,
+								top: bounds.top,
+							}
+						: null;
+				};
+
+				return {
+					back: rect(back),
+					clientWidth: controls.clientWidth,
+					controls: rect(controls),
+					next: rect(next),
+					previous: rect(previous),
+					scrollWidth: controls.scrollWidth,
+				};
+			});
+
+		for (const item of [contract.previous, contract.back, contract.next]) {
+			expect(item).not.toBeNull();
+			expect(item?.left ?? 0).toBeGreaterThanOrEqual(
+				(contract.controls?.left ?? 0) - 1
+			);
+			expect(item?.right ?? 0).toBeLessThanOrEqual(
+				(contract.controls?.right ?? 0) + 1
+			);
+		}
+
+		expect(contract.previous?.bottom ?? 0).toBeLessThanOrEqual(
+			(contract.back?.top ?? 0) + 1
+		);
+		expect(contract.back?.bottom ?? 0).toBeLessThanOrEqual(
+			(contract.next?.top ?? 0) + 1
+		);
+
+		const centre = (item: { left: number; right: number } | null) =>
+			item ? (item.left + item.right) / 2 : 0;
+
+		expect(centre(contract.previous)).toBeCloseTo(
+			centre(contract.controls),
+			0
+		);
+		expect(centre(contract.back)).toBeCloseTo(centre(contract.controls), 0);
+		expect(centre(contract.next)).toBeCloseTo(centre(contract.controls), 0);
+		expect(contract.scrollWidth).toBeLessThanOrEqual(
+			contract.clientWidth + 1
+		);
+	}
+);
+
+test(
+	taggedTitle(
 		'herstories archive grid thumbnails use card image size',
 		'fast',
 		'archive',
