@@ -41,10 +41,16 @@ function pns_theme_get_dependency_contract() {
 			'purpose'  => __( 'The PNS shop teaser block.', 'protestsandsuffragettes' ),
 			'required' => true,
 		),
-		'ran-octopus-forms'     => array(
-			'name'     => __( 'RAN Octopus Forms', 'protestsandsuffragettes' ),
-			'file'     => 'ran-octopus-forms/ran-octopus-forms.php',
-			'purpose'  => __( 'PNS contact and newsletter forms.', 'protestsandsuffragettes' ),
+		'ran-emailoctopus-jetpack-forms' => array(
+			'name'     => __( 'RAN EmailOctopus for Jetpack Forms', 'protestsandsuffragettes' ),
+			'file'     => 'ran-emailoctopus-jetpack-forms/ran-emailoctopus-jetpack-forms.php',
+			'purpose'  => __( 'EmailOctopus subscriptions from selected Jetpack forms.', 'protestsandsuffragettes' ),
+			'required' => true,
+		),
+		'ran-turnstile-for-jetpack-forms' => array(
+			'name'     => __( 'RAN Turnstile for Jetpack Forms', 'protestsandsuffragettes' ),
+			'file'     => 'ran-turnstile-for-jetpack-forms/ran-turnstile-for-jetpack-forms.php',
+			'purpose'  => __( 'Cloudflare Turnstile protection for selected Jetpack forms.', 'protestsandsuffragettes' ),
 			'required' => true,
 		),
 		'jetpack'               => array(

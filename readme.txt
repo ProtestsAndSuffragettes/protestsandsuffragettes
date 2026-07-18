@@ -24,12 +24,15 @@ provide its expected content and integrations:
 * PNS Herstories — Herstories content and presentation.
 * RAN Enhanced Cover — enhanced cover blocks used by PNS content.
 * RAN Ecwid Shop Teaser — the PNS shop teaser block.
-* RAN Octopus Forms — PNS contact and newsletter forms.
+* RAN EmailOctopus for Jetpack Forms — EmailOctopus subscriptions from selected
+  Jetpack forms.
+* RAN Turnstile for Jetpack Forms — Cloudflare Turnstile protection for selected
+  Jetpack forms.
 * Jetpack — consent controls and slideshow content used by the site.
 * Ecwid by Lightspeed Ecommerce Shopping Cart — the native PNS shop integration.
 * EmailOctopus — required only while the legacy hosted newsletter embed remains
-  in site content. Reclassify it when that fixture is migrated to RAN Octopus
-  Forms or retired.
+  in site content. Reclassify it when that fixture is migrated to RAN
+  EmailOctopus for Jetpack Forms or retired.
 
 Jetpack Boost is optional performance tooling. It is not part of the required
 site contract and does not affect the theme's dependency health check.
@@ -84,9 +87,11 @@ Current accepted bridge categories are:
 * Vendor adapters for Ecwid, Jetpack, and hosted EmailOctopus output after
   plugin or hosted-service settings have been checked.
 * Legacy compatibility bridges, such as the EmailOctopus shortcode render
-  filter for old synced-pattern content. `ran-octopus-forms` owns the modern
-  contact/newsletter/Turnstile flow; this theme bridge should disappear when
-  the legacy hosted embed fixture is migrated or retired.
+  filter for old synced-pattern content. RAN EmailOctopus for Jetpack Forms owns
+  the modern newsletter subscription flow, and RAN Turnstile for Jetpack Forms
+  owns bot protection. The retained `ran-octopus-forms` pattern identifiers are
+  compatibility data, not the current plugin identity. This theme bridge should
+  disappear when the legacy hosted embed fixture is migrated or retired.
 
 Project-owned block structure belongs in a sidecar block plugin. For example,
 `pns-blocks` owns the split-section layout and `ran-ecwid-shop-teaser` owns the

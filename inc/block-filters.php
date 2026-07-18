@@ -45,11 +45,13 @@ add_filter( 'render_block', 'pns_theme_clean_ecwid_store_block', 10, 2 );
  * sections need this narrow bridge to render the hosted form script.
  *
  * Keep this in the theme for now because the remaining shortcode lives in
- * theme-owned synced-pattern content. `ran-octopus-forms` owns the Jetpack contact form,
- * EmailOctopus API subscription path, newsletter opt-in, Turnstile, and health
- * checks; it does not own legacy hosted EmailOctopus embeds. Removal gate:
- * remove this filter after the legacy synced newsletter/contact fixture is
- * migrated to the `ran-octopus-forms/contact-form` pattern or retired.
+ * theme-owned synced-pattern content. RAN EmailOctopus for Jetpack Forms owns
+ * the EmailOctopus API subscription path, newsletter opt-in, and related health
+ * checks; RAN Turnstile for Jetpack Forms owns bot protection. Neither plugin
+ * owns legacy hosted EmailOctopus embeds. The retained
+ * `ran-octopus-forms/contact-form` pattern slug is compatibility data, not the
+ * current plugin identity. Removal gate: remove this filter after the legacy
+ * synced newsletter/contact fixture is migrated to that pattern or retired.
  *
  * @param string $block_content Rendered shortcode block content.
  * @param array  $block Parsed block data.
