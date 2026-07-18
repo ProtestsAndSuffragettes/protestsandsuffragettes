@@ -1,0 +1,154 @@
+/*
+ * Load path: private partial imported by styles/blocks/core-navigation.css.
+ * Owns the primary Navigation's Membership CTA treatment. The path-suffix hook
+ * works with relative URLs and local, staging, or production domains without
+ * relying on the item's position in the editable Navigation list.
+ */
+.pns-primary-navigation
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	) {
+	color: var(--wp--preset--color--brand-red);
+	text-decoration: none;
+}
+
+.pns-primary-navigation
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	)
+	.wp-block-navigation-item__label {
+	display: inline-block;
+	transform: rotate(-2deg);
+}
+
+.pns-primary-navigation
+	> .wp-block-navigation__responsive-container:not(.is-menu-open)
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	)
+	.wp-block-navigation-item__label {
+	-webkit-text-stroke: 3px var(--wp--preset--color--neutral-0);
+	isolation: isolate;
+	paint-order: stroke fill;
+	position: relative;
+	z-index: 0;
+}
+
+.pns-primary-navigation
+	> .wp-block-navigation__responsive-container:not(.is-menu-open)
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	)
+	.wp-block-navigation-item__label::before {
+	aspect-ratio: 1;
+	background: url("../../assets/images/join-us-starburst.svg") center /
+		contain no-repeat;
+	block-size: 4.25rem;
+	content: "";
+	inset-block-start: calc(50% + 0.2rem);
+	inset-inline-start: calc(50% - 0.35rem);
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+	transform: translate(-50%, -50%) rotate(-10deg) scale(0.18);
+	transform-origin: center;
+	z-index: -1;
+}
+
+.pns-primary-navigation
+	> .wp-block-navigation__responsive-container:not(.is-menu-open)
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	):where(:hover, :focus-visible)
+	.wp-block-navigation-item__label::before {
+	opacity: 1;
+	transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.pns-primary-navigation
+		> .wp-block-navigation__responsive-container:not(.is-menu-open)
+		.wp-block-navigation-item
+		> a.wp-block-navigation-item__content:is(
+			[href$="/membership"],
+			[href$="/membership/"]
+		)
+		.wp-block-navigation-item__label::before {
+		transition:
+			opacity 120ms ease-in,
+			transform 180ms cubic-bezier(0.4, 0, 1, 1);
+	}
+
+	.pns-primary-navigation
+		> .wp-block-navigation__responsive-container:not(.is-menu-open)
+		.wp-block-navigation-item
+		> a.wp-block-navigation-item__content:is(
+			[href$="/membership"],
+			[href$="/membership/"]
+		):where(:hover, :focus-visible)
+		.wp-block-navigation-item__label::before {
+		transition-duration: 140ms, 340ms;
+		transition-timing-function: ease-out, cubic-bezier(0.16, 1.25, 0.3, 1);
+	}
+}
+
+.pns-primary-navigation
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	):where(:hover, :focus-visible) {
+	color: var(--wp--preset--color--brand-red);
+	text-decoration: none;
+}
+
+.pns-primary-navigation
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	):where(:hover, :focus-visible)::after {
+	content: none;
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	) {
+	background: transparent;
+	color: var(--wp--preset--color--brand-red);
+}
+
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item:hover
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	),
+header
+	.pns-primary-navigation
+	> .wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation-item:focus-within
+	> a.wp-block-navigation-item__content:is(
+		[href$="/membership"],
+		[href$="/membership/"]
+	) {
+	background: transparent;
+	color: var(--wp--preset--color--brand-red);
+}
