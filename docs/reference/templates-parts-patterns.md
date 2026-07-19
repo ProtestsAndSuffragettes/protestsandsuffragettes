@@ -50,7 +50,6 @@ noted, they appear in the relevant PNS pattern category in the editor.
 | `pns/two-columns`               | Compatibility two-column section; prefer split sections for new work. | Hidden          |
 | `pns/split-section-image`       | Copy with edge-aligned image.                                         | Available       |
 | `pns/split-section-slideshow`   | Copy with Jetpack slideshow.                                          | Available       |
-| `pns/split-section-video`       | Copy with YouTube video embed.                                        | Available       |
 | `pns/text-only-section`         | Constrained text section.                                             | Available       |
 | `pns/entry-post-navigation`     | Standard post previous/back/next controls.                            | Available       |
 | `pns/news-hero`                 | Enhanced Cover news hero; align its poster and featured image.        | Available       |
@@ -68,6 +67,8 @@ noted, they appear in the relevant PNS pattern category in the editor.
 “Hidden” patterns are implementation components for templates/query loops or
 compatibility content. Do not expose them through the inserter without an
 editorial need and an authoring guide.
+Authors should use the PNS Split Section block's YouTube variation for new
+YouTube embeds; it is the canonical authoring workflow.
 
 The Herstory plugin asks this theme for a new-entry scaffold. The scaffold is
 `pns/suffragette-hero`, `pns/split-section-image`,

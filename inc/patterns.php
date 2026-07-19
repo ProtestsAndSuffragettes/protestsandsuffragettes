@@ -77,14 +77,6 @@ function pns_theme_get_code_patterns() {
 			'file'        => 'patterns/split-section-slideshow.php',
 			'viewport'    => 1000,
 		),
-		'pns/split-section-video'      => array(
-			'title'       => __( 'PNS - Split Section Video', 'protestsandsuffragettes' ),
-			'description' => __( 'Two-column section with editable copy and a YouTube video embed. Change the PNS block style to switch media side or edge treatment.', 'protestsandsuffragettes' ),
-			'categories'  => array( 'pns-layout' ),
-			'keywords'    => array( 'pns', 'split', 'columns', 'video', 'youtube', 'text', 'media' ),
-			'file'        => 'patterns/split-section-video.php',
-			'viewport'    => 1000,
-		),
 		'pns/text-only-section'        => array(
 			'title'       => __( 'PNS - Text Only Section', 'protestsandsuffragettes' ),
 			'description' => __( 'Full-width section with a constrained copy column and editable starter text.', 'protestsandsuffragettes' ),
