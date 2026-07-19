@@ -5018,6 +5018,188 @@ test(
 
 test(
 	taggedTitle(
+		'Split Section native and YouTube video panels fill the copy height',
+		'fast',
+		'layout',
+		'desktop-only'
+	),
+	async ({ page }) => {
+		await page.setViewportSize({ width: 1440, height: 1200 });
+		await page.goto('/pns-pattern-qa/');
+		await page.waitForLoadState('domcontentloaded');
+		await waitForContractReady(page);
+
+		const measurements = await page.evaluate(() => {
+			const variants = [
+				'media-left',
+				'media-right',
+				'edge-media-left',
+				'edge-media-right',
+			];
+			const host = document.createElement('div');
+			host.className = 'wp-embed-responsive';
+			host.setAttribute('data-pns-video-fill-regression', '');
+			host.style.cssText =
+				'left: 0; position: absolute; top: 0; visibility: hidden; width: 100%;';
+			const copy = `<div class="wp-block-column pns-split-section__copy-column"><div class="wp-block-group pns-split-section__copy"><h2 class="wp-block-heading">Long-form video panel copy</h2><p>Split Sections often need to carry a substantial introduction before a reader chooses to watch the accompanying film. This fixture deliberately uses normal editorial prose rather than a forced minimum height, so the copy itself must determine the row height.</p><p>It includes historical context, a clear explanation of why the film matters, and enough surrounding detail for a content editor to use the component as a genuine feature section. The media panel must continue to meet the copy at both corners while this text wraps naturally.</p><p>Editors may also add a second paragraph to explain the source material, credit contributors, or signpost a collection of related stories. Neither a native video nor a YouTube player should crop, distort, overflow, or collapse when the written part becomes much taller than its natural 16:9 frame.</p><p>The final paragraph confirms the expected long-copy treatment: the full-height panel remains present, while the correctly proportioned player is centred on its quiet letterbox surface. This contract is shared by standard and edge media layouts.</p></div></div>`;
+			const native = `<div class="wp-block-column pns-split-section__media-column pns-split-section__media-column--video"><figure class="wp-block-video"><video aria-label="Native video regression fixture" height="360" width="640"></video></figure></div>`;
+			const youtube = `<div class="wp-block-column pns-split-section__media-column pns-split-section__media-column--video"><figure class="wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe aria-label="YouTube video regression fixture" height="281" title="YouTube video regression fixture" width="500"></iframe></div></figure></div>`;
+
+			host.innerHTML = variants
+				.flatMap((variant) => [
+					`<section class="pns-section pns-layout pns-split-section pns-site-frame-panel is-style-pns-${variant}" data-variant="${variant}" data-type="native"><div class="wp-block-columns pns-split-section__columns">${copy}${native}</div></section>`,
+					`<section class="pns-section pns-layout pns-split-section pns-site-frame-panel is-style-pns-${variant}" data-variant="${variant}" data-type="youtube"><div class="wp-block-columns pns-split-section__columns">${copy}${youtube}</div></section>`,
+				])
+				.join('');
+			document.body.append(host);
+
+			try {
+				return [
+					...host.querySelectorAll<HTMLElement>('.pns-split-section'),
+				].map((section) => {
+					const copyColumn = section.querySelector<HTMLElement>(
+						'.pns-split-section__copy-column'
+					);
+					const media = section.querySelector<HTMLElement>(
+						'.pns-split-section__media-column'
+					);
+					const nativeVideo =
+						media?.querySelector<HTMLVideoElement>('video');
+					const embed =
+						media?.querySelector<HTMLElement>('.wp-block-embed');
+					const wrapper = media?.querySelector<HTMLElement>(
+						'.wp-block-embed__wrapper'
+					);
+					const iframe =
+						media?.querySelector<HTMLIFrameElement>('iframe');
+
+					if (!copyColumn || !media) {
+						return null;
+					}
+
+					const rect = (element: Element) => {
+						const bounds = element.getBoundingClientRect();
+
+						return {
+							bottom: Math.round(bounds.bottom),
+							height: Math.round(bounds.height),
+							left: Math.round(bounds.left),
+							right: Math.round(bounds.right),
+							top: Math.round(bounds.top),
+							width: Math.round(bounds.width),
+						};
+					};
+
+					return {
+						alignSelf: getComputedStyle(media).alignSelf,
+						copy: rect(copyColumn),
+						embed: embed ? rect(embed) : null,
+						iframe: iframe ? rect(iframe) : null,
+						media: rect(media),
+						nativeVideo: nativeVideo ? rect(nativeVideo) : null,
+						objectFit: nativeVideo
+							? getComputedStyle(nativeVideo).objectFit
+							: null,
+						type: section.dataset.type,
+						variant: section.dataset.variant,
+						wrapper: wrapper ? rect(wrapper) : null,
+					};
+				});
+			} finally {
+				host.remove();
+			}
+		});
+
+		expect(measurements.filter(Boolean)).toHaveLength(8);
+		expect(
+			measurements.filter((measurement) => measurement?.type === 'native')
+		).toHaveLength(4);
+		expect(
+			measurements.filter(
+				(measurement) => measurement?.type === 'youtube'
+			)
+		).toHaveLength(4);
+
+		for (const measurement of measurements) {
+			expect(measurement).not.toBeNull();
+
+			if (!measurement) {
+				continue;
+			}
+
+			expect(measurement.alignSelf).toBe('stretch');
+			expect(measurement.media.top).toBeCloseTo(measurement.copy.top, 0);
+			expect(measurement.media.bottom).toBeCloseTo(
+				measurement.copy.bottom,
+				0
+			);
+			expect(measurement.copy.height).toBeGreaterThan(
+				(measurement.media.width * 9) / 16 + 40
+			);
+
+			if (measurement.type === 'native') {
+				expect(measurement.objectFit).toBe('contain');
+				expect(measurement.nativeVideo?.height).toBeLessThanOrEqual(
+					measurement.media.height
+				);
+				expect(measurement.nativeVideo?.width).toBeLessThanOrEqual(
+					measurement.media.width
+				);
+				expect(
+					(measurement.nativeVideo?.width ?? 0) /
+						(measurement.nativeVideo?.height ?? 1)
+				).toBeCloseTo(16 / 9, 1);
+				expect(
+					measurement.media.height -
+						(measurement.nativeVideo?.height ?? 0)
+				).toBeGreaterThan(40);
+				expect(
+					Math.abs(
+						((measurement.nativeVideo?.top ?? 0) +
+							(measurement.nativeVideo?.bottom ?? 0)) /
+							2 -
+							((measurement.media.top ?? 0) +
+								(measurement.media.bottom ?? 0)) /
+								2
+					)
+				).toBeLessThanOrEqual(2);
+			} else {
+				expect(measurement.embed?.height).toBeLessThanOrEqual(
+					measurement.media.height
+				);
+				expect(measurement.wrapper?.height).toBeLessThanOrEqual(
+					measurement.media.height
+				);
+				expect(measurement.iframe?.height).toBeLessThanOrEqual(
+					measurement.media.height
+				);
+				expect(measurement.iframe?.width).toBeLessThanOrEqual(
+					measurement.media.width + 4
+				);
+				expect(
+					(measurement.iframe?.width ?? 0) /
+						(measurement.iframe?.height ?? 1)
+				).toBeCloseTo(16 / 9, 1);
+				expect(
+					measurement.media.height - (measurement.iframe?.height ?? 0)
+				).toBeGreaterThan(40);
+				expect(
+					Math.abs(
+						((measurement.iframe?.left ?? 0) +
+							(measurement.iframe?.right ?? 0)) /
+							2 -
+							((measurement.media.left ?? 0) +
+								(measurement.media.right ?? 0)) /
+								2
+					)
+				).toBeLessThanOrEqual(2);
+			}
+		}
+	}
+);
+
+test(
+	taggedTitle(
 		'layout width contract maps helpers to content wide and site frames',
 		'fast',
 		'mobile-fast',
@@ -7053,9 +7235,6 @@ test(
 		).toBeVisible();
 		await expect(
 			page.getByRole('heading', { name: 'pns/split-section-slideshow' })
-		).toBeVisible();
-		await expect(
-			page.getByRole('heading', { name: 'pns/split-section-video' })
 		).toBeVisible();
 		await expect(
 			page.getByRole('heading', { name: 'pns/text-only-section' })

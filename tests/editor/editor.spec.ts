@@ -907,6 +907,44 @@ test.describe('editor CSS regression harness', () => {
 		expect(blockState.variationRegistered).toBe(true);
 	});
 
+	test('Split Section registers a YouTube embed variation with the shared video column', async ({
+		page,
+	}) => {
+		const membership = realPages.find(
+			(realPage) => realPage.name === 'membership'
+		);
+
+		expect(membership).toBeDefined();
+		await openEditor(page, await realPageId(page, membership!));
+
+		const variation = await page.evaluate(() => {
+			const youtubeVariation = wp.blocks
+				.getBlockVariations('pns/split-section')
+				.find(
+					(registeredVariation: Record<string, unknown>) =>
+						registeredVariation.name === 'youtube'
+				);
+			const columns = youtubeVariation?.innerBlocks?.[0];
+			const mediaColumn = columns?.[2]?.[1];
+			const mediaBlock = mediaColumn?.[2]?.[0];
+
+			return {
+				mediaBlockName: mediaBlock?.[0],
+				mediaColumnClassName: mediaColumn?.[1]?.className,
+				mediaType: youtubeVariation?.attributes?.mediaType,
+				providerNameSlug: mediaBlock?.[1]?.providerNameSlug,
+			};
+		});
+
+		expect(variation).toEqual({
+			mediaBlockName: 'core/embed',
+			mediaColumnClassName:
+				'pns-split-section__media-column pns-split-section__media-column--video',
+			mediaType: 'youtube',
+			providerNameSlug: 'youtube',
+		});
+	});
+
 	test('Split Section component guide exposes the complete Text | Text matrix', async ({
 		page,
 	}) => {
@@ -1140,15 +1178,7 @@ test.describe('editor CSS regression harness', () => {
 		await expect(
 			blockInspector.getByRole('radio', { name: 'Text' })
 		).toHaveAttribute('aria-checked', 'true');
-
-		const dimensionsButton = blockInspector.getByRole('button', {
-			name: 'Dimensions',
-		});
-		await expect(dimensionsButton).toBeVisible();
-
-		if ((await dimensionsButton.getAttribute('aria-expanded')) !== 'true') {
-			await dimensionsButton.click();
-		}
+		await blockInspector.getByRole('tab', { name: 'Settings' }).click();
 
 		await expect(
 			blockInspector.getByRole('combobox', {
@@ -1164,6 +1194,7 @@ test.describe('editor CSS regression harness', () => {
 		await page.evaluate((clientId) => {
 			wp.data.dispatch('core/block-editor').selectBlock(clientId);
 		}, matrixState.mediaSectionClientId);
+		await blockInspector.getByRole('tab', { name: 'Settings' }).click();
 
 		await expect(
 			blockInspector.getByRole('combobox', {
