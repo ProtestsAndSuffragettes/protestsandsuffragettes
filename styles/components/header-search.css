@@ -2,7 +2,11 @@
  * Frontend-only header search disclosure. The native Core mobile Navigation
  * overlay retains its own interaction; this component is desktop-only.
  */
-@media only screen and (min-width: 1152px) {
+/*
+ * Keep the Core drawer through 1199px. The full desktop list, including the
+ * search trigger, needs 1200px to stay on one row beside the header logo.
+ */
+@media only screen and (min-width: 1200px) {
 	.pns-header__navigation-search {
 		--pns--navigation--gap: var(
 			--pns--navigation--top-item-padding-inline-start
@@ -125,7 +129,7 @@
 	}
 }
 
-@media only screen and (max-width: 1151px) {
+@media only screen and (max-width: 1199px) {
 	.pns-primary-navigation
 		> .wp-block-navigation__responsive-container-open:not(.always-shown) {
 		display: flex;

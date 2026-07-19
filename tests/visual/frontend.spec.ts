@@ -6734,10 +6734,10 @@ test(
 	async ({ page }) => {
 		test.setTimeout(60_000);
 
-		const headerSearchDesktopBreakpoint = 1152;
+		const headerSearchDesktopBreakpoint = 1200;
 
 		for (const width of [
-			950, 1000, 1035, 1036, 1151, 1152, 1200, 1240, 1282, 1285, 1290,
+			950, 1000, 1035, 1036, 1151, 1199, 1200, 1240, 1282, 1285, 1290,
 			1293, 1294,
 		]) {
 			await page.setViewportSize({ width, height: 600 });
@@ -6777,6 +6777,18 @@ test(
 					document.querySelector<HTMLElement>(
 						'header .pns-primary-navigation .wp-block-navigation__container'
 					);
+				const desktopNavigationItemRows = desktopNavigationList
+					? [
+							...new Set(
+								[...desktopNavigationList.children].map(
+									(item) =>
+										Math.round(
+											item.getBoundingClientRect().top
+										)
+								)
+							),
+						]
+					: [];
 
 				return {
 					coreOpenButton,
@@ -6784,6 +6796,7 @@ test(
 					desktopNavigationGap: desktopNavigationList
 						? getComputedStyle(desktopNavigationList).gap
 						: null,
+					desktopNavigationItemRows,
 					logo,
 					scrollWidth: document.documentElement.scrollWidth,
 					viewportWidth: window.innerWidth,
@@ -6808,6 +6821,7 @@ test(
 				).toBeGreaterThanOrEqual(metrics.logo?.right ?? 0);
 				expect(metrics.desktopNavigation?.y ?? 0).toBeLessThan(80);
 				expect(metrics.desktopNavigationGap).toBe('13px');
+				expect(metrics.desktopNavigationItemRows).toHaveLength(1);
 				const joinUs = page.locator(
 					'header .pns-primary-navigation a[href$="/membership/"]'
 				);

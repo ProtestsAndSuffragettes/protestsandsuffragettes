@@ -1,5 +1,5 @@
 (function () {
-	const desktopQuery = window.matchMedia('(min-width: 1152px)');
+	const desktopQuery = window.matchMedia('(min-width: 1200px)');
 
 	function initialiseSearchDrawer(searchDrawer) {
 		if (searchDrawer.dataset.pnsHeaderSearchInitialised === 'true') {
