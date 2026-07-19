@@ -1,5 +1,6 @@
 .cache/
 node_modules/
+CHANGELOG.md
 playwright-report/
 test-results*/
 tests/visual/**/*.png
