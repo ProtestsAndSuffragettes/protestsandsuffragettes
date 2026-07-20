@@ -49,7 +49,7 @@ function pns_theme_get_herstory_scaffold_pattern_slugs() {
 	return array(
 		'pns/suffragette-hero',
 		'pns/split-section-image',
-		'pns/suffragette-image-strip',
+		'pns/image-strip',
 		'pns/suffragette-facts',
 	);
 }

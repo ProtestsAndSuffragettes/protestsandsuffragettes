@@ -52,21 +52,13 @@ function pns_theme_get_code_patterns() {
 			'file'        => 'patterns/basic-centred-content.php',
 			'viewport'    => 1000,
 		),
-		'pns/two-columns'              => array(
-			'title'       => __( 'PNS - Two Columns', 'protestsandsuffragettes' ),
-			'description' => __( 'Compatibility two-column section retained for existing content. Prefer the split-section patterns for new content.', 'protestsandsuffragettes' ),
-			'categories'  => array( 'pns-layout' ),
-			'keywords'    => array( 'pns', 'two columns', 'columns', 'compatibility', 'legacy' ),
-			'file'        => 'patterns/two-columns.php',
-			'inserter'    => false,
-			'viewport'    => 1000,
-		),
 		'pns/split-section-image'      => array(
 			'title'       => __( 'PNS - Split Section Image', 'protestsandsuffragettes' ),
 			'description' => __( 'Two-column section with editable copy and a replaceable edge-aligned image.', 'protestsandsuffragettes' ),
 			'categories'  => array( 'pns-layout' ),
 			'keywords'    => array( 'pns', 'split', 'columns', 'image', 'text', 'media' ),
 			'file'        => 'patterns/split-section-image.php',
+			'inserter'    => false,
 			'viewport'    => 1000,
 		),
 		'pns/split-section-slideshow'  => array(
@@ -75,6 +67,7 @@ function pns_theme_get_code_patterns() {
 			'categories'  => array( 'pns-layout' ),
 			'keywords'    => array( 'pns', 'split', 'columns', 'slideshow', 'text', 'media' ),
 			'file'        => 'patterns/split-section-slideshow.php',
+			'inserter'    => false,
 			'viewport'    => 1000,
 		),
 		'pns/text-only-section'        => array(
@@ -91,6 +84,7 @@ function pns_theme_get_code_patterns() {
 			'categories'  => array( 'pns-layout' ),
 			'keywords'    => array( 'pns', 'previous', 'next', 'post', 'navigation' ),
 			'file'        => 'patterns/entry-post-navigation.php',
+			'inserter'    => false,
 			'viewport'    => 1000,
 		),
 		'pns/news-hero'             => array(
@@ -149,14 +143,6 @@ function pns_theme_get_code_patterns() {
 			'categories'  => array( 'pns-herstories' ),
 			'keywords'    => array( 'pns', 'suffragette', 'herstory', 'facts', 'list' ),
 			'file'        => 'patterns/suffragette-facts.php',
-			'viewport'    => 1000,
-		),
-		'pns/suffragette-image-strip'  => array(
-			'title'       => __( 'PNS - Suffragette Image Strip', 'protestsandsuffragettes' ),
-			'description' => __( 'Herstory image strip for visual breaks between profile sections.', 'protestsandsuffragettes' ),
-			'categories'  => array( 'pns-herstories' ),
-			'keywords'    => array( 'pns', 'suffragette', 'herstory', 'images', 'gallery', 'full width' ),
-			'file'        => 'patterns/suffragette-image-strip.php',
 			'viewport'    => 1000,
 		),
 		'pns/suffragette-hero'         => array(

@@ -4,7 +4,7 @@
  * Slug: pns/split-section-slideshow
  * Categories: pns-layout
  * Description: Two-column section with editable copy and a framed Jetpack slideshow.
- * Inserter: true
+ * Inserter: false
  *
  * @package protestsandsuffragettes
  */

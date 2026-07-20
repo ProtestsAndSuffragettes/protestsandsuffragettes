@@ -105,13 +105,15 @@
 	line-height: 0;
 }
 
-.pns-suffragette-image-strip .wp-block-image img {
+.pns-image-strip .wp-block-image img {
 	display: block;
 	inline-size: 100%;
 }
 
-.pns-image-strip .wp-block-image img {
+.pns-suffragette-image-strip .wp-block-image img {
+	/* Compatibility for saved Herstory content until its migration has run. */
 	display: block;
+	inline-size: 100%;
 }
 
 .fun-facts {

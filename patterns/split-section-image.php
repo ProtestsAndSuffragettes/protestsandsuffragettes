@@ -4,7 +4,7 @@
  * Slug: pns/split-section-image
  * Categories: pns-layout
  * Description: Two-column section with editable copy and a replaceable framed image.
- * Inserter: true
+ * Inserter: false
  *
  * @package protestsandsuffragettes
  */

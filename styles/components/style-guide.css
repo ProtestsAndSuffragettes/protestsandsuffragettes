@@ -108,6 +108,11 @@
 	color: var(--wp--preset--color--neutral-0);
 }
 
+.pns-style-guide-pagination-example {
+	/* Contain the archive control's intentionally wide visual surface inside the bordered specimen. */
+	overflow: clip;
+}
+
 .pns-style-guide-details {
 	--pns-surface-background: var(--wp--custom--color--surface--default);
 	--pns-surface-text: var(--wp--custom--color--text--default);

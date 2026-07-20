@@ -4,7 +4,7 @@
  * Slug: pns/entry-post-navigation
  * Categories: pns-layout
  * Description: Native previous/back/next navigation for standard posts.
- * Inserter: true
+ * Inserter: false
  *
  * @package protestsandsuffragettes
  */

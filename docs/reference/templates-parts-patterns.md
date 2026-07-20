@@ -43,36 +43,34 @@ links, forms, and social links whenever either part changes.
 The theme registers the following patterns through `inc/patterns.php`. Unless
 noted, they appear in the relevant PNS pattern category in the editor.
 
-| Pattern                         | Use                                                                   | Inserter status |
-| ------------------------------- | --------------------------------------------------------------------- | --------------- |
-| `pns/page-hero`                 | Full-width page hero.                                                 | Available       |
-| `pns/basic-centred-content`     | Centred editorial content section.                                    | Available       |
-| `pns/two-columns`               | Compatibility two-column section; prefer split sections for new work. | Hidden          |
-| `pns/split-section-image`       | Copy with edge-aligned image.                                         | Available       |
-| `pns/split-section-slideshow`   | Copy with Jetpack slideshow.                                          | Available       |
-| `pns/text-only-section`         | Constrained text section.                                             | Available       |
-| `pns/entry-post-navigation`     | Standard post previous/back/next controls.                            | Available       |
-| `pns/news-hero`                 | Enhanced Cover news hero; align its poster and featured image.        | Available       |
-| `pns/post-card`                 | Shared vertical query-loop card.                                      | Hidden          |
-| `pns/post-card-horizontal`      | Shared horizontal search-result card.                                 | Hidden          |
-| `pns/image-strip`               | Full-width visual-break image strip.                                  | Available       |
-| `pns/blockquote-cover`          | Image-backed quote cover.                                             | Available       |
-| `pns/blockquote-with-red-line`  | Quote with red-keyline treatment.                                     | Available       |
-| `pns/suffragette-facts`         | Herstory facts section.                                               | Available       |
-| `pns/suffragette-image-strip`   | Herstory visual-break image strip.                                    | Available       |
-| `pns/suffragette-hero`          | Herstory profile hero.                                                | Available       |
-| `pns/entry-herstory-navigation` | Herstory previous/back/next controls.                                 | Available       |
-| `pns/suffragette-stats`         | Herstory statistics layout.                                           | Available       |
+| Pattern                         | Use                                                                | Inserter status |
+| ------------------------------- | ------------------------------------------------------------------ | --------------- |
+| `pns/page-hero`                 | Full-width page hero.                                              | Available       |
+| `pns/basic-centred-content`     | Centred editorial content section.                                 | Available       |
+| `pns/split-section-image`       | Compatibility seed for the Split Section Image variation.          | Hidden          |
+| `pns/split-section-slideshow`   | Compatibility seed for the Split Section Slideshow variation.      | Hidden          |
+| `pns/text-only-section`         | Constrained text section.                                          | Available       |
+| `pns/entry-post-navigation`     | Standard post previous/back/next controls; used by post templates. | Hidden          |
+| `pns/news-hero`                 | Enhanced Cover news hero; align its poster and featured image.     | Available       |
+| `pns/post-card`                 | Shared vertical query-loop card.                                   | Hidden          |
+| `pns/post-card-horizontal`      | Shared horizontal search-result card.                              | Hidden          |
+| `pns/image-strip`               | Full-width visual-break image strip.                               | Available       |
+| `pns/blockquote-cover`          | Image-backed quote cover.                                          | Available       |
+| `pns/blockquote-with-red-line`  | Quote with red-keyline treatment.                                  | Available       |
+| `pns/suffragette-facts`         | Herstory facts section.                                            | Available       |
+| `pns/suffragette-hero`          | Herstory profile hero.                                             | Available       |
+| `pns/entry-herstory-navigation` | Herstory previous/back/next controls.                              | Available       |
+| `pns/suffragette-stats`         | Herstory statistics layout.                                        | Available       |
 
 “Hidden” patterns are implementation components for templates/query loops or
-compatibility content. Do not expose them through the inserter without an
-editorial need and an authoring guide.
-Authors should use the PNS Split Section block's YouTube variation for new
-YouTube embeds; it is the canonical authoring workflow.
+compatibility content. Authors should use the PNS Split Section block and its
+variations for new Image, Slideshow, and YouTube sections. The YouTube
+variation is the canonical authoring workflow; retained embeds in existing
+content remain supported as normal `core/embed` blocks.
 
 The Herstory plugin asks this theme for a new-entry scaffold. The scaffold is
 `pns/suffragette-hero`, `pns/split-section-image`,
-`pns/suffragette-image-strip`, `pns/suffragette-facts`, followed by
+`pns/image-strip`, `pns/suffragette-facts`, followed by
 `pns/entry-herstory-navigation`. The plugin owns the post type; the theme owns
 this visual arrangement.
 

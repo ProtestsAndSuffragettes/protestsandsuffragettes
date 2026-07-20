@@ -892,3 +892,43 @@ function pns_theme_blacklist_blocks( $allowed_block_types = true, $block_editor_
 }
 
 add_filter( 'allowed_block_types_all', 'pns_theme_blacklist_blocks', 10, 2 );
+
+/**
+ * Keep global templates and template parts code-owned.
+ *
+ * WordPress uses the same edit_theme_options capability for templates, template
+ * parts, navigation and Global Styles. Removing that capability would also
+ * prevent administrators from maintaining navigation and other deliberately
+ * editable site data. Block only mutating REST requests for the two structural
+ * template endpoints instead. Reads still work in the Site Editor, while
+ * navigation, synced patterns and normal post/page content remain editable.
+ *
+ * Templates must be changed through a reviewed theme release. The guard covers
+ * creates, edits, resets, deletes and template autosaves, all of which use
+ * these REST endpoint families.
+ *
+ * @param mixed           $result  Response to replace, if any.
+ * @param WP_REST_Server  $server  REST server instance.
+ * @param WP_REST_Request $request REST request.
+ * @return mixed
+ */
+function pns_theme_prevent_template_rest_mutations( $result, $server, $request ) {
+
+	unset( $server );
+
+	if ( ! in_array( $request->get_method(), array( 'POST', 'PUT', 'PATCH', 'DELETE' ), true ) ) {
+		return $result;
+	}
+
+	if ( ! preg_match( '#^/wp/v2/(?:templates|template-parts)(?:/|$)#', $request->get_route() ) ) {
+		return $result;
+	}
+
+	return new WP_Error(
+		'pns_template_code_owned',
+		__( 'PNS templates and template parts are code-owned. Change them through the theme release workflow.', 'protestsandsuffragettes' ),
+		array( 'status' => 403 )
+	);
+}
+
+add_filter( 'rest_pre_dispatch', 'pns_theme_prevent_template_rest_mutations', 10, 3 );

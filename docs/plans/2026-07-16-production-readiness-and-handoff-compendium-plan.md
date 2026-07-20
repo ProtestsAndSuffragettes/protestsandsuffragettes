@@ -21,7 +21,7 @@ theme without reconstructing its design from historical remediation plans.
    handbook belongs under `docs/` here, with a short developer `README.md` at
    the repository root. `readme.txt` remains the WordPress metadata/readme
    surface, not the full handoff manual.
-2. **RAN GitHub Booster is the selected deployment basis.** Release Please
+2. **RAN Booster is the selected deployment basis.** Release Please
    manages version and changelog automation; it does not deploy. The
    GitHub-only, PAT-based plugin is presently a beta and must pass its staging
    acceptance gate before it is treated as production-ready. Its sanitised
@@ -71,7 +71,7 @@ The initial audit on 2026-07-16 established the following facts:
 - This theme is a clean, separate Git repository. The Local wrapper's rename
   and installation state must be documented as an integration concern, but it
   must not become the source of theme documentation.
-- RAN GitHub Booster is active locally at `0.1.0-dev`, but no package, PAT, or
+- RAN Booster is active locally at `0.1.0-dev`, but no package, PAT, or
   webhook is configured. Its installed source is currently unpinned. Treat it
   as a beta deployment candidate until a pinned release passes the documented
   staging acceptance, manual-update, signed-webhook, and recovery checks.
@@ -82,7 +82,7 @@ The initial audit on 2026-07-16 established the following facts:
 ## Implementation progress — 2026-07-17
 
 - **Phase 0:** the root README, handbook index, and release/runbook are in the
-  theme repository. The runbook now records RAN GitHub Booster's beta
+  theme repository. The runbook now records RAN Booster's beta
   acceptance and PAT/webhook security model. Exact staging and production
   settings remain an environment-operator audit.
 - **Phase 1:** three empty disposable drafts exist for the ArtWorks, recent
@@ -154,7 +154,7 @@ state a developer needs to reproduce the client theme.
 
 1. Record the active theme repository URL, branch/commit, version/tag, and
    expected installation path in the new root `README.md`.
-2. Audit RAN GitHub Booster in the staging and production environments. First
+2. Audit RAN Booster in the staging and production environments. First
    pin the plugin source/release; then record its package mapping, repository,
    branch/ref, subdirectory, secret source, Push-to-Deploy state, update,
    recovery path, and authorised operators. Never commit credentials, PATs,
@@ -284,7 +284,7 @@ Turn existing validation machinery into meaningful release evidence.
 
 ### Steps
 
-1. Complete the RAN GitHub Booster beta acceptance gate: pin its source,
+1. Complete the RAN Booster beta acceptance gate: pin its source,
    prove a least-privilege PAT setup, link/update the theme manually on
    staging, exercise signed SHA-pinned webhook deployment, and prove host
    recovery from a known-good revision. Confirm production error-display policy

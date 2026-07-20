@@ -149,6 +149,6 @@ header
 		[href$="/membership"],
 		[href$="/membership/"]
 	) {
-	background: transparent;
-	color: var(--wp--preset--color--brand-red);
+	background: var(--wp--preset--color--brand-red);
+	color: var(--wp--preset--color--neutral-0);
 }

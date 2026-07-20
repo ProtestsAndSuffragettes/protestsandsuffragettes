@@ -514,7 +514,7 @@ async function readEditorStyles(editor: EditorDocument) {
 				'.pns-intro-copy :is(p, .wp-block-paragraph)'
 			),
 			semanticGapOwner: read(
-				'.pns-image-strip, .pns-suffragette-image-strip, .pns-contact-form .wp-block-columns, .pns-connect-social .wp-block-columns'
+				'.pns-image-strip, .pns-contact-form .wp-block-columns, .pns-connect-social .wp-block-columns'
 			),
 			paragraph: read('.pns-content-frame p'),
 			pnsSection: read('.wp-block.alignfull.pns-section'),
@@ -974,6 +974,11 @@ test.describe('editor CSS regression harness', () => {
 					(block.attributes as Record<string, unknown>).mediaType ===
 						'text'
 			);
+			const mediaSections = splitSections.filter(
+				(block: Record<string, unknown>) =>
+					(block.attributes as Record<string, unknown>).mediaType !==
+					'text'
+			);
 
 			const sections = textSections.map(
 				(block: Record<string, unknown>) => {
@@ -1063,11 +1068,39 @@ test.describe('editor CSS regression harness', () => {
 			);
 
 			return {
+				alignmentSections: sections.filter((section) =>
+					String(section.anchor).startsWith(
+						'pns-text-text-alignment-demo-'
+					)
+				),
 				copyGroups,
+				mediaSections: mediaSections.map(
+					(block: Record<string, unknown>) => ({
+						secondaryTextVerticalAlignment: (
+							block.attributes as Record<string, unknown>
+						).secondaryTextVerticalAlignment,
+						textVerticalAlignment: (
+							block.attributes as Record<string, unknown>
+						).textVerticalAlignment,
+					})
+				),
 				mediaSectionClientId: splitSections.find(
-					(block: Record<string, unknown>) =>
-						(block.attributes as Record<string, unknown>)
-							.mediaType === 'video'
+					(block: Record<string, unknown>) => {
+						const columnsBlock = (
+							block.innerBlocks as Array<Record<string, unknown>>
+						)[0];
+						const columns =
+							(columnsBlock?.innerBlocks as Array<
+								Record<string, unknown>
+							>) || [];
+
+						return columns.some((column) =>
+							String(
+								(column.attributes as Record<string, unknown>)
+									.className
+							).includes('pns-split-section__media-column--video')
+						);
+					}
 				)?.clientId,
 				sections,
 				topSectionClientId: sections.find(
@@ -1078,19 +1111,19 @@ test.describe('editor CSS regression harness', () => {
 			};
 		});
 
-		expect(matrixState.sections).toHaveLength(8);
+		expect(matrixState.sections).toHaveLength(24);
 		expect(
 			matrixState.sections.filter(
 				(section) =>
 					section.layoutVariant === 'edge-media-left' ||
 					section.layoutVariant === 'edge-media-right'
 			)
-		).toHaveLength(4);
+		).toHaveLength(12);
 		expect(
 			matrixState.sections.filter(
 				(section) => section.layoutVariant === 'media-right'
 			)
-		).toHaveLength(4);
+		).toHaveLength(12);
 		expect(
 			matrixState.sections.every(
 				(section) => section.mediaType === 'text'
@@ -1114,7 +1147,9 @@ test.describe('editor CSS regression harness', () => {
 		).toBe(true);
 		expect(
 			matrixState.sections.every((section) =>
-				String(section.anchor).startsWith('pns-text-text-demo-')
+				['pns-text-text-demo-', 'pns-text-text-alignment-demo-'].some(
+					(prefix) => String(section.anchor).startsWith(prefix)
+				)
 			)
 		).toBe(true);
 		expect(
@@ -1127,7 +1162,7 @@ test.describe('editor CSS regression harness', () => {
 				mediaType: 'text',
 			}),
 		]);
-		expect(matrixState.copyGroups).toHaveLength(28);
+		expect(matrixState.copyGroups).toHaveLength(60);
 		expect(
 			matrixState.copyGroups.every((copy) => copy.layout?.type !== 'flex')
 		).toBe(true);
@@ -1135,14 +1170,106 @@ test.describe('editor CSS regression harness', () => {
 			matrixState.sections.filter(
 				(section) => section.textVerticalAlignment === 'top'
 			)
-		).toHaveLength(2);
+		).toHaveLength(8);
 		expect(
 			matrixState.sections.filter(
 				(section) => section.secondaryTextVerticalAlignment === 'top'
 			)
-		).toHaveLength(2);
+		).toHaveLength(8);
+		expect(matrixState.mediaSections).toHaveLength(12);
+		expect(
+			matrixState.mediaSections.every(
+				(section) =>
+					section.textVerticalAlignment === 'center' &&
+					section.secondaryTextVerticalAlignment === 'center'
+			)
+		).toBe(true);
+
+		const expectedAlignmentPairs = [
+			'bottom/bottom',
+			'bottom/center',
+			'bottom/top',
+			'center/bottom',
+			'center/center',
+			'center/top',
+			'top/bottom',
+			'top/center',
+		];
+		const alignmentPairs = (width: 'wide' | 'constrained') =>
+			matrixState.alignmentSections
+				.filter((section) =>
+					String(section.anchor).startsWith(
+						`pns-text-text-alignment-demo-${width}-`
+					)
+				)
+				.map(
+					(section) =>
+						`${section.textVerticalAlignment ?? 'center'}/${section.secondaryTextVerticalAlignment ?? 'center'}`
+				)
+				.sort();
+
+		expect(matrixState.alignmentSections).toHaveLength(16);
+		expect(alignmentPairs('wide')).toEqual(expectedAlignmentPairs);
+		expect(alignmentPairs('constrained')).toEqual(expectedAlignmentPairs);
+		expect(
+			matrixState.sections
+				.filter((section) =>
+					[
+						'pns-text-text-demo-text-text-long-short',
+						'pns-text-text-demo-text-text-short-long',
+						'pns-text-text-demo-text-text-constrained-long-short',
+						'pns-text-text-demo-text-text-constrained-short-long',
+					].includes(String(section.anchor))
+				)
+				.every(
+					(section) =>
+						section.textVerticalAlignment === 'top' &&
+						section.secondaryTextVerticalAlignment === 'top'
+				)
+		).toBe(true);
 		expect(matrixState.topSectionClientId).toBeTruthy();
 		expect(matrixState.mediaSectionClientId).toBeTruthy();
+
+		const renderedAlignments = await editor.evaluate((sections) => {
+			const cssAlignment = {
+				bottom: 'end',
+				center: 'center',
+				top: 'start',
+			};
+
+			return sections.map((section) => {
+				const root = document.querySelector<HTMLElement>(
+					`[data-block="${section.clientId}"]`
+				);
+				const copies = Array.from(
+					root?.querySelectorAll<HTMLElement>(
+						'.pns-split-section__copy'
+					) || []
+				);
+				const primary =
+					(section.textVerticalAlignment as keyof typeof cssAlignment) ||
+					'center';
+				const secondary =
+					(section.secondaryTextVerticalAlignment as keyof typeof cssAlignment) ||
+					'center';
+
+				return {
+					actual: copies.map(
+						(copy) => getComputedStyle(copy).alignSelf
+					),
+					expected: [cssAlignment[primary], cssAlignment[secondary]],
+				};
+			});
+		}, matrixState.alignmentSections);
+
+		expect(
+			renderedAlignments.every(
+				(alignment) =>
+					alignment.actual.length === 2 &&
+					alignment.actual[0] === alignment.expected[0] &&
+					alignment.actual[1] === alignment.expected[1]
+			)
+		).toBe(true);
 
 		await page.evaluate(() => {
 			const reversedBlock = wp.data
@@ -1184,7 +1311,7 @@ test.describe('editor CSS regression harness', () => {
 			blockInspector.getByRole('combobox', {
 				name: 'First text panel vertical alignment',
 			})
-		).toHaveValue('center');
+		).toHaveValue('top');
 		await expect(
 			blockInspector.getByRole('combobox', {
 				name: 'Second text panel vertical alignment',
@@ -1196,11 +1323,10 @@ test.describe('editor CSS regression harness', () => {
 		}, matrixState.mediaSectionClientId);
 		await blockInspector.getByRole('tab', { name: 'Settings' }).click();
 
-		await expect(
-			blockInspector.getByRole('combobox', {
-				name: 'Text vertical alignment',
-			})
-		).toHaveValue('center');
+		const mediaAlignmentControl = blockInspector.getByRole('combobox', {
+			name: 'Text vertical alignment',
+		});
+		await expect(mediaAlignmentControl).toHaveValue('center');
 		await expect(
 			blockInspector.getByRole('combobox', {
 				name: 'Second text panel vertical alignment',
@@ -1211,6 +1337,62 @@ test.describe('editor CSS regression harness', () => {
 				'[data-type="pns/split-section"]:not(.is-pns-text-text)[class*="is-pns-secondary-text-align-"]'
 			)
 		).toHaveCount(0);
+
+		const readMediaAlignmentGeometry = () =>
+			editor.evaluate((clientId) => {
+				const section = document.querySelector<HTMLElement>(
+					`[data-block="${clientId}"]`
+				);
+				const copy = section?.querySelector<HTMLElement>(
+					'.pns-split-section__copy'
+				);
+				const media = section?.querySelector<HTMLElement>(
+					'.pns-split-section__media-column'
+				);
+
+				if (!section || !copy || !media) {
+					return null;
+				}
+
+				const mediaRect = media.getBoundingClientRect();
+
+				return {
+					copyAlignSelf: getComputedStyle(copy).alignSelf,
+					mediaAlignSelf: getComputedStyle(media).alignSelf,
+					mediaHeight: mediaRect.height,
+					mediaLeft: mediaRect.left,
+					mediaTop: mediaRect.top,
+					mediaWidth: mediaRect.width,
+				};
+			}, matrixState.mediaSectionClientId);
+
+		const mediaGeometryBefore = await readMediaAlignmentGeometry();
+		await mediaAlignmentControl.selectOption('top');
+		const mediaGeometryAfter = await readMediaAlignmentGeometry();
+
+		expect(mediaGeometryBefore).not.toBeNull();
+		expect(mediaGeometryAfter).not.toBeNull();
+		expect(mediaGeometryAfter?.copyAlignSelf).toBe('start');
+		expect(mediaGeometryAfter?.mediaAlignSelf).toBe(
+			mediaGeometryBefore?.mediaAlignSelf
+		);
+		expect(mediaGeometryAfter?.mediaHeight).toBeCloseTo(
+			mediaGeometryBefore?.mediaHeight ?? 0,
+			1
+		);
+		expect(mediaGeometryAfter?.mediaLeft).toBeCloseTo(
+			mediaGeometryBefore?.mediaLeft ?? 0,
+			1
+		);
+		expect(mediaGeometryAfter?.mediaTop).toBeCloseTo(
+			mediaGeometryBefore?.mediaTop ?? 0,
+			1
+		);
+		expect(mediaGeometryAfter?.mediaWidth).toBeCloseTo(
+			mediaGeometryBefore?.mediaWidth ?? 0,
+			1
+		);
+		await mediaAlignmentControl.selectOption('center');
 	});
 
 	test('full-width news posts expose locked PNS Post Details inside the content-owned hero', async ({
@@ -2420,6 +2602,165 @@ test.describe('editor CSS regression harness', () => {
 
 		for (const block of editorParity.innerBlocks) {
 			expect(block?.marginTop).toBe('0px');
+		}
+	});
+
+	test('Split Section video media reaches both copy-column corners on desktop', async ({
+		page,
+	}) => {
+		const componentGuide = realPages.find(
+			(realPage) => realPage.name === 'split-section-components'
+		);
+
+		expect(componentGuide).toBeDefined();
+		await page.setViewportSize({ width: 1440, height: 1000 });
+		await openEditor(page, await realPageId(page, componentGuide!));
+
+		const editor = await editorDocument(page);
+		await waitForEditorContent(editor, '[data-type="pns/split-section"]');
+		await editor.waitForFunction(
+			() =>
+				Array.from(
+					document.querySelectorAll<HTMLElement>(
+						'[data-type="pns/split-section"]'
+					)
+				).filter((section) =>
+					section.querySelector(
+						'.pns-split-section__media-column--video'
+					)
+				).length >= 8
+		);
+
+		const videoGeometry = await editor.evaluate(() => {
+			const readRect = (element: HTMLElement) => {
+				const rect = element.getBoundingClientRect();
+
+				return {
+					bottom: rect.bottom,
+					height: rect.height,
+					left: rect.left,
+					right: rect.right,
+					top: rect.top,
+					width: rect.width,
+				};
+			};
+
+			return Array.from(
+				document.querySelectorAll<HTMLElement>(
+					'[data-type="pns/split-section"]'
+				)
+			)
+				.map((section) => {
+					const copy = section.querySelector<HTMLElement>(
+						'.pns-split-section__copy-column'
+					);
+					const media = section.querySelector<HTMLElement>(
+						'.pns-split-section__media-column--video'
+					);
+					const nativeVideo = media?.querySelector<HTMLVideoElement>(
+						'.wp-block-video > video'
+					);
+					const embed =
+						media?.querySelector<HTMLElement>('.wp-block-embed');
+					const embedWrapper = media?.querySelector<HTMLElement>(
+						'.wp-block-embed__wrapper'
+					);
+					const iframe =
+						media?.querySelector<HTMLIFrameElement>('iframe');
+					const layoutVariant = Array.from(section.classList).find(
+						(className) => className.startsWith('is-style-pns-')
+					);
+
+					if (!copy || !media || !layoutVariant) {
+						return null;
+					}
+
+					return {
+						copy: readRect(copy),
+						embed: embed ? readRect(embed) : null,
+						embedWrapper: embedWrapper
+							? readRect(embedWrapper)
+							: null,
+						iframe: iframe ? readRect(iframe) : null,
+						media: readRect(media),
+						mediaAlignSelf: getComputedStyle(media).alignSelf,
+						nativeVideo: nativeVideo
+							? {
+									...readRect(nativeVideo),
+									objectFit:
+										getComputedStyle(nativeVideo).objectFit,
+								}
+							: null,
+						type: nativeVideo
+							? 'native'
+							: embed
+								? 'youtube'
+								: 'unknown',
+						variant: layoutVariant.replace('is-style-pns-', ''),
+					};
+				})
+				.filter(Boolean);
+		});
+
+		expect(videoGeometry).toHaveLength(8);
+
+		for (const type of ['native', 'youtube']) {
+			const fixtures = videoGeometry.filter(
+				(fixture) => fixture?.type === type
+			);
+
+			expect(fixtures).toHaveLength(4);
+			expect(fixtures.map((fixture) => fixture?.variant).sort()).toEqual([
+				'edge-media-left',
+				'edge-media-right',
+				'media-left',
+				'media-right',
+			]);
+		}
+
+		for (const fixture of videoGeometry) {
+			if (!fixture) {
+				continue;
+			}
+
+			expect(fixture.mediaAlignSelf).toBe('stretch');
+			expect(fixture.media.top).toBeCloseTo(fixture.copy.top, 0);
+			expect(fixture.media.bottom).toBeCloseTo(fixture.copy.bottom, 0);
+
+			if (fixture.type === 'native') {
+				expect(fixture.nativeVideo?.objectFit).toBe('cover');
+				expect(fixture.nativeVideo?.top).toBeCloseTo(
+					fixture.media.top,
+					0
+				);
+				expect(fixture.nativeVideo?.bottom).toBeCloseTo(
+					fixture.media.bottom,
+					0
+				);
+			}
+
+			if (fixture.type === 'youtube') {
+				expect(fixture.embed?.top).toBeCloseTo(fixture.media.top, 0);
+				expect(fixture.embed?.bottom).toBeCloseTo(
+					fixture.media.bottom,
+					0
+				);
+				expect(fixture.embedWrapper?.top).toBeCloseTo(
+					fixture.media.top,
+					0
+				);
+				expect(fixture.embedWrapper?.bottom).toBeCloseTo(
+					fixture.media.bottom,
+					0
+				);
+				expect(fixture.iframe?.height).toBeCloseTo(
+					fixture.media.height,
+					0
+				);
+				expect(fixture.iframe?.width ?? 0).toBeGreaterThanOrEqual(
+					fixture.media.width
+				);
+			}
 		}
 	});
 });

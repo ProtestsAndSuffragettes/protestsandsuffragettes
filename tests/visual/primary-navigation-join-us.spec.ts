@@ -3,6 +3,7 @@ import { expect, test, type Locator } from '@playwright/test';
 const joinUsSelector =
 	'.pns-primary-navigation a.wp-block-navigation-item__content:is([href$="/membership"], [href$="/membership/"])';
 const brandRed = 'rgb(212, 0, 15)';
+const neutral0 = 'rgb(255, 255, 255)';
 
 type BurstMetrics = {
 	backgroundImage: string;
@@ -68,6 +69,18 @@ async function expectNoStandardHover(link: Locator): Promise<void> {
 	await link.hover();
 	await expect(link).toHaveCSS('color', brandRed);
 	await expect(link).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+	await expect
+		.poll(() =>
+			link.evaluate(
+				(element) => getComputedStyle(element, '::after').content
+			)
+		)
+		.toBe('none');
+}
+
+async function expectStandardDrawerInteraction(link: Locator): Promise<void> {
+	await expect(link).toHaveCSS('color', neutral0);
+	await expect(link).toHaveCSS('background-color', brandRed);
 	await expect
 		.poll(() =>
 			link.evaluate(
@@ -154,7 +167,7 @@ test('@navigation reduced motion shows a static Join Us burst', async ({
 	expect((await readBurstMetrics(label)).transitionDuration).toBe('0s');
 });
 
-test('@mobile-navigation mobile Join Us treatment keeps the drawer row clear', async ({
+test('@mobile-navigation mobile Join Us uses the standard drawer interaction', async ({
 	page,
 }) => {
 	await page.setViewportSize({ width: 390, height: 900 });
@@ -179,6 +192,10 @@ test('@mobile-navigation mobile Join Us treatment keeps the drawer row clear', a
 		)
 	).toBe('0px');
 	expect((await readBurstMetrics(label)).content).toBe('none');
-	await expectNoStandardHover(link);
+	await link.hover();
+	await expectStandardDrawerInteraction(link);
+	await page.mouse.move(0, 0);
+	await link.focus();
+	await expectStandardDrawerInteraction(link);
 	expect((await readBurstMetrics(label)).content).toBe('none');
 });

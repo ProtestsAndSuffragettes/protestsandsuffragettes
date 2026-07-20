@@ -17,7 +17,7 @@
 }
 
 .pns-featured-post .wp-block-post-featured-image {
-	background-color: var(--wp--preset--color--heritage-green);
+	background-color: var(--wp--preset--color--brand-purple);
 }
 
 .wp-block-post.type-page .pns-post-card__meta {
@@ -36,7 +36,7 @@
 }
 
 .pns-archive-card .wp-block-post-featured-image {
-	background-color: var(--wp--preset--color--heritage-green);
+	background-color: var(--wp--preset--color--brand-purple);
 }
 
 .pns-featured-post

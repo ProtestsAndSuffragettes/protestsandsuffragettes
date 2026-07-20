@@ -1544,7 +1544,7 @@ test(
 			page
 				.locator('.pns-news-more-section .wp-block-post-featured-image')
 				.first()
-		).toHaveCSS('background-color', 'rgb(0, 107, 95)');
+		).toHaveCSS('background-color', 'rgb(61, 32, 126)');
 		const firstNewsCard = page
 			.locator('.pns-news-more-section .pns-archive-card.pns-post-card')
 			.first();
@@ -1833,6 +1833,108 @@ test(
 			paginationSurface.frameWidth ?? 0,
 			0
 		);
+	}
+);
+
+test(
+	taggedTitle(
+		'style guide pagination specimens contain their visual surfaces',
+		'fast',
+		'layout'
+	),
+	async ({ page }) => {
+		await page.setViewportSize({ width: 1560, height: 900 });
+		await page.goto('/news/?pns-visual-test=style-guide-pagination');
+		await page.waitForLoadState('domcontentloaded');
+
+		const contracts = await page.evaluate(() => {
+			const source = document.querySelector<HTMLElement>(
+				'.pns-news-more-section .pns-query-pagination'
+			);
+			const main = document.querySelector('main');
+
+			if (!source || !main) {
+				return [];
+			}
+
+			const fixture = document.createElement('div');
+			fixture.className = 'pns-style-guide-pagination-examples';
+
+			for (const variant of ['few', 'many']) {
+				const sample = document.createElement('section');
+				sample.className = `pns-style-guide-sample pns-style-guide-pagination-example pns-style-guide-pagination-example--${variant}`;
+				const heading = document.createElement('h4');
+				heading.textContent = `${variant} pages`;
+				const pagination = source.cloneNode(true) as HTMLElement;
+
+				if (variant === 'many') {
+					const numbers = pagination.querySelector<HTMLElement>(
+						'.wp-block-query-pagination-numbers'
+					);
+
+					if (numbers) {
+						numbers.innerHTML = Array.from(
+							{ length: 8 },
+							(_, index) =>
+								`<a class="page-numbers" href="#page-${index + 1}">${index + 1}</a>`
+						).join('');
+					}
+				}
+
+				sample.append(heading, pagination);
+				fixture.append(sample);
+			}
+
+			main.append(fixture);
+
+			return Array.from(
+				fixture.querySelectorAll<HTMLElement>(
+					'.pns-style-guide-pagination-example'
+				)
+			).map((sample) => {
+				const pagination = sample.querySelector<HTMLElement>(
+					'.pns-query-pagination'
+				);
+				const sampleBounds = sample.getBoundingClientRect();
+				const paginationBounds = pagination?.getBoundingClientRect();
+				const sampleStyle = getComputedStyle(sample);
+				const surfaceWidth = pagination
+					? Number.parseFloat(
+							getComputedStyle(pagination, '::before').inlineSize
+						)
+					: 0;
+				const paginationCentre = paginationBounds
+					? (paginationBounds.left + paginationBounds.right) / 2
+					: 0;
+
+				return {
+					overflowX: sampleStyle.overflowX,
+					paginationLeft: paginationBounds?.left ?? 0,
+					paginationRight: paginationBounds?.right ?? 0,
+					sampleLeft: sampleBounds.left,
+					sampleRight: sampleBounds.right,
+					sampleWidth: sampleBounds.width,
+					surfaceLeft: paginationCentre - surfaceWidth / 2,
+					surfaceRight: paginationCentre + surfaceWidth / 2,
+					surfaceWidth,
+				};
+			});
+		});
+
+		expect(contracts).toHaveLength(2);
+
+		for (const contract of contracts) {
+			expect(contract.overflowX).toBe('clip');
+			expect(contract.paginationLeft).toBeGreaterThanOrEqual(
+				contract.sampleLeft
+			);
+			expect(contract.paginationRight).toBeLessThanOrEqual(
+				contract.sampleRight
+			);
+			expect(contract.surfaceWidth).toBeGreaterThan(contract.sampleWidth);
+			expect(contract.surfaceLeft).toBeLessThan(contract.sampleLeft);
+			expect(contract.surfaceRight).toBeGreaterThan(contract.sampleRight);
+		}
 	}
 );
 
@@ -2602,7 +2704,7 @@ test(
 					'.pns-herstories-more-section .wp-block-post-featured-image'
 				)
 				.first()
-		).toHaveCSS('background-color', 'rgb(0, 107, 95)');
+		).toHaveCSS('background-color', 'rgb(61, 32, 126)');
 		const firstHerstoryCard = page
 			.locator(
 				'.pns-herstories-more-section .pns-archive-card.pns-post-card'
@@ -7228,9 +7330,6 @@ test(
 			page.getByRole('heading', { name: 'pns/entry-herstory-navigation' })
 		).toBeVisible();
 		await expect(
-			page.getByRole('heading', { name: 'pns/two-columns' })
-		).toBeVisible();
-		await expect(
 			page.getByRole('heading', { name: 'pns/split-section-image' })
 		).toBeVisible();
 		await expect(
@@ -7244,9 +7343,6 @@ test(
 		).toBeVisible();
 		await expect(
 			page.getByRole('heading', { name: 'pns/suffragette-facts' })
-		).toBeVisible();
-		await expect(
-			page.getByRole('heading', { name: 'pns/suffragette-image-strip' })
 		).toBeVisible();
 		await expect(
 			page.getByRole('heading', { name: 'pns/image-strip' })

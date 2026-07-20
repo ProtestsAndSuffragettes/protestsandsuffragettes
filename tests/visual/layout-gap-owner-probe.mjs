@@ -131,8 +131,10 @@ async function collectRoute(page) {
 			['contact-form-octopus', '.pns-contact-form-octopus'],
 			['contact-form', '.pns-contact-form'],
 			['active-dates', '.active-dates'],
-			['pns-image-strip', '.pns-image-strip'],
-			['pns-suffragette-image-strip', '.pns-suffragette-image-strip'],
+			[
+				'pns-image-strip',
+				':is(.pns-image-strip, .pns-suffragette-image-strip)',
+			],
 			['pns-contact-form', '.pns-contact-form'],
 			['pns-connect-social', '.pns-connect-social'],
 			['pands-logo', '.pands-logo'],
