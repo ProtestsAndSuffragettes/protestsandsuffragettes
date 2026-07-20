@@ -71,12 +71,16 @@ and runtime caveats.
 
 ## Support boundary
 
-Compatibility is tied to the client's maintained environments. The declared
-PHP floor will be Local's serving PHP 8.2.29 after the release gate passes;
-the production PHP version is a separate tested target. Current WordPress/PHP
-metadata has not yet been re-baselined, so do not infer support from the
-headers alone. The policy and evidence are being completed under the
-[production-readiness plan](docs/plans/2026-07-16-production-readiness-and-handoff-compendium-plan.md).
+This is a client-site theme, not a general-purpose hosting product. The
+supported baseline is WordPress 6.6 or later with PHP 8.2 or later; the current
+accepted environment is WordPress 7.0.2 and PHP 8.2.29. The theme has been
+tested through WordPress 7.0.
+
+Deploy only to a maintained client environment at or above that baseline. For
+each release, record the serving WordPress/PHP versions and the validation
+result in the access-controlled release record. The enduring policy and its
+current Local evidence are in the
+[compatibility policy](docs/operations/compatibility-evidence.md).
 
 ## Documentation maintenance
 

@@ -4,27 +4,39 @@
 # change can affect the bundle, then require the regenerated files to be staged.
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
-if git diff --cached --quiet -- \
+if ! git diff --cached --quiet -- \
 	':(glob)styles/**/*.css' \
 	':(exclude,glob)styles/dist/**' \
 	package.json \
-	pnpm-lock.yaml \
-	scripts/fix-css-source-map-urls.mjs; then
-	exit 0
+	pnpm-lock.yaml; then
+	printf '%s\n' 'Rebuilding generated theme CSS...'
+	if ! pnpm compile:css; then
+		printf '%s\n' 'Unable to rebuild generated theme CSS; commit stopped.' >&2
+		exit 1
+	fi
+
+	if ! git diff --quiet -- styles/dist/*.min.css || git ls-files --others --exclude-standard -- styles/dist/*.min.css | grep -q .; then
+		printf '%s\n' '' >&2
+		printf '%s\n' 'Generated theme CSS is out of date.' >&2
+		printf '%s\n' 'The pre-commit hook rebuilt the runtime CSS, but the generated files are not staged.' >&2
+		printf '%s\n' 'Review the output, then run: git add styles/dist/*.min.css' >&2
+		printf '%s\n' 'Commit again after staging the regenerated assets.' >&2
+		git status --short -- styles/dist/*.min.css >&2
+		exit 1
+	fi
 fi
 
-printf '%s\n' 'Rebuilding generated theme CSS...'
-if ! pnpm compile:css; then
-	printf '%s\n' 'Unable to rebuild generated theme CSS; commit stopped.' >&2
-	exit 1
-fi
+BLOCK_FILE_LIST=$(mktemp "${TMPDIR:-/tmp}/pns-block-template-files.XXXXXX")
+trap 'rm -f "$BLOCK_FILE_LIST"' EXIT HUP INT TERM
 
-if ! git diff --quiet -- styles/dist/*.min.css || git ls-files --others --exclude-standard -- styles/dist/*.min.css | grep -q .; then
-	printf '%s\n' '' >&2
-	printf '%s\n' 'Generated theme CSS is out of date.' >&2
-	printf '%s\n' 'The pre-commit hook rebuilt the runtime CSS, but the generated files are not staged.' >&2
-	printf '%s\n' 'Review the output, then run: git add styles/dist/*.min.css' >&2
-	printf '%s\n' 'Commit again after staging the regenerated assets.' >&2
-	git status --short -- styles/dist/*.min.css >&2
-	exit 1
+git diff --cached --name-only --diff-filter=ACMR -- \
+	templates \
+	parts \
+	patterns \
+	navigation \
+	synced-patterns |
+	grep '\.html$' > "$BLOCK_FILE_LIST" || true
+
+if [ -s "$BLOCK_FILE_LIST" ]; then
+	php scripts/validate-block-templates.php --file-list "$BLOCK_FILE_LIST"
 fi

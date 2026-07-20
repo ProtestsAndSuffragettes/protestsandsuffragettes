@@ -19,8 +19,3 @@ keeping existing synced patterns with matching slugs.
 
 The manifest does not contain source database IDs; synced patterns are matched
 by slug.
-
-`shop-intro-copy.html` is retained as a draft rollback fixture because Ecwid's
-`ecwid/product-block` editor implementation currently crashes when inserted
-from synced patterns. The production `Shop Intro` fixture uses static product
-cards and remains published.

@@ -61,6 +61,7 @@ Run portable checks from the theme root:
 ```sh
 pnpm check
 pnpm lint:php:syntax
+pnpm check:block-templates
 ```
 
 During CSS work, compile the distributable output with `pnpm compile:css`.
@@ -94,6 +95,7 @@ against the intended Local database:
 
 ```sh
 pnpm check:template-ownership
+pnpm check:retained-render-bridges
 pnpm check:release-handoff
 ```
 
@@ -152,10 +154,10 @@ avoids unnecessary permissions.
    visual result as release evidence.
 3. Run the Local database checks above when templates, parts, navigation,
    synced patterns, lifecycle code, or related render behaviour changed.
-4. Record the Local WordPress/PHP baseline and the production
-   WordPress/PHP target with the result. Production's higher PHP version is a
-   required tested target; it does not raise the Local minimum or allow
-   production-only features.
+4. Record the exact Local and deployment WordPress/PHP versions with their
+   results. The deployment environment must meet the declared client support
+   policy and be validated as its own target; it does not change the Local
+   baseline or allow production-only features.
 5. Ensure Release Please has generated or updated the release material. Do not
    invent historical release notes.
 6. Obtain normal code review and choose the approved GitHub Booster deployment

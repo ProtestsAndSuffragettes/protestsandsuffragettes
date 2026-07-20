@@ -6,3 +6,7 @@ test-results/
 test-results-*/
 playwright-report/
 coverage/
+.vscode/
+*.sql
+**/*-db-backups/
+**/*-backups/

@@ -41,7 +41,9 @@ const realPages = [
 		env: 'PNS_EDITOR_MARY_BARBOUR_ID',
 		slug: 'mary-barbour',
 		title: 'Mary Barbour',
-		fallbackId: 42,
+		restBase: 'herstory',
+		postType: 'herstory',
+		fallbackId: 5835,
 	},
 	{
 		name: 'edu-giveaway',
@@ -279,9 +281,13 @@ async function optionalFixturePageId(page: Page) {
 	}
 }
 
-async function pageIdFromAdminList(page: Page, title: string) {
+async function pageIdFromAdminList(
+	page: Page,
+	title: string,
+	postType = 'page'
+) {
 	await page.goto(
-		`/wp-admin/edit.php?post_type=page&s=${encodeURIComponent(title)}`,
+		`/wp-admin/edit.php?post_type=${encodeURIComponent(postType)}&s=${encodeURIComponent(title)}`,
 		{ waitUntil: 'domcontentloaded' }
 	);
 
@@ -327,7 +333,9 @@ async function realPageId(page: Page, realPage: (typeof realPages)[number]) {
 		return Number(envValue);
 	}
 
-	const response = await page.request.get('/wp-json/wp/v2/pages', {
+	const restBase = 'restBase' in realPage ? realPage.restBase : 'pages';
+	const postType = 'postType' in realPage ? realPage.postType : 'page';
+	const response = await page.request.get(`/wp-json/wp/v2/${restBase}`, {
 		params: {
 			slug: realPage.slug,
 		},
@@ -342,7 +350,11 @@ async function realPageId(page: Page, realPage: (typeof realPages)[number]) {
 		}
 	}
 
-	const adminListId = await pageIdFromAdminList(page, realPage.title);
+	const adminListId = await pageIdFromAdminList(
+		page,
+		realPage.title,
+		postType
+	);
 
 	return adminListId || realPage.fallbackId;
 }

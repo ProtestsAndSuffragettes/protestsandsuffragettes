@@ -1,9 +1,21 @@
-# Compatibility evidence worksheet
+# Compatibility and support policy
 
-Use this worksheet to record the environment facts needed before changing the
-theme's WordPress or PHP metadata. It is evidence capture, not a support
-policy: `style.css` and `readme.txt` remain unchanged until the listed checks
-pass.
+The Protests and Suffragettes theme is supported as a client-site theme, not as
+a general-purpose theme for arbitrary hosting environments.
+
+Its declared compatibility policy is:
+
+| Metadata            | Policy        |
+| ------------------- | ------------- |
+| `Requires at least` | WordPress 6.6 |
+| `Tested up to`      | WordPress 7.0 |
+| `Requires PHP`      | PHP 8.2       |
+
+The supported deployment boundary is a maintained client environment at or
+above those floors. A release operator must record the exact serving
+WordPress/PHP versions and passing validation result for the deployed
+environment. This repository does not promise a broad third-party-hosting
+matrix.
 
 ## Scope and ownership
 
@@ -12,26 +24,28 @@ pass.
 **Authoritative sources:** the serving Local runtime, the client staging or
 production runtime, theme source requirements, and recorded validation output.
 
-**Update this document when:** WordPress, PHP, a required plugin API, or
-block-editor markup changes in a supported environment.
+**Update this document when:** the declared WordPress/PHP policy, a required
+plugin API, or block-editor markup changes in a supported environment.
 
 **Validation:** run the relevant checks from the
 [development and release runbook](development-and-release.md) and retain the
 result in the environment's access-controlled release record.
 
-## Current known boundary
+## Current evidence
 
-| Item                    | Current position                                                            | Evidence still needed                                                                                     |
-| ----------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Local serving PHP       | 8.2.29 is the intended declared floor.                                      | Run the release checks under Local's serving PHP binary for the release candidate.                        |
-| Production PHP          | A higher client-host version is a separate tested target.                   | Record exact version and a dated passing production/staging result.                                       |
-| WordPress source floor  | 6.6, because the theme uses `theme.json` schema version 3 and related APIs. | Confirm the target release has no lower unsupported runtime path.                                         |
-| Tested WordPress target | Must follow the client host, not an arbitrary broad matrix.                 | Record the exact production WordPress version and passing checks.                                         |
-| Declared metadata       | Current headers must not be treated as reliable support claims.             | Update `style.css`, `readme.txt`, README, and the final policy together after this worksheet is complete. |
+| Environment                  | WordPress | PHP    | Theme | Evidence                                                                                                                                                              |
+| ---------------------------- | --------- | ------ | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local acceptance environment | 7.0.2     | 8.2.29 | 0.3.0 | Active theme and required plugin bundle verified through Local's serving PHP runtime; `pnpm check`, PHP syntax, and desktop/mobile visual smoke passed on 2026-07-20. |
 
-## Release-candidate matrix
+The WordPress 6.6 floor is source-led: the theme uses `theme.json` schema
+version 3 and related block-theme APIs. WordPress 7.0.2 is the current tested
+Local client target, so the public header uses the conventional `7.0` value.
 
-Complete one row per environment for each release candidate.
+## Release record
+
+Record one row per environment for each release candidate in the
+access-controlled release record. Do not put credentials, private hostnames,
+or database exports in this repository.
 
 | Environment | WordPress | PHP    | Theme commit/version | Required plugins verified | Static checks | Visual/routes checked | Date/operator | Result |
 | ----------- | --------- | ------ | -------------------- | ------------------------- | ------------- | --------------------- | ------------- | ------ |
@@ -42,7 +56,7 @@ Complete one row per environment for each release candidate.
 Do not paste PATs, webhook secrets, host credentials, database dumps, or
 private URLs into this worksheet.
 
-## Evidence collection
+## Release validation
 
 1. Record the active theme commit and version.
 2. Confirm WordPress and PHP from the serving runtime. For Local, use the
@@ -54,21 +68,8 @@ private URLs into this worksheet.
 4. Confirm the required plugin bundle through Site Health and record material
    plugin-version changes that affect blocks or frontend output.
 5. Record the exact result in the environment's access-controlled release
-   record; this worksheet should retain only the non-secret summary.
+   record; this policy retains only the non-secret Local evidence.
 
-## Metadata change gate
-
-Only update the public metadata when all are true:
-
-- Local PHP 8.2.29 passes the release-candidate checks.
-- The client staging/production WordPress and PHP versions are recorded and
-  pass their required checks.
-- The declared WordPress minimum is no lower than the APIs used by the current
-  theme source.
-- The declared `Tested up to` value is the client-host WordPress target with
-  current evidence.
-- The release notes identify the support-policy change without claiming a
-  general public compatibility matrix.
-
-After the gate passes, replace this worksheet with the concise enduring
-compatibility policy and retain the dated release record as the evidence.
+If a release needs a lower WordPress/PHP floor, or a higher `Tested up to`
+value, establish that evidence first and update `style.css`, `readme.txt`,
+this policy, and the release record together.

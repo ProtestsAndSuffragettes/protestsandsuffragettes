@@ -4,14 +4,13 @@
  * `-font-size` class (or an inline custom size), both of which remain editor
  * overrides.
  */
-.single-post .pns-template .wp-block-post-content h2.wp-block-heading:not(
-	[class*="-font-size"]
-),
+.single-post
+	.pns-template
+	.wp-block-post-content
+	h2.wp-block-heading:not([class*="-font-size"]),
 .editor-styles-wrapper.is-pns-standard-post
 	.is-root-container
-	h2.wp-block-heading:not(
-	[class*="-font-size"]
-) {
+	h2.wp-block-heading:not([class*="-font-size"]) {
 	font-size: var(--wp--preset--font-size--title-medium);
 	line-height: var(--pns--typography--line-height--heading-compact);
 }

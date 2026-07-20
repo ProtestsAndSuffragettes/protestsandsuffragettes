@@ -22,19 +22,16 @@ repository, WordPress installation path, and support boundary.
 - [Current template and component inventory](reference/templates-parts-patterns.md)
   — code-backed template, pattern, seed-fixture, and functional-component map;
   it identifies where database ownership still needs checking.
-- [Production readiness and handoff plan](plans/2026-07-16-production-readiness-and-handoff-compendium-plan.md)
-  — current implementation sequence, open evidence requirements, and the
-  intended handbook catalogue.
 - [Navigation fixtures](../navigation/README.md) — ownership and lifecycle of
   the default navigation records.
 - [Synced pattern fixtures](../synced-patterns/README.md) — lifecycle and
   switch-away rules for theme-owned synced patterns.
 
-The template/component inventory is deliberately provisional: it reports the
-current code-backed surface but does not treat the set as frozen. The
-administrator guide and compatibility policy remain evidence-led work. The
-page-rebuild proof is the decision point for formalising authoring guidance,
-new templates, or new patterns.
+The template/component inventory reports the current code-backed surface but
+does not freeze future additions. Compatibility claims remain evidence-led;
+use the compatibility policy and release runbook when validating a higher
+WordPress/PHP target. The page-rebuild lab remains the decision point for
+formalising new authoring guidance, templates, or patterns.
 
 ## Documentation boundaries
 
@@ -44,9 +41,8 @@ private hosting access details. The Local wrapper repository is an integration
 environment and may retain historical evidence, but it is not the theme
 handbook.
 
-Completed planning records are evidence, not the operating manual. Link to a
-current handbook page when it exists instead of repeatedly copying historical
-decisions.
+Historical plans and migration records do not belong in the handbook. Record
+only the current operating contract and link to its maintained owner.
 
 ## Handbook maintenance contract
 
