@@ -78,6 +78,22 @@
 	margin-block: 0;
 }
 
+.pns-featured-post
+	.pns-split-section__media-column
+	.wp-block-post-featured-image
+	figcaption:not(.has-text-color) {
+	/* Owner: archive-cards.css. External pressure: the unlayered light-surface fallback otherwise gives a dark caption text over Core's dark translucent image overlay. Removal gate: delete when the featured-image block owns an accessible overlay-caption colour. */
+	color: var(--wp--preset--color--neutral-0);
+}
+
+.pns-archive-card > .pns-post-card__meta > * + *::before,
+.pns-archive-card .pns-post-card__meta .pns-post-meta > * + *::before {
+	/* Owner: archive-cards.css. External pressure: Core's unlayered Post Author style clears the component-layer separator. The second selector follows the current PNS metadata wrapper. Removal gate: delete after archive-card metadata keeps its delimiter without the tail. */
+	content: "|";
+	color: inherit;
+	margin-inline-end: var(--wp--preset--spacing--tight);
+}
+
 :is(
 		.pns-taxonomy-pills :is(.taxonomy-category),
 		.pns-taxonomy-pills__list.taxonomy-category,

@@ -23,6 +23,12 @@ function pns_theme_get_dependency_contract() {
 			'purpose'  => __( 'PNS site block layouts, including split sections.', 'protestsandsuffragettes' ),
 			'required' => true,
 		),
+		'pns-search-routing'    => array(
+			'name'     => __( 'PNS Search Routing', 'protestsandsuffragettes' ),
+			'file'     => 'pns-search-routing/pns-search-routing.php',
+			'purpose'  => __( 'Canonical editorial search routes and search query scope.', 'protestsandsuffragettes' ),
+			'required' => true,
+		),
 		'pns-herstories'        => array(
 			'name'     => __( 'PNS Herstories', 'protestsandsuffragettes' ),
 			'file'     => 'pns-herstories/pns-herstories.php',

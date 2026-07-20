@@ -4,7 +4,8 @@
  * Owner: reusable archive/post-card component classes. Page/archive templates
  * may place these cards, but the styling contract is the card class itself.
  */
-.pns-post-card__meta > * + *::before {
+.pns-archive-card > .pns-post-card__meta > * + *::before,
+.pns-archive-card .pns-post-card__meta .pns-post-meta > * + *::before {
 	content: "|";
 	color: inherit;
 	margin-inline-end: var(--wp--preset--spacing--tight);

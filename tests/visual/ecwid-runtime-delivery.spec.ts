@@ -3,7 +3,11 @@ import { expect, test, type Page } from '@playwright/test';
 async function getEcwidAssetState(page: Page) {
 	return page.evaluate(() => ({
 		cartWidgets: document.querySelectorAll('.ec-cart-widget').length,
-		ecwidCss: Boolean(document.querySelector('#ecwid-css-css')),
+		ecwidCss: Boolean(
+			document.querySelector(
+				'#ecwid-css-css, link[data-handles*="ecwid-css"]'
+			)
+		),
 		ecwidFrontendScript: Boolean(
 			document.querySelector(
 				'#ecwid-frontend-js-js, #ecwid-frontend-js-js-extra, script[data-handles*="ecwid-frontend-js"]'

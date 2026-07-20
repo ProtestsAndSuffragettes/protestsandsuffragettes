@@ -19,6 +19,9 @@ repository, WordPress installation path, and support boundary.
 - [Ownership and integrations](architecture/ownership-and-integrations.md) —
   theme, plugin, vendor, and WordPress-database responsibilities; dependency
   contract; and safe handoff routing.
+- [Component and functionality catalogue](reference/component-and-functionality-catalog.md)
+  — code-backed runtime, editor, administration, integration, and lifecycle
+  contracts with their removal/verification conditions.
 - [Current template and component inventory](reference/templates-parts-patterns.md)
   — code-backed template, pattern, seed-fixture, and functional-component map;
   it identifies where database ownership still needs checking.
@@ -26,6 +29,10 @@ repository, WordPress installation path, and support boundary.
   the default navigation records.
 - [Synced pattern fixtures](../synced-patterns/README.md) — lifecycle and
   switch-away rules for theme-owned synced patterns.
+- [Compatibility evidence](operations/compatibility-evidence.md) — declared
+  WordPress/PHP policy and the current accepted Local evidence.
+- [Handoff checklist](operations/handoff-checklist.md) — the final evidence
+  and external gates required before another developer takes over.
 
 The template/component inventory reports the current code-backed surface but
 does not freeze future additions. Compatibility claims remain evidence-led;

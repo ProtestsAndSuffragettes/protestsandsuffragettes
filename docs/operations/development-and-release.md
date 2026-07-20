@@ -15,7 +15,7 @@ theme code and WordPress records for ownership, and the approved RAN GitHub
 Booster configuration in each deployment environment.
 
 **Update this document when:** a package script, quality gate, Local runtime,
-GitHub Booster release, deployment lane, rollback/recovery action, or release
+RAN Booster release, deployment lane, rollback/recovery action, or release
 responsibility changes.
 
 **Validation:** run `pnpm check`. For a release, complete the relevant static,
@@ -23,14 +23,16 @@ WordPress, visual, and deployment-plugin gates in this document.
 
 ## Current deployment status
 
-RAN Booster is the intended replacement for the retired deployment
-path. Local currently has version `0.1.0-dev` active, but it has no configured
-theme package, PAT, or webhook secret. Its installed checkout is not yet a
-pinned/released source revision. It is therefore **not production-ready**.
+RAN Booster is the intended replacement for the retired deployment path. Local
+currently has version `0.1.0-alpha.1` active and has no configured theme
+package mapping, PAT, or webhook secret. It declares WordPress 7.0 and PHP 8.4
+as its runtime floor, while Local serves PHP 8.2.29. Local is therefore not a
+valid Booster acceptance environment and the theme is **not deployment-ready**
+through Booster yet.
 
-Before it can become the deployment authority, confirm a pinned plugin release
-and complete the acceptance checks below on staging. RocketCI remains a future
-alternative and is not part of the current release procedure.
+Before Booster becomes a deployment authority, use a pinned/reviewable Booster
+release in a PHP 8.4+ staging environment and complete the acceptance checks
+below. RocketCI remains a future alternative and is not part of this procedure.
 
 ## Local setup
 
@@ -113,7 +115,7 @@ optionally handle signed GitHub push webhooks.
 
 1. Install a pinned, reviewable RAN Booster release; record its source
    repository, tag/commit, and WordPress/PHP test result. Do not use the
-   current unpinned `0.1.0-dev` Local checkout as production evidence.
+   current PHP 8.2 Local installation as Booster production evidence.
 2. Create a GitHub fine-grained PAT restricted to only the required repository
    (initially `ProtestsAndSuffragettes/protestsandsuffragettes`) with the
    minimum Content read permission. Do not grant organisation-wide access,
@@ -141,7 +143,7 @@ avoids unnecessary permissions.
 ## Release preparation
 
 1. Confirm the release commit, current theme version, intended deployment ref,
-   and GitHub Booster/plugin version:
+   and RAN Booster/plugin version:
 
     ```sh
     git status --short
@@ -160,7 +162,7 @@ avoids unnecessary permissions.
    baseline or allow production-only features.
 5. Ensure Release Please has generated or updated the release material. Do not
    invent historical release notes.
-6. Obtain normal code review and choose the approved GitHub Booster deployment
+6. Obtain normal code review and choose the approved RAN Booster deployment
    ref. Use a manual staging update until the signed webhook path has passed
    its separate acceptance test.
 
@@ -182,10 +184,10 @@ not a general Git-target service.
 
 ### Signed Push-to-Deploy (after staging acceptance)
 
-The webhook endpoint is:
+The GitHub webhook endpoint is:
 
 ```text
-/wp-json/ran-booster/v1/github/webhook
+/wp-json/ran-booster/v1/webhooks/gh
 ```
 
 Configure GitHub to send only `push` events. The plugin requires an
@@ -208,7 +210,7 @@ all of those controls and the release record captures the actual deployed SHA.
 
 ### Recovery and rollback
 
-GitHub Booster does not provide a documented automatic rollback history. Keep a
+RAN Booster does not provide a documented automatic rollback history. Keep a
 tested host backup/recovery path and a recorded last-known-good theme revision.
 Before relying on a manual ref change for rollback, prove on staging that the
 plugin resolves the intended known-good artifact and leaves the site active.
@@ -220,9 +222,9 @@ part of a code rollback unless a separate reviewed recovery plan calls for it.
 - A new developer can clone the canonical theme repository and locate this
   runbook from its root README.
 - The release record identifies the deployed commit, version/ref, WordPress,
-  PHP, environment, validation results, GitHub Booster version, and approved
+  PHP, environment, validation results, RAN Booster version, and approved
   operator.
-- GitHub Booster's package mapping and secret source are verified in the
+- RAN Booster's package mapping and secret source are verified in the
   relevant environment without copying credentials or raw configuration into
   Git.
 - Template ownership and administrator-owned data have been reviewed where
