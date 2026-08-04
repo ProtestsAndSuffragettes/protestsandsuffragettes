@@ -46,13 +46,13 @@
 		/* border-radius: 2rem; */
 		margin: 1rem;
 		/* border: 1px solid transparent; */
-		background-color: rgb(from var(--wp--preset--color--brand-purple) r g b / 0.65);
+		background-color: rgb(
+			from var(--wp--preset--color--brand-purple) r g b / 0.65
+		);
 	}
 }
 
 @media only screen and (min-width: 782px) {
-
-
 	.pns-hero-copy {
 		padding-block: var(--wp--preset--spacing--generous);
 	}
