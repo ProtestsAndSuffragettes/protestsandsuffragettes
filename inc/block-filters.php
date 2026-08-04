@@ -931,4 +931,4 @@ function pns_theme_prevent_template_rest_mutations( $result, $server, $request )
 	);
 }
 
-add_filter( 'rest_pre_dispatch', 'pns_theme_prevent_template_rest_mutations', 10, 3 );
+// add_filter( 'rest_pre_dispatch', 'pns_theme_prevent_template_rest_mutations', 10, 3 );

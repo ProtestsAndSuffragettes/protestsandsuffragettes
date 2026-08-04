@@ -131,7 +131,7 @@ function pns_theme_get_code_patterns() {
 		),
 		'pns/blockquote-with-red-line' => array(
 			'title'       => __( 'PNS - Blockquote With Red Line', 'protestsandsuffragettes' ),
-			'description' => __( 'Full-width quote cover with red keyline image and citation.', 'protestsandsuffragettes' ),
+			'description' => __( 'Full-width quote cover with red keyline image and citation. Use the Cover spacing controls to override its default vertical inset.', 'protestsandsuffragettes' ),
 			'categories'  => array( 'pns-layout' ),
 			'keywords'    => array( 'pns', 'quote', 'blockquote', 'red line', 'keyline' ),
 			'file'        => 'patterns/blockquote-with-red-line.php',

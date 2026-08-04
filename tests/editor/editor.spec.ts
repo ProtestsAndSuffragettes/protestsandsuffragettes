@@ -2054,13 +2054,25 @@ test.describe('editor CSS regression harness', () => {
 				document.querySelector<HTMLElement>(quoteSelector);
 			const textElement =
 				quoteElement?.querySelector<HTMLElement>(':scope > p');
+			const coverElement = quoteElement?.closest<HTMLElement>(
+				'.wp-block-cover.pns-blockquote-with-red-line'
+			);
 
-			if (!quoteElement || !textElement) {
+			if (!quoteElement || !textElement || !coverElement) {
 				return null;
 			}
 
 			const quoteStyle = getComputedStyle(quoteElement);
 			const textStyle = getComputedStyle(textElement);
+			const coverStyle = getComputedStyle(coverElement);
+			const groupBlocks = coverElement.querySelector<HTMLElement>(
+				':scope > .wp-block-cover__inner-container > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block-group > .block-editor-inner-blocks > .block-editor-block-list__layout'
+			);
+			const firstChild = groupBlocks?.firstElementChild;
+			const lastChild = groupBlocks?.lastElementChild;
+			const citationSpacer = quoteElement.querySelector<HTMLElement>(
+				':scope > .wp-block-spacer'
+			);
 
 			return {
 				borderInlineStartWidth: quoteStyle.borderInlineStartWidth,
@@ -2068,6 +2080,21 @@ test.describe('editor CSS regression harness', () => {
 				fontFamily: textStyle.fontFamily,
 				fontVariationSettings: textStyle.fontVariationSettings,
 				fontWeight: textStyle.fontWeight,
+				paddingTop: Number.parseFloat(coverStyle.paddingTop),
+				paddingBottom: Number.parseFloat(coverStyle.paddingBottom),
+				firstBoundarySpacerDisplay: firstChild?.classList.contains(
+					'wp-block-spacer'
+				)
+					? getComputedStyle(firstChild).display
+					: null,
+				lastBoundarySpacerDisplay: lastChild?.classList.contains(
+					'wp-block-spacer'
+				)
+					? getComputedStyle(lastChild).display
+					: null,
+				citationSpacerDisplay: citationSpacer
+					? getComputedStyle(citationSpacer).display
+					: null,
 			};
 		}, selector);
 
@@ -2082,6 +2109,11 @@ test.describe('editor CSS regression harness', () => {
 		expect(quote.fontFamily).toContain('Rubik');
 		expect(quote.fontWeight).toBe('800');
 		expect(quote.fontVariationSettings).toContain('"wght" 800');
+		expect(quote.paddingTop).toBeGreaterThan(0);
+		expect(quote.paddingBottom).toBeGreaterThan(quote.paddingTop);
+		expect([null, 'none']).toContain(quote.firstBoundarySpacerDisplay);
+		expect([null, 'none']).toContain(quote.lastBoundarySpacerDisplay);
+		expect(quote.citationSpacerDisplay).not.toBe('none');
 	});
 
 	test('dark PNS surfaces keep empty-block guidance legible in the editor', async ({

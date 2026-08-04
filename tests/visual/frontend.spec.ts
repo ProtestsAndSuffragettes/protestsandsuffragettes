@@ -5804,6 +5804,97 @@ for (const route of redLineQuoteRoutes) {
 
 test(
 	taggedTitle(
+		'red-line quote panels use CSS defaults that yield to manual spacing',
+		'fast',
+		'layout',
+		'mobile-fast',
+		'mobile-layout'
+	),
+	async ({ page }) => {
+		await page.goto('/artworks/');
+		await page.waitForLoadState('domcontentloaded');
+		await waitForContractReady(page);
+
+		const quoteCovers = page.locator(
+			'.wp-block-cover.pns-blockquote-with-red-line'
+		);
+		expect(await quoteCovers.count()).toBeGreaterThanOrEqual(2);
+
+		const styles = await quoteCovers.evaluateAll((covers) =>
+			covers.map((cover) => {
+				const group = cover.querySelector<HTMLElement>(
+					':scope > .wp-block-cover__inner-container > .wp-block-group'
+				);
+				const firstChild = group?.firstElementChild;
+				const lastChild = group?.lastElementChild;
+				const citationSpacer = cover.querySelector<HTMLElement>(
+					'.wp-block-quote > .wp-block-spacer'
+				);
+				const computed = getComputedStyle(cover);
+
+				return {
+					paddingTop: Number.parseFloat(computed.paddingTop),
+					paddingBottom: Number.parseFloat(computed.paddingBottom),
+					firstBoundarySpacerDisplay: firstChild?.classList.contains(
+						'wp-block-spacer'
+					)
+						? getComputedStyle(firstChild).display
+						: null,
+					lastBoundarySpacerDisplay: lastChild?.classList.contains(
+						'wp-block-spacer'
+					)
+						? getComputedStyle(lastChild).display
+						: null,
+					citationSpacerDisplay: citationSpacer
+						? getComputedStyle(citationSpacer).display
+						: null,
+					citationSpacerHeight: citationSpacer
+						? Number.parseFloat(
+								getComputedStyle(citationSpacer).height
+							)
+						: null,
+				};
+			})
+		);
+
+		const viewportHeight = page.viewportSize()?.height ?? 0;
+
+		for (const style of styles) {
+			expect(style.paddingTop).toBeCloseTo(viewportHeight * 0.06, 0);
+			expect(style.paddingBottom).toBeCloseTo(viewportHeight * 0.09, 0);
+			expect(style.firstBoundarySpacerDisplay).toBe('none');
+			expect(style.lastBoundarySpacerDisplay).toBe('none');
+			expect(style.citationSpacerDisplay).not.toBe('none');
+			expect(style.citationSpacerHeight ?? 0).toBeGreaterThanOrEqual(28);
+		}
+
+		const manualOverride = await quoteCovers.first().evaluate((cover) => {
+			const element = cover as HTMLElement;
+			element.style.paddingTop = '17px';
+			element.style.paddingBottom = '23px';
+			element.style.marginTop = '11px';
+			element.style.marginBottom = '13px';
+			const computed = getComputedStyle(element);
+
+			return {
+				paddingTop: computed.paddingTop,
+				paddingBottom: computed.paddingBottom,
+				marginTop: computed.marginTop,
+				marginBottom: computed.marginBottom,
+			};
+		});
+
+		expect(manualOverride).toEqual({
+			paddingTop: '17px',
+			paddingBottom: '23px',
+			marginTop: '11px',
+			marginBottom: '13px',
+		});
+	}
+);
+
+test(
+	taggedTitle(
 		'homepage cascade contracts',
 		'smoke',
 		'fast',

@@ -14,6 +14,35 @@
 	padding-inline: var(--pns--layout--content-rail);
 }
 
+/*
+ * The Cover owns the panel inset so its native spacing controls remain the
+ * manual override path. Short quotes retain the established 430px reference
+ * composition; longer quotes grow with dependable breathing room.
+ */
+.wp-block-cover.pns-blockquote-with-red-line {
+	padding-block-start: 6vh;
+	padding-block-end: 9vh;
+}
+
+/* Existing saved copies carry the old 3vh/6vh boundary Spacer blocks. Retire
+ * only those outer spacers visually; the 29px Spacer inside the Quote still
+ * separates the keyline from the citation. */
+.wp-block-cover.pns-blockquote-with-red-line
+	> .wp-block-cover__inner-container
+	> .wp-block-group
+	> .wp-block-spacer:is(:first-child, :last-child),
+.editor-styles-wrapper
+	.wp-block-cover.pns-blockquote-with-red-line
+	> .wp-block-cover__inner-container
+	> .block-editor-inner-blocks
+	> .block-editor-block-list__layout
+	> .wp-block-group
+	> .block-editor-inner-blocks
+	> .block-editor-block-list__layout
+	> .wp-block-spacer:is(:first-child, :last-child) {
+	display: none;
+}
+
 .wp-block-quote p {
 	font-family: var(--wp--preset--font-family--rubik);
 	font-weight: 800;
