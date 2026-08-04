@@ -33,14 +33,26 @@
 }
 
 .pns-editorial-strapline__content--align-right {
-	text-align: right;
+	text-align: end;
 }
 
 .pns-editorial-strapline__content--align-justify {
 	text-align: justify;
 }
 
+@media only screen and (max-width: 782px) {
+	.wp-block-cover__inner-container:has(.pns-hero__inner) {
+		padding: 2rem;
+		/* border-radius: 2rem; */
+		margin: 1rem;
+		/* border: 1px solid transparent; */
+		background-color: rgb(from var(--wp--preset--color--brand-purple) r g b / 0.65);
+	}
+}
+
 @media only screen and (min-width: 782px) {
+
+
 	.pns-hero-copy {
 		padding-block: var(--wp--preset--spacing--generous);
 	}
