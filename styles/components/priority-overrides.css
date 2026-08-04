@@ -260,12 +260,43 @@
 	}
 }
 
-@media only screen and (max-width: 1360px) {
+@media only screen and (max-width: 930px) {
 	.wp-block-post-template.is-layout-grid.columns-3:has(
 			> li > .pns-archive-card
 		) {
-		/* Core serializes three tracks into saved Query Loops; PNS vertical cards need a wider two-card reading measure before they become overly tall. */
+		/* Core serializes three tracks into saved Query Loops; switch to two tracks at the tablet boundary while retaining three cards above 930px. */
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media only screen and (min-width: 801px) and (max-width: 930px) {
+	.pns-read-all-about-it
+		.wp-block-post-template.is-layout-grid.columns-3
+		> li:nth-child(3):last-child
+		> .pns-archive-card
+		> * {
+		/* Owner: synced-sections.css. External pressure: Core's unlayered constrained-layout rule caps direct card children at the global content width after the card spans both tracks. */
+		max-inline-size: none;
+	}
+
+	.pns-read-all-about-it
+		.wp-block-post-template.is-layout-grid.columns-3
+		> li:nth-child(3):last-child
+		> .pns-archive-card
+		> .wp-block-post-featured-image {
+		/* Owner: archive-cards.css. External pressure: the saved Featured Image block writes an inline fixed height and auto ratio that over-crops the full-row card. */
+		aspect-ratio: 16 / 9 !important;
+		block-size: auto !important;
+	}
+
+	.pns-read-all-about-it
+		.wp-block-post-template.is-layout-grid.columns-3
+		> li:nth-child(3):last-child
+		> .pns-archive-card
+		> .wp-block-post-featured-image
+		:is(a, img) {
+		aspect-ratio: 16 / 9 !important;
+		block-size: auto !important;
 	}
 }
 

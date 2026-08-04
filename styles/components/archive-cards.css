@@ -25,6 +25,11 @@
 	display: none;
 }
 
+.pns-herstories-more-section .pns-archive-card > .pns-post-card__meta {
+	/* Core's generated .is-layout-flex rule is unlayered, so this scoped omission must remain authoritative. */
+	display: none !important;
+}
+
 .pns-archive-card .wp-block-post-featured-image,
 .pns-archive-card .wp-block-post-featured-image a {
 	display: block;

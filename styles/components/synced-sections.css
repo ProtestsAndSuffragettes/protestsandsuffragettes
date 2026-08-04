@@ -67,6 +67,15 @@
 	margin-block-start: var(--wp--preset--spacing--roomy);
 }
 
+@media only screen and (min-width: 801px) and (max-width: 930px) {
+	.pns-read-all-about-it
+		.wp-block-post-template.is-layout-grid.columns-3
+		> li:nth-child(3):last-child {
+		/* Match the shop teaser: a lone third card fills its wrapped two-column row. */
+		grid-column: 1 / -1;
+	}
+}
+
 @media (max-width: 782px) {
 	.pns-connect-social__copy {
 		padding-block: var(--wp--preset--spacing--generous);

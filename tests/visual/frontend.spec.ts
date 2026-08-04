@@ -2736,19 +2736,13 @@ test(
 		const firstHerstoryMeta = firstHerstoryCard.locator(
 			'.pns-post-card__meta'
 		);
+		await expect(firstHerstoryMeta).toHaveCSS('display', 'none');
 		await expect(
 			firstHerstoryMeta.locator('.wp-block-post-date')
-		).toBeVisible();
+		).toBeHidden();
 		await expect(
-			firstHerstoryMeta.locator('.wp-block-post-author a')
-		).toHaveAttribute('href', /\/author\/tsbeall\/$/);
-		expect(
-			await firstHerstoryMeta
-				.locator('.wp-block-post-author')
-				.evaluate(
-					(element) => getComputedStyle(element, '::before').content
-				)
-		).toBe('"|"');
+			firstHerstoryMeta.locator('.wp-block-post-author')
+		).toBeHidden();
 		await expect(
 			firstHerstoryCard.locator('.pns-post-card__footer').first()
 		).toHaveClass(/\bpns-taxonomy-pills\b/);
@@ -7331,9 +7325,9 @@ test(
 	),
 	async ({ page }) => {
 		for (const { width, expectedColumns, expectedRows } of [
-			{ width: 1361, expectedColumns: 3, expectedRows: 1 },
-			{ width: 1360, expectedColumns: 2, expectedRows: 2 },
-			{ width: 1359, expectedColumns: 2, expectedRows: 2 },
+			{ width: 931, expectedColumns: 3, expectedRows: 1 },
+			{ width: 930, expectedColumns: 2, expectedRows: 2 },
+			{ width: 929, expectedColumns: 2, expectedRows: 2 },
 			{ width: 801, expectedColumns: 2, expectedRows: 2 },
 			{ width: 800, expectedColumns: 1, expectedRows: 3 },
 		]) {
@@ -7372,6 +7366,118 @@ test(
 			expect(metrics?.scrollWidth ?? 0).toBeLessThanOrEqual(
 				(metrics?.viewportWidth ?? 0) + 1
 			);
+		}
+	}
+);
+
+test(
+	taggedTitle(
+		'Read All About It stretches its third card across the wrapped two-column row',
+		'fast',
+		'layout',
+		'template',
+		'desktop-only'
+	),
+	async ({ page }) => {
+		for (const { width, expectedColumns, thirdCardFillsRow } of [
+			{ width: 1025, expectedColumns: 3, thirdCardFillsRow: false },
+			{ width: 931, expectedColumns: 3, thirdCardFillsRow: false },
+			{ width: 930, expectedColumns: 2, thirdCardFillsRow: true },
+			{ width: 929, expectedColumns: 2, thirdCardFillsRow: true },
+			{ width: 801, expectedColumns: 2, thirdCardFillsRow: true },
+			{ width: 800, expectedColumns: 1, thirdCardFillsRow: true },
+		]) {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto('/about-2/', { waitUntil: 'domcontentloaded' });
+			await waitForContractReady(page);
+
+			const metrics = await page.evaluate(() => {
+				const grid = document.querySelector<HTMLElement>(
+					'.pns-read-all-about-it .wp-block-post-template.is-layout-grid.columns-3'
+				);
+				const thirdCard = grid?.children.item(2) as HTMLElement | null;
+				const thirdCardContent =
+					thirdCard?.querySelector<HTMLElement>('.pns-archive-card');
+				const featuredImage =
+					thirdCardContent?.querySelector<HTMLElement>(
+						'.wp-block-post-featured-image'
+					);
+				const featuredImageLink =
+					featuredImage?.querySelector<HTMLElement>('a');
+				const featuredImageElement =
+					featuredImage?.querySelector<HTMLElement>('img');
+
+				if (
+					!grid ||
+					!thirdCard ||
+					!thirdCardContent ||
+					!featuredImage ||
+					!featuredImageLink ||
+					!featuredImageElement
+				) {
+					return null;
+				}
+				const featuredImageBounds =
+					featuredImage.getBoundingClientRect();
+				const featuredImageLinkBounds =
+					featuredImageLink.getBoundingClientRect();
+				const featuredImageElementBounds =
+					featuredImageElement.getBoundingClientRect();
+
+				return {
+					columnCount: getComputedStyle(grid)
+						.gridTemplateColumns.trim()
+						.split(/\s+/).length,
+					gridWidth: grid.getBoundingClientRect().width,
+					thirdCardWidth: thirdCard.getBoundingClientRect().width,
+					thirdCardContentWidth: thirdCardContent.clientWidth,
+					directChildWidths: Array.from(
+						thirdCardContent.children
+					).map((child) => child.getBoundingClientRect().width),
+					featuredImageRatio:
+						featuredImageBounds.width / featuredImageBounds.height,
+					featuredImageLinkRatio:
+						featuredImageLinkBounds.width /
+						featuredImageLinkBounds.height,
+					featuredImageElementRatio:
+						featuredImageElementBounds.width /
+						featuredImageElementBounds.height,
+				};
+			});
+
+			expect(metrics).not.toBeNull();
+			expect(metrics?.columnCount).toBe(expectedColumns);
+
+			if (thirdCardFillsRow) {
+				expect(metrics?.thirdCardWidth ?? 0).toBeCloseTo(
+					metrics?.gridWidth ?? 0,
+					0
+				);
+				for (const childWidth of metrics?.directChildWidths ?? []) {
+					expect(childWidth).toBeCloseTo(
+						metrics?.thirdCardContentWidth ?? 0,
+						0
+					);
+				}
+				if (expectedColumns === 2) {
+					expect(metrics?.featuredImageRatio ?? 0).toBeCloseTo(
+						16 / 9,
+						2
+					);
+					expect(metrics?.featuredImageLinkRatio ?? 0).toBeCloseTo(
+						16 / 9,
+						2
+					);
+					expect(metrics?.featuredImageElementRatio ?? 0).toBeCloseTo(
+						16 / 9,
+						2
+					);
+				}
+			} else {
+				expect(metrics?.thirdCardWidth ?? 0).toBeLessThan(
+					(metrics?.gridWidth ?? 0) / 2
+				);
+			}
 		}
 	}
 );
