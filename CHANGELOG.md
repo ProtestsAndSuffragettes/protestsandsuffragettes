@@ -11,6 +11,35 @@ release notes and the WordPress theme version.
 - Added the developer/release handbook and the production-readiness plan,
   including the RAN Booster beta deployment basis.
 
+## [0.4.0](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/compare/v0.3.0...v0.4.0) (2026-08-04)
+
+
+### Features
+
+* complete template and pattern authority cleanup ([7c1cdad](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/7c1cdad984aa615515deaea4e5f0c71bc3fcda8b))
+* migrate membership to split text sections ([3d79b3a](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/3d79b3afc272d1ce5953a6139dd71f87c0a6c3a6))
+* refine post and archive navigation ([93f8554](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/93f85541d01a501cb1b1095816b66fb5f7c94d42))
+* **split-section:** retire video layout pattern ([a93dd92](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/a93dd923443ececd076ea57844acc2eda11fe1a3))
+* **theme:** add branded preview screenshot ([885d08c](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/885d08cf297e5650f960fc0149b0a1800b09a4cf))
+* **theme:** add mint header logo burst ([2bcb264](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/2bcb26478018210719bb951c813044e853f27b66))
+* **theme:** add playful navigation flourishes ([ba0c6db](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/ba0c6db67734905ec81e73a1f1bd17659287798a))
+
+
+### Bug Fixes
+
+* add update URI to theme metadata ([1d982c9](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/1d982c984a1666134784753ebd921868a7f98d3a))
+* deprecate split section image and slideshow patterns ([60e52cd](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/60e52cd48980a07e7ff737108e2ac71a9b44b6f7))
+* format background-color property for better readability ([a2a61a8](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/a2a61a82293caff1a75f448376f8532b0bc9445f))
+* preserve editor link colors ([2fc12d1](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/2fc12d16a0045b3c69a412948e0c9c383681f57e))
+* preserve taxonomy pill colors ([0a86e67](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/0a86e67eed4b064896c5ff06af62d5283cbc681e))
+* refine mobile archive pagination ([9d5488b](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/9d5488b66a788ab717bd73018eab6ac565a84f6a))
+* soften mobile content rail ([74d42df](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/74d42dfde22a3b0d153dbdce351ffc9c6be69e0e))
+* stack mobile entry navigation ([1b93550](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/1b93550b417cfc34b21f0da90fe568e5253251f5))
+* **theme:** prevent header navigation wrapping ([4c79327](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/4c7932754a2cdc9560b0fba7e595780a34dbc0e0))
+* **theme:** style suffragette hero surface ([17d05c1](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/17d05c1a8fdca898b31bd7e9126450c54b0b15a2))
+* update search template structure and enhance query handling ([cfb972f](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/cfb972f4ff0f4121835f4be998f2e66575026de3))
+* update text alignment to use 'end' and adjust media query for hero component ([27a8dc5](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/27a8dc5feb9815e6ddf89b23deb4f1485e07cf59))
+
 ## [0.3.0](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/compare/v0.2.0...v0.3.0) (2026-07-19)
 
 
