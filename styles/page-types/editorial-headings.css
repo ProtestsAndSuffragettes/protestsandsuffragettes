@@ -14,3 +14,13 @@
 	font-size: var(--wp--preset--font-size--title-medium);
 	line-height: var(--pns--typography--line-height--heading-compact);
 }
+
+/*
+ * Tuck .ran-video-cover under the top of the entry content area,
+ * so that it visually aligns with the top of the post title.
+ * But only when the CTA banner is present.
+ */
+.wp-site-blocks:has(.pns-cross-site-banner-cta)
+    > .pns-template-single .entry-content:has(> .ran-video-cover:first-child) {
+    margin-block-start: -2em;
+}
