@@ -24,3 +24,16 @@ $pns_theme_includes = array(
 foreach ( $pns_theme_includes as $pns_theme_include ) {
 	require_once get_theme_file_path( $pns_theme_include );
 }
+
+/**
+ * Include public Herstory entries in the native editorial search.
+ *
+ * @param string[] $post_types Post types allowed in editorial search.
+ * @return string[]
+ */
+function pns_theme_add_herstories_to_search( $post_types ) {
+	$post_types[] = 'herstory';
+
+	return array_values( array_unique( $post_types ) );
+}
+add_filter( 'pns_search_routing_editorial_post_types', 'pns_theme_add_herstories_to_search' );
