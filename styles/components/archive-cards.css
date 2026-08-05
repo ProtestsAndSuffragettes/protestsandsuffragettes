@@ -21,9 +21,15 @@
 	background-color: var(--wp--preset--color--brand-purple);
 }
 
-.wp-block-post.type-page .pns-post-card__meta {
-	display: none;
+.pns-featured-post--herstory .wp-block-post-featured-image {
+	background-color: var(--pns-surface-button-shadow);
 }
+
+.pns-featured-post--herstory .pns-post-meta,
+.pns-featured-post--herstory .pns-featured-post__meta {
+	display: none!important;
+}
+
 
 .pns-herstories-more-section .pns-archive-card > .pns-post-card__meta {
 	/* Core's generated .is-layout-flex rule is unlayered, so this scoped omission must remain authoritative. */
