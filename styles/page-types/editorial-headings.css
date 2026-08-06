@@ -22,5 +22,5 @@
  */
 .wp-site-blocks:has(.pns-cross-site-banner-cta)
     > .pns-template-single .entry-content:has(> .ran-video-cover:first-child) {
-    margin-block-start: -2em;
+    margin-block-start: -2.5em;
 }
