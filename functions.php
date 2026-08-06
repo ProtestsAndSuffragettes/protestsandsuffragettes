@@ -37,3 +37,43 @@ function pns_theme_add_herstories_to_search( $post_types ) {
 	return array_values( array_unique( $post_types ) );
 }
 add_filter( 'pns_search_routing_editorial_post_types', 'pns_theme_add_herstories_to_search' );
+
+/**
+ * Post types where comments should default to closed.
+ */
+function pns_get_comment_locked_post_types() {
+    return array( 'post', 'page', 'herstory');
+}
+
+/**
+ * 1. Set the default editor UI toggle to "closed".
+ */
+function pns_default_comment_status( $status, $post_type, $comment_type ) {
+    if ( 'comment' === $comment_type && in_array( $post_type, pns_get_comment_locked_post_types(), true ) ) {
+        return 'closed';
+    }
+    return $status;
+}
+
+/**
+ * 2. Enforce closed comments only when creating NEW posts.
+ *    Editors can still enable comments on existing posts.
+ */
+function pns_force_closed_comments_on_insert( $data, $postarr ) {
+    if ( in_array( $data['post_type'], pns_get_comment_locked_post_types(), true ) ) {
+
+        // Only enforce on NEW posts (ID = 0)
+        if ( empty( $postarr['ID'] ) ) {
+            $data['comment_status'] = 'closed';
+            $data['ping_status']    = 'closed';
+        }
+    }
+    return $data;
+}
+
+/**
+ * Apply the filters to enforce closed comments on new posts by default.
+ * This is overridable in the editor UI if the user chooses to open comments.
+ */
+add_filter( 'get_default_comment_status', 'pns_default_comment_status', 10, 3 );
+add_filter( 'wp_insert_post_data', 'pns_force_closed_comments_on_insert', 10, 2 );
