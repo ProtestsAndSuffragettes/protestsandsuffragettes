@@ -1410,6 +1410,8 @@ test(
 	taggedTitle(
 		'news archive renders the current PNS archive structure',
 		'fast',
+		'mobile-fast',
+		'mobile-full',
 		'archive',
 		'navigation',
 		'template'
@@ -1455,6 +1457,27 @@ test(
 		await expect(featuredNewsSection).toHaveClass(
 			/\bis-style-pns-edge-media-left\b/
 		);
+		const featuredNewsMediaColumn = featuredNewsSection.locator(
+			'.pns-split-section__media-column'
+		);
+		if ((page.viewportSize()?.width ?? 0) < 960) {
+			await expect(featuredNewsMediaColumn).toHaveCSS(
+				'aspect-ratio',
+				'4 / 3'
+			);
+			const featuredNewsMediaBox =
+				await featuredNewsMediaColumn.boundingBox();
+			expect(featuredNewsMediaBox).not.toBeNull();
+			expect(
+				(featuredNewsMediaBox?.width ?? 0) /
+					(featuredNewsMediaBox?.height ?? 1)
+			).toBeCloseTo(4 / 3, 2);
+		} else {
+			await expect(featuredNewsMediaColumn).toHaveCSS(
+				'aspect-ratio',
+				'auto'
+			);
+		}
 		await expect(
 			featuredNewsSection.locator('.pns-split-section__copy')
 		).toBeVisible();
@@ -1539,7 +1562,7 @@ test(
 			page
 				.locator('.pns-news-more-section .wp-block-post-featured-image')
 				.first()
-		).toHaveCSS('height', '200px');
+		).toHaveCSS('aspect-ratio', '4 / 3');
 		await expect(
 			page
 				.locator('.pns-news-more-section .wp-block-post-featured-image')
@@ -2437,6 +2460,8 @@ test(
 	taggedTitle(
 		'herstories archive grid thumbnails use card image size',
 		'fast',
+		'mobile-fast',
+		'mobile-full',
 		'archive',
 		'template'
 	),
@@ -2478,6 +2503,27 @@ test(
 		await expect(featuredHerstorySplit).toHaveClass(
 			/\bis-style-pns-edge-media-left\b/
 		);
+		const featuredHerstoryMediaColumn = featuredHerstorySplit.locator(
+			'.pns-split-section__media-column'
+		);
+		if ((page.viewportSize()?.width ?? 0) < 960) {
+			await expect(featuredHerstoryMediaColumn).toHaveCSS(
+				'aspect-ratio',
+				'4 / 3'
+			);
+			const featuredHerstoryMediaBox =
+				await featuredHerstoryMediaColumn.boundingBox();
+			expect(featuredHerstoryMediaBox).not.toBeNull();
+			expect(
+				(featuredHerstoryMediaBox?.width ?? 0) /
+					(featuredHerstoryMediaBox?.height ?? 1)
+			).toBeCloseTo(4 / 3, 2);
+		} else {
+			await expect(featuredHerstoryMediaColumn).toHaveCSS(
+				'aspect-ratio',
+				'auto'
+			);
+		}
 		await expect(
 			featuredHerstorySplit.locator(
 				'.pns-split-section__media-column .wp-block-post-featured-image'
@@ -2679,7 +2725,7 @@ test(
 					'.pns-herstories-more-section .wp-block-post-featured-image'
 				)
 				.first()
-		).toHaveCSS('height', '200px');
+		).toHaveCSS('aspect-ratio', '4 / 3');
 		await expect(
 			page
 				.locator(
@@ -7372,7 +7418,7 @@ test(
 
 test(
 	taggedTitle(
-		'Read All About It stretches its third card across the wrapped two-column row',
+		'Read All About It keeps 4:3 media when its third card spans the wrapped row',
 		'fast',
 		'layout',
 		'template',
@@ -7447,6 +7493,12 @@ test(
 
 			expect(metrics).not.toBeNull();
 			expect(metrics?.columnCount).toBe(expectedColumns);
+			expect(metrics?.featuredImageRatio ?? 0).toBeCloseTo(4 / 3, 2);
+			expect(metrics?.featuredImageLinkRatio ?? 0).toBeCloseTo(4 / 3, 2);
+			expect(metrics?.featuredImageElementRatio ?? 0).toBeCloseTo(
+				4 / 3,
+				2
+			);
 
 			if (thirdCardFillsRow) {
 				expect(metrics?.thirdCardWidth ?? 0).toBeCloseTo(
@@ -7457,20 +7509,6 @@ test(
 					expect(childWidth).toBeCloseTo(
 						metrics?.thirdCardContentWidth ?? 0,
 						0
-					);
-				}
-				if (expectedColumns === 2) {
-					expect(metrics?.featuredImageRatio ?? 0).toBeCloseTo(
-						16 / 9,
-						2
-					);
-					expect(metrics?.featuredImageLinkRatio ?? 0).toBeCloseTo(
-						16 / 9,
-						2
-					);
-					expect(metrics?.featuredImageElementRatio ?? 0).toBeCloseTo(
-						16 / 9,
-						2
 					);
 				}
 			} else {

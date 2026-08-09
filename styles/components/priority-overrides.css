@@ -86,6 +86,14 @@
 	color: var(--wp--preset--color--neutral-0);
 }
 
+.pns-archive-card > .wp-block-post-featured-image,
+.pns-archive-card > .wp-block-post-featured-image :is(a, img) {
+	/* Owner: archive-cards.css. External pressure: persisted Query Loop copies can retain the former inline auto ratio and 200px height after the code-owned card pattern changes. */
+	aspect-ratio: 4 / 3 !important;
+	block-size: auto !important;
+	height: auto !important;
+}
+
 .pns-archive-card > .pns-post-card__meta > * + *::before,
 .pns-archive-card .pns-post-card__meta .pns-post-meta > * + *::before {
 	/* Owner: archive-cards.css. External pressure: Core's unlayered Post Author style clears the component-layer separator. The second selector follows the current PNS metadata wrapper. Removal gate: delete after archive-card metadata keeps its delimiter without the tail. */
@@ -269,6 +277,19 @@
 	}
 }
 
+@media only screen and (max-width: 59.999rem) {
+	.pns-featured-post
+		.pns-split-section
+		.pns-split-section__media-column:not(
+			.pns-split-section__media-column--video
+		) {
+		/* Owner: archive-cards.css. External pressure: the unlayered Split Section block keeps stacked media square; featured editorial cards use the theme's 4:3 card shape below the shared stack breakpoint. */
+		aspect-ratio: 4 / 3 !important;
+		block-size: auto !important;
+		min-block-size: 0 !important;
+	}
+}
+
 @media only screen and (min-width: 801px) and (max-width: 930px) {
 	.pns-read-all-about-it
 		.wp-block-post-template.is-layout-grid.columns-3
@@ -277,26 +298,6 @@
 		> * {
 		/* Owner: synced-sections.css. External pressure: Core's unlayered constrained-layout rule caps direct card children at the global content width after the card spans both tracks. */
 		max-inline-size: none;
-	}
-
-	.pns-read-all-about-it
-		.wp-block-post-template.is-layout-grid.columns-3
-		> li:nth-child(3):last-child
-		> .pns-archive-card
-		> .wp-block-post-featured-image {
-		/* Owner: archive-cards.css. External pressure: the saved Featured Image block writes an inline fixed height and auto ratio that over-crops the full-row card. */
-		aspect-ratio: 16 / 9 !important;
-		block-size: auto !important;
-	}
-
-	.pns-read-all-about-it
-		.wp-block-post-template.is-layout-grid.columns-3
-		> li:nth-child(3):last-child
-		> .pns-archive-card
-		> .wp-block-post-featured-image
-		:is(a, img) {
-		aspect-ratio: 16 / 9 !important;
-		block-size: auto !important;
 	}
 }
 
