@@ -227,14 +227,6 @@
 	max-inline-size: 33.333333% !important;
 }
 
-@media only screen and (min-width: 1600px) {
-	[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
-		flex-basis: 25% !important;
-		inline-size: 25% !important;
-		max-inline-size: 25% !important;
-	}
-}
-
 @media only screen and (max-width: 999px) {
 	[id="static-ec-store-container"] .ec-store .grid__products > .grid-product {
 		flex-basis: 50% !important;

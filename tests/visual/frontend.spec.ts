@@ -8652,6 +8652,48 @@ test(
 
 test(
 	taggedTitle(
+		'static Ecwid grid matches its declared desktop column count',
+		'fast',
+		'desktop-only',
+		'shop',
+		'ecwid'
+	),
+	async ({ page }) => {
+		await page.setViewportSize({ width: 1838, height: 1111 });
+		await page.goto('/shop/');
+		await page.waitForLoadState('domcontentloaded');
+
+		const staticGrid = page.locator(
+			'#static-ec-store-container .ec-store__category-page .grid__products'
+		);
+		await staticGrid.waitFor({ state: 'attached', timeout: 10000 });
+
+		const layout = await staticGrid.evaluate((grid) => {
+			const products = Array.from(
+				grid.querySelectorAll<HTMLElement>(':scope > .grid-product')
+			);
+			const firstProductRect = products[0]?.getBoundingClientRect();
+			const firstRowProductCount = firstProductRect
+				? products.filter((product) => {
+						const rect = product.getBoundingClientRect();
+
+						return Math.abs(rect.top - firstProductRect.top) <= 2;
+					}).length
+				: 0;
+
+			return {
+				declaredColumnCount: Number(grid.dataset.cols),
+				firstRowProductCount,
+			};
+		});
+
+		expect(layout.declaredColumnCount).toBeGreaterThan(0);
+		expect(layout.firstRowProductCount).toBe(layout.declaredColumnCount);
+	}
+);
+
+test(
+	taggedTitle(
 		'shop Ecwid cascade contracts',
 		'shop',
 		'ecwid',
