@@ -113,6 +113,14 @@ class EditorAuthSkip extends Error {}
 type EditorDocument = Page | Frame;
 
 async function expectMembershipEditorGeometry(editor: EditorDocument) {
+	await editor.waitForFunction(() =>
+		Array.from(
+			document.querySelectorAll<HTMLElement>(
+				'[data-type="pns/membership-tiers"] [data-type="pns/membership-tier"]'
+			)
+		).every((tier) => getComputedStyle(tier).transform === 'none')
+	);
+
 	const geometry = await editor.evaluate(() => {
 		const rect = (element: Element | null) => {
 			const bounds = element?.getBoundingClientRect();
@@ -138,7 +146,9 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 			':scope > .block-editor-inner-blocks > .block-editor-block-list__layout'
 		);
 		const gridStyles = grid ? getComputedStyle(grid) : null;
-		const collectionStyles = collection ? getComputedStyle(collection) : null;
+		const collectionStyles = collection
+			? getComputedStyle(collection)
+			: null;
 		const tiers = Array.from(
 			grid?.querySelectorAll<HTMLElement>(
 				':scope > [data-type="pns/membership-tier"]'
@@ -155,7 +165,9 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 		return {
 			collection: rect(collection),
 			collectionPadding: {
-				bottom: Number.parseFloat(collectionStyles?.paddingBottom || '0'),
+				bottom: Number.parseFloat(
+					collectionStyles?.paddingBottom || '0'
+				),
 				left: Number.parseFloat(collectionStyles?.paddingLeft || '0'),
 				right: Number.parseFloat(collectionStyles?.paddingRight || '0'),
 				top: Number.parseFloat(collectionStyles?.paddingTop || '0'),
@@ -1219,7 +1231,7 @@ test.describe('editor CSS regression harness', () => {
 			html: false,
 			spacing: {
 				blockGap: false,
-				margin: true,
+				margin: ['top', 'bottom'],
 				padding: true,
 			},
 		});
