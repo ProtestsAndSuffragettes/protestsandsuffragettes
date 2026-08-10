@@ -919,6 +919,517 @@ test.describe('editor CSS regression harness', () => {
 		expect(blockState.variationRegistered).toBe(true);
 	});
 
+	test('Membership exposes one constrained Membership Tiers collection without recovery warnings', async ({
+		page,
+	}) => {
+		const membership = realPages.find(
+			(realPage) => realPage.name === 'membership'
+		);
+
+		expect(membership).toBeDefined();
+		await openEditor(page, await realPageId(page, membership!));
+
+		const editor = await editorDocument(page);
+		await waitForEditorContent(
+			editor,
+			'[data-type="pns/membership-tiers"]'
+		);
+		await expectNoBlockRecoveryWarnings(editor);
+		await expect(
+			editor.locator('[data-type="pns/membership-tiers"]')
+		).toHaveCount(1);
+		await expect(
+			editor.locator('[data-type="pns/membership-tier"]')
+		).toHaveCount(4);
+		await expect(
+			editor.locator(
+				'[data-type="pns/membership-tiers"] > .pns-membership-tiers__heading'
+			)
+		).toHaveText('Choose Your Impact 🛠️');
+
+		const blockState = await page.evaluate(() => {
+			const collectBlocks = (
+				blocks: Array<Record<string, unknown>>,
+				name: string
+			): Array<Record<string, unknown>> =>
+				blocks.flatMap((block) => [
+					...(block.name === name ? [block] : []),
+					...collectBlocks(
+						(block.innerBlocks as Array<Record<string, unknown>>) ||
+							[],
+						name
+					),
+				]);
+			const blocks = wp.data.select('core/block-editor').getBlocks();
+			const collections = collectBlocks(blocks, 'pns/membership-tiers');
+			const collection = collections[0];
+			const tiers =
+				(collection?.innerBlocks as Array<Record<string, unknown>>) ||
+				[];
+			const parentType = wp.blocks.getBlockType('pns/membership-tiers');
+			const childType = wp.blocks.getBlockType('pns/membership-tier');
+
+			return {
+				childParent: childType?.parent,
+				collectionCount: collections.length,
+				heading: (collection?.attributes as Record<string, unknown>)
+					?.heading,
+				parentSupports: parentType?.supports,
+				tiers: tiers.map((tier) => ({
+					children: (
+						tier.innerBlocks as Array<Record<string, unknown>>
+					).map((child) => ({
+						className: (child.attributes as Record<string, unknown>)
+							.className,
+						name: child.name,
+					})),
+					templateLock: wp.data
+						.select('core/block-editor')
+						.getBlockListSettings(tier.clientId)?.templateLock,
+				})),
+			};
+		});
+
+		expect(blockState.collectionCount).toBe(1);
+		expect(blockState.heading).toBe('Choose Your Impact 🛠️');
+		expect(blockState.childParent).toEqual(['pns/membership-tiers']);
+		expect(blockState.parentSupports).toMatchObject({
+			align: ['wide'],
+			customClassName: false,
+			html: false,
+		});
+		expect(blockState.tiers).toHaveLength(4);
+
+		for (const tier of blockState.tiers) {
+			expect(tier.templateLock).toBe('contentOnly');
+			expect(tier.children).toEqual([
+				{
+					className: 'pns-membership-tier__media',
+					name: 'core/cover',
+				},
+				{
+					className: 'pns-membership-tier__introduction',
+					name: 'core/group',
+				},
+				{
+					className: 'pns-membership-tier__price',
+					name: 'core/paragraph',
+				},
+				{
+					className: 'pns-membership-tier__action',
+					name: 'core/buttons',
+				},
+				{
+					className: 'pns-membership-tier__benefits',
+					name: 'core/list',
+				},
+			]);
+		}
+
+		const editorGeometry = await editor.evaluate(() => {
+			const collection = document.querySelector<HTMLElement>(
+				'[data-type="pns/membership-tiers"]'
+			);
+			const grid = collection?.querySelector<HTMLElement>(
+				':scope > .pns-membership-tiers__grid > .block-editor-inner-blocks > .block-editor-block-list__layout'
+			);
+			const tiers = Array.from(
+				grid?.querySelectorAll<HTMLElement>(
+					':scope > [data-type="pns/membership-tier"]'
+				) || []
+			);
+
+			return {
+				collectionWidth: collection?.getBoundingClientRect().width ?? 0,
+				columns: grid
+					? getComputedStyle(grid)
+							.gridTemplateColumns.trim()
+							.split(/\s+/).length
+					: 0,
+				rootFontSize: Number.parseFloat(
+					getComputedStyle(document.documentElement).fontSize
+				),
+				tiers: tiers.map((tier) => {
+					const cover = tier.querySelector<HTMLElement>(
+						'.pns-membership-tier__media'
+					);
+					const price = tier.querySelector<HTMLElement>(
+						'.pns-membership-tier__price'
+					);
+					const benefits = tier.querySelector<HTMLElement>(
+						'.pns-membership-tier__benefits'
+					);
+					const coverRect = cover?.getBoundingClientRect();
+					const coverStyles = cover ? getComputedStyle(cover) : null;
+
+					return {
+						benefitsPaddingLeft: benefits
+							? Number.parseFloat(
+									getComputedStyle(benefits).paddingLeft
+								)
+							: null,
+						coverHeight: coverRect?.height ?? 0,
+						coverVisible: Boolean(
+							coverRect &&
+							coverRect.width > 0 &&
+							coverRect.height > 0 &&
+							coverStyles?.display !== 'none' &&
+							coverStyles?.visibility !== 'hidden'
+						),
+						coverWidth: coverRect?.width ?? 0,
+						priceFontSize: price
+							? Number.parseFloat(
+									getComputedStyle(price).fontSize
+								)
+							: 0,
+					};
+				}),
+			};
+		});
+
+		expect(editorGeometry.columns).toBe(
+			editorGeometry.collectionWidth >= 1280 ? 4 : 2
+		);
+		expect(editorGeometry.rootFontSize).toBe(16);
+		expect(editorGeometry.tiers).toHaveLength(4);
+
+		for (const tier of editorGeometry.tiers) {
+			expect(tier.coverVisible).toBe(true);
+			expect(
+				Math.abs(tier.coverWidth - (tier.coverHeight * 4) / 3)
+			).toBeLessThanOrEqual(1);
+			expect(tier.priceFontSize).toBeGreaterThanOrEqual(20);
+			expect(tier.benefitsPaddingLeft).toBe(36);
+		}
+	});
+
+	test('Membership Tiers can be edited, reordered, saved, and reopened without recovery warnings', async ({
+		page,
+	}) => {
+		test.slow();
+		let temporaryPageId = 0;
+
+		try {
+			await page.goto('/wp-admin/post-new.php?post_type=page', {
+				waitUntil: 'domcontentloaded',
+			});
+			await page
+				.locator('.editor-styles-wrapper, iframe[name="editor-canvas"]')
+				.first()
+				.waitFor({ state: 'attached', timeout: 20000 });
+			temporaryPageId = await page.evaluate(() =>
+				Number(wp.data.select('core/editor').getCurrentPostId())
+			);
+
+			const editor = await editorDocument(page);
+
+			await page.evaluate(() => {
+				const collection = wp.blocks.createBlock(
+					'pns/membership-tiers'
+				);
+
+				wp.data
+					.dispatch('core/editor')
+					.editPost({ title: 'PNS Membership Tiers Editor Test' });
+				wp.data.dispatch('core/block-editor').insertBlocks(collection);
+			});
+
+			await waitForEditorContent(
+				editor,
+				'[data-type="pns/membership-tiers"]'
+			);
+			await page.waitForFunction(() => {
+				const collection = wp.data
+					.select('core/block-editor')
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				return (
+					(collection?.innerBlocks as Array<Record<string, unknown>>)
+						?.length === 4
+				);
+			});
+
+			const editedTierClientId = await page.evaluate(() => {
+				const editorSelect = wp.data.select('core/block-editor');
+				const editorDispatch = wp.data.dispatch('core/block-editor');
+				const collection = editorSelect
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				if (!collection) {
+					throw new Error('Membership Tiers was not inserted.');
+				}
+
+				const tiers = collection.innerBlocks as Array<
+					Record<string, unknown>
+				>;
+				const tier = tiers[0];
+				const [media, introduction, price, action, benefits] =
+					tier.innerBlocks as Array<Record<string, unknown>>;
+				const [title, tagline, description, supportingDescription] =
+					introduction.innerBlocks as Array<Record<string, unknown>>;
+				const [button] = action.innerBlocks as Array<
+					Record<string, unknown>
+				>;
+				const [firstBenefit, secondBenefit] =
+					benefits.innerBlocks as Array<Record<string, unknown>>;
+
+				editorDispatch.updateBlockAttributes(collection.clientId, {
+					heading: 'Choose Your Edited Impact 🛠️',
+				});
+				editorDispatch.updateBlockAttributes(media.clientId, {
+					alt: 'A representative membership image',
+					focalPoint: { x: 0.25, y: 0.75 },
+					url: '/wp-content/themes/protestsandsuffragettes/screenshot.png',
+				});
+				editorDispatch.updateBlockAttributes(title.clientId, {
+					content:
+						'<a href="https://www.patreon.com/cw/protestsandsuffragettes/membership">Edited Membership Tier</a>',
+				});
+				editorDispatch.updateBlockAttributes(tagline.clientId, {
+					content: '<strong>Edited tier impact.</strong>',
+				});
+				editorDispatch.updateBlockAttributes(description.clientId, {
+					content: 'Edited membership description.',
+				});
+				editorDispatch.updateBlockAttributes(
+					supportingDescription.clientId,
+					{ content: 'Edited supporting detail.' }
+				);
+				editorDispatch.updateBlockAttributes(price.clientId, {
+					content: '£12.50 / month',
+				});
+				editorDispatch.updateBlockAttributes(button.clientId, {
+					linkTarget: '_blank',
+					rel: 'noopener noreferrer',
+					text: 'Choose edited tier',
+					url: 'https://www.patreon.com/cw/protestsandsuffragettes/membership',
+				});
+				editorDispatch.updateBlockAttributes(firstBenefit.clientId, {
+					content: 'First edited benefit',
+				});
+				editorDispatch.updateBlockAttributes(secondBenefit.clientId, {
+					content: 'Second edited benefit',
+				});
+
+				return tier.clientId as string;
+			});
+
+			await page.evaluate(() => {
+				const collection = wp.data
+					.select('core/block-editor')
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				if (!collection) {
+					throw new Error('Membership Tiers was not inserted.');
+				}
+
+				wp.data
+					.dispatch('core/block-editor')
+					.insertBlocks(
+						wp.blocks.createBlock('pns/membership-tier'),
+						undefined,
+						collection.clientId
+					);
+			});
+
+			await page.waitForFunction(() => {
+				const collection = wp.data
+					.select('core/block-editor')
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				return (
+					(collection?.innerBlocks as Array<Record<string, unknown>>)
+						?.length === 5
+				);
+			});
+			await expect(
+				editor.locator('[data-type="pns/membership-tier"]')
+			).toHaveCount(5);
+
+			await page.evaluate((editedClientId) => {
+				const editorSelect = wp.data.select('core/block-editor');
+				const editorDispatch = wp.data.dispatch('core/block-editor');
+				const collection = editorSelect
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				if (!collection) {
+					throw new Error('Membership Tiers was not inserted.');
+				}
+
+				const tiers = collection.innerBlocks as Array<
+					Record<string, unknown>
+				>;
+				const addedTier = tiers[tiers.length - 1];
+
+				editorDispatch.removeBlock(addedTier.clientId);
+				editorDispatch.moveBlockToPosition(
+					editedClientId,
+					collection.clientId,
+					collection.clientId,
+					3
+				);
+			}, editedTierClientId);
+
+			await expect(
+				editor.locator('[data-type="pns/membership-tier"]')
+			).toHaveCount(4);
+			await page.waitForFunction((editedClientId) => {
+				const collection = wp.data
+					.select('core/block-editor')
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+				const tiers = (collection?.innerBlocks || []) as Array<
+					Record<string, unknown>
+				>;
+
+				return (
+					tiers.length === 4 &&
+					tiers[tiers.length - 1]?.clientId === editedClientId
+				);
+			}, editedTierClientId);
+			await expectNoBlockRecoveryWarnings(editor);
+
+			await page.evaluate(async () => {
+				await wp.data.dispatch('core/editor').savePost();
+			});
+			await page.waitForFunction(() => {
+				const editorSelect = wp.data.select('core/editor');
+
+				return (
+					!editorSelect.isSavingPost() &&
+					!editorSelect.isAutosavingPost() &&
+					Boolean(editorSelect.getCurrentPostId())
+				);
+			});
+			temporaryPageId = await page.evaluate(() =>
+				Number(wp.data.select('core/editor').getCurrentPostId())
+			);
+
+			await openEditor(page, temporaryPageId);
+			const reopenedEditor = await editorDocument(page);
+			await waitForEditorContent(
+				reopenedEditor,
+				'[data-type="pns/membership-tiers"]'
+			);
+			await expectNoBlockRecoveryWarnings(reopenedEditor);
+			await expect(
+				reopenedEditor.locator(
+					'[data-type="pns/membership-tiers"] > .pns-membership-tiers__heading'
+				)
+			).toHaveText('Choose Your Edited Impact 🛠️');
+
+			const reopenedState = await page.evaluate(() => {
+				const collection = wp.data
+					.select('core/block-editor')
+					.getBlocks()
+					.find(
+						(block: Record<string, unknown>) =>
+							block.name === 'pns/membership-tiers'
+					);
+
+				if (!collection) {
+					return null;
+				}
+
+				return (
+					collection.innerBlocks as Array<Record<string, unknown>>
+				).map((tier) => {
+					const [media, introduction, price, action, benefits] =
+						tier.innerBlocks as Array<Record<string, unknown>>;
+					const [title, tagline, description, supportingDescription] =
+						introduction.innerBlocks as Array<
+							Record<string, unknown>
+						>;
+					const [button] = action.innerBlocks as Array<
+						Record<string, unknown>
+					>;
+					const benefitItems = benefits.innerBlocks as Array<
+						Record<string, unknown>
+					>;
+
+					return {
+						button: button.attributes,
+						collectionHeading: (
+							collection.attributes as Record<string, unknown>
+						).heading,
+						description: description.attributes,
+						focalPoint: (
+							media.attributes as Record<string, unknown>
+						).focalPoint,
+						imageAlt: (media.attributes as Record<string, unknown>)
+							.alt,
+						items: benefitItems.map(
+							(item) =>
+								(item.attributes as Record<string, unknown>)
+									.content
+						),
+						price: price.attributes,
+						supportingDescription: supportingDescription.attributes,
+						tagline: tagline.attributes,
+						title: title.attributes,
+					};
+				});
+			});
+
+			expect(reopenedState).not.toBeNull();
+			expect(reopenedState).toHaveLength(4);
+			expect(reopenedState?.[3]).toMatchObject({
+				button: {
+					linkTarget: '_blank',
+					rel: 'noopener noreferrer',
+					text: 'Choose edited tier',
+					url: 'https://www.patreon.com/cw/protestsandsuffragettes/membership',
+				},
+				collectionHeading: 'Choose Your Edited Impact 🛠️',
+				description: { content: 'Edited membership description.' },
+				focalPoint: { x: 0.25, y: 0.75 },
+				imageAlt: 'A representative membership image',
+				items: ['First edited benefit', 'Second edited benefit'],
+				price: { content: '£12.50 / month' },
+				supportingDescription: {
+					content: 'Edited supporting detail.',
+				},
+				tagline: { content: '<strong>Edited tier impact.</strong>' },
+				title: {
+					content:
+						'<a href="https://www.patreon.com/cw/protestsandsuffragettes/membership">Edited Membership Tier</a>',
+				},
+			});
+		} finally {
+			if (temporaryPageId > 0) {
+				await page.evaluate(async (postId) => {
+					await wp.apiFetch({
+						method: 'DELETE',
+						path: `/wp/v2/pages/${postId}?force=true`,
+					});
+				}, temporaryPageId);
+			}
+		}
+	});
+
 	test('Split Section registers a YouTube embed variation with the shared video column', async ({
 		page,
 	}) => {

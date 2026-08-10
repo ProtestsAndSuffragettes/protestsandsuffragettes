@@ -570,7 +570,7 @@ test(
 
 test(
 	taggedTitle(
-		'membership tier cards retain their content, CTA, and responsive grid',
+		'membership tiers keep their intrinsic content, CTA, and responsive grid',
 		'fast',
 		'mobile-fast',
 		'mobile-full',
@@ -578,81 +578,116 @@ test(
 	),
 	async ({ page }) => {
 		for (const [width, expectedColumns] of [
-			[1450, 4],
-			[1449, 2],
-			[1024, 2],
-			[800, 2],
+			[1430, 4],
+			[1178, 2],
+			[747, 1],
 			[390, 1],
 		] as const) {
 			await page.setViewportSize({ width, height: 900 });
 			await page.goto('/membership/', { waitUntil: 'domcontentloaded' });
 			await waitForStableAssets(page);
 
-			const pageContent = page.locator(
-				'main.pns-template-page-light-surface-wide-content'
+			const tiers = page.locator(
+				'.wp-block-pns-membership-tiers.pns-membership-tiers'
 			);
-			const tiers = page.locator('.pns-membership-tiers');
-			const cards = tiers.locator('.pns-membership-tier');
-			const actionCards = tiers.locator('.pns-membership-tier__card');
-			const benefits = tiers.locator('.pns-membership-tier__benefits');
+			const grid = tiers.locator(':scope > .pns-membership-tiers__grid');
+			const cards = grid.locator(
+				':scope > .wp-block-pns-membership-tier.pns-membership-tier'
+			);
+			const media = cards.locator(':scope > .pns-membership-tier__media');
+			const introductions = cards.locator(
+				':scope > .pns-membership-tier__introduction'
+			);
+			const prices = cards.locator(
+				':scope > .pns-membership-tier__price'
+			);
+			const actions = cards.locator(
+				':scope > .pns-membership-tier__action'
+			);
+			const benefits = cards.locator(
+				':scope > .pns-membership-tier__benefits'
+			);
+			const sectionHeading = tiers.locator(
+				':scope > .pns-membership-tiers__heading'
+			);
 
-			await expect(pageContent).toBeVisible();
-			await expect(
-				page.getByRole('heading', {
-					level: 1,
-					name: 'Join the Future of Women’s History',
+			await expect(tiers).toHaveCount(1);
+			await expect(tiers).toHaveClass(/\balignwide\b/);
+			await expect(sectionHeading).toHaveCount(1);
+			expect(
+				await sectionHeading.evaluate((element) =>
+					Array.from(element.childNodes)
+						.map((node) => {
+							if (node.nodeType === Node.TEXT_NODE) {
+								return node.textContent ?? '';
+							}
+
+							return node instanceof HTMLImageElement
+								? node.alt
+								: (node.textContent ?? '');
+						})
+						.join('')
+						.trim()
+				)
+			).toBe('Choose Your Impact 🛠️');
+			expect(
+				await tiers.evaluate((element) => {
+					const previous = element.previousElementSibling;
+
+					return Boolean(previous?.matches('.wp-block-heading'));
 				})
-			).toBeVisible();
+			).toBe(false);
+			await expect(grid).toHaveCount(1);
 			await expect(cards).toHaveCount(4);
-			await expect(actionCards).toHaveCount(4);
+			await expect(media).toHaveCount(4);
+			await expect(introductions).toHaveCount(4);
+			await expect(prices).toHaveCount(4);
+			await expect(actions).toHaveCount(4);
 			await expect(benefits).toHaveCount(4);
-			await expect(actionCards.locator('.wp-block-cover')).toHaveCount(4);
 
-			for (const name of [
-				'Community Champion',
-				'Education Empowerer',
-				'Research Revolutionary',
-				'Creative Catalyst',
-			]) {
-				const card = cards.filter({
-					has: page.getByRole('heading', {
-						exact: true,
-						level: 4,
-						name,
-					}),
-				});
-				const image = card.locator('img');
-				const headingLinks = card.locator('h4 a');
-				const cta = card.locator('.wp-block-buttons a');
+			for (let index = 0; index < 4; index += 1) {
+				const card = cards.nth(index);
+				const image = card.locator(
+					':scope > .pns-membership-tier__media img'
+				);
+				const titleLink = card.locator(
+					':scope > .pns-membership-tier__introduction .pns-membership-tier__title a'
+				);
+				const cta = card.locator(
+					':scope > .pns-membership-tier__action .wp-block-button__link'
+				);
 
-				await expect(card).toHaveCount(1);
-				await expect(image).toHaveAttribute('alt', '');
-				await expect(headingLinks).toHaveCount(2);
+				await expect(image).toHaveCount(1);
+				await expect(titleLink).toHaveCount(1);
+				await expect(image.locator('xpath=ancestor::a')).toHaveCount(0);
+				await expect(card.locator('a')).toHaveCount(2);
+				await expect(titleLink).toHaveAttribute(
+					'href',
+					'https://www.patreon.com/cw/protestsandsuffragettes/membership'
+				);
+				await expect(titleLink).not.toHaveAttribute('target');
+				await expect(titleLink).not.toHaveAttribute('rel');
+				await expect(titleLink).toHaveAccessibleName(/\S/);
 				await expect(cta).toHaveCount(1);
+				await expect(cta).toHaveAttribute(
+					'href',
+					'https://www.patreon.com/cw/protestsandsuffragettes/membership'
+				);
+				await expect(cta).toHaveAttribute('target', '_blank');
+				await expect(cta).toHaveAttribute('rel', /\bnoopener\b/);
+				await expect(cta).toHaveAttribute('rel', /\bnoreferrer\b/);
+				await expect(cta).toHaveAccessibleName(/\S/);
 				expect(
 					await image.evaluate((element) => element.naturalWidth)
 				).toBeGreaterThan(0);
-				const membershipLinks = await card
-					.locator('h4 a, .wp-block-buttons a')
-					.evaluateAll((links) =>
-						links.map((link) => ({
-							href: link.getAttribute('href'),
-							rel: link.getAttribute('rel'),
-							target: link.getAttribute('target'),
-						}))
-					);
 
-				expect(membershipLinks).toHaveLength(3);
-				for (const link of membershipLinks) {
-					expect(link).toMatchObject({
-						href: 'https://www.patreon.com/cw/protestsandsuffragettes/membership',
-						rel: expect.stringContaining('noopener'),
-						target: '_blank',
-					});
-				}
+				const buttonBox = await cta.boundingBox();
+				expect(buttonBox?.height).toBeGreaterThanOrEqual(44);
+				await cta.focus();
+				await expect(cta).toBeFocused();
 			}
 
-			const layout = await tiers.evaluate((element) => ({
+			const layout = await grid.evaluate((element) => ({
 				columns: getComputedStyle(element)
 					.gridTemplateColumns.trim()
 					.split(/\s+/).length,
@@ -665,117 +700,233 @@ test(
 				layout.viewportWidth + 1
 			);
 
-			const cardTreatment = await actionCards.evaluateAll((elements) =>
+			const geometry = await cards.evaluateAll((elements) =>
 				elements.map((card) => {
-					const image = card.querySelector('img');
-					const cover = card.querySelector('.wp-block-cover');
-					const buttonGroup = card.querySelector('.wp-block-buttons');
+					const selectors = [
+						'.pns-membership-tier__media',
+						'.pns-membership-tier__introduction',
+						'.pns-membership-tier__price',
+						'.pns-membership-tier__action',
+						'.pns-membership-tier__benefits',
+					];
 					const cardBox = card.getBoundingClientRect();
-					const buttonBox = buttonGroup?.getBoundingClientRect();
-					const coverBox = cover?.getBoundingClientRect();
+					const tracks = selectors
+						.map((selector) =>
+							card.querySelector<HTMLElement>(
+								`:scope > ${selector}`
+							)
+						)
+						.map(
+							(element) =>
+								element?.getBoundingClientRect() ?? null
+						);
+					const image = card.querySelector<HTMLImageElement>(
+						':scope > .pns-membership-tier__media img'
+					);
+					const title = card.querySelector<HTMLElement>(
+						':scope > .pns-membership-tier__introduction .pns-membership-tier__title'
+					);
+					const benefits = card.querySelector<HTMLElement>(
+						':scope > .pns-membership-tier__benefits'
+					);
+					const firstBenefit =
+						benefits?.querySelector<HTMLElement>('li');
+					const textStart = (
+						element: HTMLElement | null | undefined
+					) => {
+						const walker = element
+							? document.createTreeWalker(
+									element,
+									NodeFilter.SHOW_TEXT,
+									{
+										acceptNode: (node) =>
+											node.textContent?.trim()
+												? NodeFilter.FILTER_ACCEPT
+												: NodeFilter.FILTER_REJECT,
+									}
+								)
+							: null;
+						const textNode = walker?.nextNode();
+
+						if (!textNode) {
+							return null;
+						}
+
+						const range = document.createRange();
+						range.selectNodeContents(textNode);
+
+						return range.getBoundingClientRect().left;
+					};
+					const styles = getComputedStyle(card);
+					const benefitsStyles = benefits
+						? getComputedStyle(benefits)
+						: null;
+					const benefitStyles = firstBenefit
+						? getComputedStyle(firstBenefit)
+						: null;
 
 					return {
-						buttonInset: buttonBox
-							? Math.round(cardBox.bottom - buttonBox.bottom)
-							: null,
-						coverHeight: coverBox
-							? Math.round(coverBox.height)
-							: null,
-						hasFocalPoint: Boolean(
-							image?.getAttribute('data-object-position')
-						),
-						height: Math.round(cardBox.height),
+						benefits: {
+							left:
+								benefits?.getBoundingClientRect().left ?? null,
+							listStylePosition:
+								benefitStyles?.listStylePosition ?? null,
+							listStyleType: benefitStyles?.listStyleType ?? null,
+							paddingInlineStart: benefitsStyles
+								? Number.parseFloat(
+										benefitsStyles.paddingInlineStart
+									)
+								: null,
+							rootFontSize: Number.parseFloat(
+								getComputedStyle(document.documentElement)
+									.fontSize
+							),
+							textLeft: textStart(firstBenefit),
+							titleTextLeft: textStart(title),
+						},
+						bottom: cardBox.bottom,
+						display: styles.display,
 						imageObjectFit: image
 							? getComputedStyle(image).objectFit
 							: null,
-					};
-				})
-			);
-			const tierTreatment = await cards.evaluateAll((elements) =>
-				elements.map((tier) => {
-					const tierBox = tier.getBoundingClientRect();
-					const cardBox = tier
-						.querySelector('.pns-membership-tier__card')
-						?.getBoundingClientRect();
-					const benefitsBox = tier
-						.querySelector('.pns-membership-tier__benefits')
-						?.getBoundingClientRect();
-
-					return {
-						cardBottom: cardBox ? Math.round(cardBox.bottom) : null,
-						cardHeight: cardBox ? Math.round(cardBox.height) : null,
-						display: getComputedStyle(tier).display,
-						benefitsTop: benefitsBox
-							? Math.round(benefitsBox.top)
+						imageObjectPosition: image
+							? getComputedStyle(image).objectPosition
 							: null,
-						height: Math.round(tierBox.height),
-						top: Math.round(tierBox.top),
+						minHeight: styles.minHeight,
+						paddingBottom: Number.parseFloat(styles.paddingBottom),
+						savedFocalPoint: image?.style.objectPosition || null,
+						top: cardBox.top,
+						tracks: tracks.map((track) =>
+							track
+								? {
+										bottom: track.bottom,
+										height: track.height,
+										top: track.top,
+										width: track.width,
+									}
+								: null
+						),
 					};
 				})
 			);
 
-			for (const card of cardTreatment) {
-				expect(card.coverHeight).toBeGreaterThan(0);
+			for (const card of geometry) {
+				expect(card.display).toBe(
+					expectedColumns === 1 ? 'flex' : 'grid'
+				);
 				expect(card.imageObjectFit).toBe('cover');
-				expect(card.buttonInset).toBeGreaterThanOrEqual(0);
+				expect(card.tracks.every(Boolean)).toBe(true);
+				expect(card.tracks[0]?.height).toBeGreaterThan(0);
+				expect(
+					Math.abs(
+						(card.tracks[0]?.width ?? 0) -
+							((card.tracks[0]?.height ?? 0) * 4) / 3
+					)
+				).toBeLessThanOrEqual(1);
+				expect(card.benefits.listStylePosition).toBe('outside');
+				expect(card.benefits.listStyleType).toBe('disc');
+				expect(card.benefits.left).not.toBeNull();
+				expect(card.benefits.paddingInlineStart).not.toBeNull();
+				expect(card.benefits.textLeft).not.toBeNull();
+				expect(card.benefits.titleTextLeft).not.toBeNull();
+
+				const markerGutter = card.benefits.rootFontSize * 1.25;
+				const cardContentInset = card.benefits.rootFontSize;
+				const benefitTextInset =
+					(card.benefits.textLeft ?? 0) - (card.benefits.left ?? 0);
+
+				expect(
+					Math.abs(
+						(card.benefits.paddingInlineStart ?? 0) -
+							markerGutter -
+							cardContentInset
+					)
+				).toBeLessThanOrEqual(1);
+				expect(
+					Math.abs(
+						benefitTextInset -
+							(card.benefits.paddingInlineStart ?? 0)
+					)
+				).toBeLessThanOrEqual(1);
+				expect(
+					Math.abs(
+						benefitTextInset -
+							markerGutter -
+							((card.benefits.titleTextLeft ?? 0) -
+								(card.benefits.left ?? 0))
+					)
+				).toBeLessThanOrEqual(1);
+
+				if (card.savedFocalPoint) {
+					expect(card.imageObjectPosition).toBe(card.savedFocalPoint);
+				}
 			}
 
 			expect(
-				Math.max(
-					...cardTreatment.map((card) => card.buttonInset ?? 0)
-				) -
-					Math.min(
-						...cardTreatment.map((card) => card.buttonInset ?? 0)
-					)
-			).toBeLessThanOrEqual(1);
+				geometry.filter((card) => card.savedFocalPoint).length
+			).toBeGreaterThan(0);
 
-			if (width >= 1450) {
-				for (const tier of tierTreatment) {
-					expect(tier.display).toBe('grid');
+			const visualRows = geometry.reduce<
+				Array<(typeof geometry)[number][]>
+			>((rows, card) => {
+				const row = rows.find(
+					(candidate) => Math.abs(candidate[0].top - card.top) <= 1
+				);
+
+				if (row) {
+					row.push(card);
+				} else {
+					rows.push([card]);
 				}
-				expect(
-					Math.max(...cardTreatment.map((card) => card.height)) -
-						Math.min(...cardTreatment.map((card) => card.height))
-				).toBeLessThanOrEqual(1);
-				expect(
-					Math.max(...tierTreatment.map((tier) => tier.height)) -
-						Math.min(...tierTreatment.map((tier) => tier.height))
-				).toBeLessThanOrEqual(1);
-				expect(
-					Math.max(
-						...tierTreatment.map((tier) => tier.benefitsTop ?? 0)
-					) -
-						Math.min(
-							...tierTreatment.map(
-								(tier) => tier.benefitsTop ?? 0
-							)
-						)
-				).toBeLessThanOrEqual(1);
+
+				return rows;
+			}, []);
+
+			expect(visualRows.map((row) => row.length)).toEqual(
+				Array.from(
+					{ length: 4 / expectedColumns },
+					() => expectedColumns
+				)
+			);
+
+			for (const row of visualRows) {
+				for (const measurement of [
+					(card: (typeof geometry)[number]) =>
+						card.tracks[0]?.top ?? 0,
+					(card: (typeof geometry)[number]) =>
+						card.tracks[0]?.bottom ?? 0,
+					(card: (typeof geometry)[number]) =>
+						card.tracks[3]?.top ?? 0,
+					(card: (typeof geometry)[number]) =>
+						card.tracks[3]?.bottom ?? 0,
+					(card: (typeof geometry)[number]) => card.bottom,
+				]) {
+					const values = row.map(measurement);
+					expect(
+						Math.max(...values) - Math.min(...values)
+					).toBeLessThanOrEqual(1);
+				}
 			}
 
-			if (width >= 782 && width < 1450) {
-				for (const [first, second] of [
-					[tierTreatment[0], tierTreatment[1]],
-					[tierTreatment[2], tierTreatment[3]],
-				]) {
-					expect(
-						Math.abs(first.height - second.height)
-					).toBeLessThanOrEqual(1);
-					expect(
-						Math.abs(
-							(first.cardHeight ?? 0) - (second.cardHeight ?? 0)
-						)
-					).toBeLessThanOrEqual(1);
-					expect(
-						Math.abs(
-							(first.cardBottom ?? 0) - (second.cardBottom ?? 0)
-						)
-					).toBeLessThanOrEqual(1);
-					expect(
-						Math.abs(
-							(first.benefitsTop ?? 0) - (second.benefitsTop ?? 0)
-						)
-					).toBeLessThanOrEqual(1);
+			if (expectedColumns === 1) {
+				for (const card of geometry) {
+					const tracks = card.tracks.filter(
+						(track): track is NonNullable<typeof track> =>
+							Boolean(track)
+					);
+					const gaps = tracks
+						.slice(1)
+						.map(
+							(track, index) => track.top - tracks[index].bottom
+						);
+					const trailingSpace =
+						card.bottom -
+						tracks[tracks.length - 1].bottom -
+						card.paddingBottom;
+
+					expect(['0px', 'auto']).toContain(card.minHeight);
+					expect(Math.max(...gaps)).toBeLessThanOrEqual(48);
+					expect(Math.abs(trailingSpace)).toBeLessThanOrEqual(2);
 				}
 			}
 		}
