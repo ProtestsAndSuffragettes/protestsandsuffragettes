@@ -6,7 +6,7 @@
 	/* Public theme rail settings resolve to one effective private layout value. */
 	--pns--layout--content-rail: var(
 		--wp--custom--layout--content-rail--base,
-		var(--wp--preset--spacing--regular)
+		var(--wp--preset--spacing--generous)
 	);
 	--pns--typography--line-height--heading-compact: var(
 		--wp--custom--typography--line-height--heading-compact

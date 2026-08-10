@@ -377,7 +377,7 @@
 		"custom": {
 			"layout": {
 				"content-rail": {
-					"base": "var(--wp--preset--spacing--regular)",
+					"base": "var(--wp--preset--spacing--generous)",
 					"wide": "calc(var(--wp--preset--spacing--section) *2 )"
 				}
 			},

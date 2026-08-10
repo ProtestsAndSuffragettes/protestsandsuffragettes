@@ -570,6 +570,206 @@ test(
 
 test(
 	taggedTitle(
+		'mobile content rail aligns site chrome, Membership cards, and text Split Sections',
+		'mobile-fast',
+		'mobile-full',
+		'layout',
+		'mobile-layout'
+	),
+	async ({ page }) => {
+		test.skip(
+			test.info().project.name !== 'mobile',
+			'The exact global rail contract is covered by the mobile project.'
+		);
+
+		for (const width of [320, 390]) {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto('/membership/', {
+				waitUntil: 'domcontentloaded',
+			});
+			await waitForStableAssets(page);
+
+			const contract = await page.evaluate(() => {
+				const headerInner = document.querySelector<HTMLElement>(
+					'header .pns-header__inner'
+				);
+				const headerLogo =
+					document.querySelector<HTMLElement>('header .pands-logo');
+				const footerInner = document.querySelector<HTMLElement>(
+					'footer .pns-footer > .pns-footer__inner'
+				);
+				const footerLogo = document.querySelector<HTMLElement>(
+					'footer .footer-logo img'
+				);
+				const membershipTiers = document.querySelector<HTMLElement>(
+					'.wp-block-pns-membership-tiers.pns-membership-tiers'
+				);
+				const firstMembershipCard =
+					membershipTiers?.querySelector<HTMLElement>(
+						'.pns-membership-tiers__grid > .pns-membership-tier'
+					);
+				const textSections = Array.from(
+					document.querySelectorAll<HTMLElement>(
+						'.pns-split-section.is-pns-text-text'
+					)
+				);
+
+				if (
+					!headerInner ||
+					!headerLogo ||
+					!footerInner ||
+					!footerLogo ||
+					!membershipTiers ||
+					!firstMembershipCard ||
+					textSections.length < 2
+				) {
+					return null;
+				}
+
+				const railProbe = document.createElement('div');
+				railProbe.style.cssText =
+					'box-sizing:border-box;inline-size:var(--pns--layout--content-rail);position:absolute;visibility:hidden;';
+				document.body.append(railProbe);
+				const contentRail = railProbe.getBoundingClientRect().width;
+				railProbe.remove();
+
+				const rect = (element: HTMLElement) => {
+					const bounds = element.getBoundingClientRect();
+
+					return {
+						left: bounds.left,
+						right: bounds.right,
+					};
+				};
+				const contentEdges = (element: HTMLElement) => {
+					const bounds = element.getBoundingClientRect();
+					const computed = getComputedStyle(element);
+
+					return {
+						left: bounds.left + parseFloat(computed.paddingLeft),
+						right: bounds.right - parseFloat(computed.paddingRight),
+					};
+				};
+				const variantNames = [
+					'media-left',
+					'media-right',
+					'edge-media-left',
+					'edge-media-right',
+				];
+				const variantClasses = variantNames.map(
+					(variant) => `is-style-pns-${variant}`
+				);
+				const textVariants = textSections.flatMap(
+					(section, sectionIndex) =>
+						variantNames.flatMap((variant) => {
+							section.classList.remove(...variantClasses);
+							section.classList.add(`is-style-pns-${variant}`);
+
+							return Array.from(
+								section.querySelectorAll<HTMLElement>(
+									'.pns-split-section__text-column > .pns-split-section__copy'
+								)
+							).map((copy, panelIndex) => ({
+								...contentEdges(copy),
+								panelIndex,
+								sectionIndex,
+								variant,
+							}));
+						})
+				);
+				const footerInnerBounds = footerInner.getBoundingClientRect();
+				const footerInnerStyles = getComputedStyle(footerInner);
+
+				return {
+					contentRail,
+					documentWidth: document.documentElement.scrollWidth,
+					footerContent: {
+						left:
+							footerInnerBounds.left +
+							parseFloat(footerInnerStyles.paddingLeft),
+						right:
+							footerInnerBounds.right -
+							parseFloat(footerInnerStyles.paddingRight),
+					},
+					footerLogo: rect(footerLogo),
+					headerInner: rect(headerInner),
+					headerLogo: rect(headerLogo),
+					membershipCard: rect(firstMembershipCard),
+					membershipTiers: rect(membershipTiers),
+					textVariants,
+					viewportWidth: window.innerWidth,
+				};
+			});
+
+			expect(contract).not.toBeNull();
+
+			if (!contract) {
+				continue;
+			}
+
+			expect(contract.contentRail).toBeCloseTo(32, 0);
+			expect(contract.headerInner.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.headerInner.right).toBeCloseTo(
+				contract.viewportWidth - contract.contentRail,
+				0
+			);
+			expect(contract.headerLogo.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.footerContent.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.footerContent.right).toBeCloseTo(
+				contract.viewportWidth - contract.contentRail,
+				0
+			);
+			expect(contract.footerLogo.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.membershipTiers.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.membershipTiers.right).toBeCloseTo(
+				contract.viewportWidth - contract.contentRail,
+				0
+			);
+			expect(contract.membershipCard.left).toBeCloseTo(
+				contract.contentRail,
+				0
+			);
+			expect(contract.membershipCard.right).toBeCloseTo(
+				contract.viewportWidth - contract.contentRail,
+				0
+			);
+			expect(contract.textVariants).toHaveLength(16);
+
+			for (const panel of contract.textVariants) {
+				expect(
+					panel.left,
+					`text section ${panel.sectionIndex + 1}, panel ${panel.panelIndex + 1}, ${panel.variant}`
+				).toBeCloseTo(contract.contentRail, 0);
+				expect(
+					panel.right,
+					`text section ${panel.sectionIndex + 1}, panel ${panel.panelIndex + 1}, ${panel.variant}`
+				).toBeCloseTo(contract.viewportWidth - contract.contentRail, 0);
+			}
+
+			expect(contract.documentWidth).toBeLessThanOrEqual(
+				contract.viewportWidth + 1
+			);
+		}
+	}
+);
+
+test(
+	taggedTitle(
 		'membership tiers keep their intrinsic content, CTA, and responsive grid',
 		'fast',
 		'mobile-fast',
@@ -1903,7 +2103,7 @@ test(
 			return;
 		}
 
-		expect(contract.contentRail).toBeCloseTo(16, 0);
+		expect(contract.contentRail).toBeCloseTo(32, 0);
 		expect(contract.cardLeft).toBeLessThanOrEqual(contract.contentRail + 1);
 
 		for (const pagination of [contract.few, contract.many]) {
@@ -5032,6 +5232,204 @@ test(
 		});
 
 		expect(primaryHover).toBe(viewportWidth >= 782 ? '""' : 'none');
+	}
+);
+
+test(
+	taggedTitle(
+		'mobile Split Section media variants share one copy rail without losing media bleed',
+		'mobile-fast',
+		'mobile-full',
+		'layout',
+		'mobile-layout',
+		'pattern'
+	),
+	async ({ page }) => {
+		test.skip(
+			test.info().project.name !== 'mobile',
+			'The exact global rail contract is covered by the mobile project.'
+		);
+
+		for (const width of [320, 390]) {
+			await page.setViewportSize({ width, height: 1000 });
+			await page.goto('/pns-pattern-qa/');
+			await page.waitForLoadState('domcontentloaded');
+			await waitForStableAssets(page);
+
+			const contract = await page.evaluate(() => {
+				const imageSection = document.querySelector<HTMLElement>(
+					'.pns-split-section:has(.pns-split-section__media-column img):not(:has(.wp-block-jetpack-slideshow)):not(:has(.wp-block-embed-youtube))'
+				);
+				const slideshowSection = document.querySelector<HTMLElement>(
+					'.pns-split-section:has(.wp-block-jetpack-slideshow)'
+				);
+				const youtubeSection = document.querySelector<HTMLElement>(
+					'.pns-split-section:has(.wp-block-embed-youtube)'
+				);
+
+				if (!imageSection || !slideshowSection || !youtubeSection) {
+					return null;
+				}
+
+				const nativeSection = youtubeSection.cloneNode(
+					true
+				) as HTMLElement;
+				const nativeMedia = nativeSection.querySelector<HTMLElement>(
+					'.pns-split-section__media-column'
+				);
+
+				if (!nativeMedia) {
+					return null;
+				}
+
+				nativeSection.dataset.pnsMobileRailFixture = 'native-video';
+				nativeMedia.classList.add(
+					'pns-split-section__media-column--video'
+				);
+				nativeMedia.innerHTML =
+					'<figure class="wp-block-video"><video aria-label="Native video mobile rail fixture" height="360" width="640"></video></figure>';
+				youtubeSection.insertAdjacentElement('afterend', nativeSection);
+
+				const railProbe = document.createElement('div');
+				railProbe.style.cssText =
+					'box-sizing:border-box;inline-size:var(--pns--layout--content-rail);position:absolute;visibility:hidden;';
+				document.body.append(railProbe);
+				const contentRail = railProbe.getBoundingClientRect().width;
+				railProbe.remove();
+
+				const variantNames = [
+					'media-left',
+					'media-right',
+					'edge-media-left',
+					'edge-media-right',
+				];
+				const variantClasses = variantNames.map(
+					(variant) => `is-style-pns-${variant}`
+				);
+				const sources = [
+					{ section: imageSection, type: 'image' },
+					{ section: slideshowSection, type: 'slideshow' },
+					{ section: nativeSection, type: 'native-video' },
+					{ section: youtubeSection, type: 'youtube' },
+				];
+
+				try {
+					const variants = sources.flatMap(({ section, type }) =>
+						variantNames.map((variant) => {
+							section.classList.remove(...variantClasses);
+							section.classList.add(`is-style-pns-${variant}`);
+
+							const columns = section.querySelector<HTMLElement>(
+								'.pns-split-section__columns'
+							);
+							const copy = section.querySelector<HTMLElement>(
+								'.pns-split-section__copy'
+							);
+							const heading =
+								copy?.querySelector<HTMLElement>(
+									'.wp-block-heading'
+								);
+							const media = section.querySelector<HTMLElement>(
+								'.pns-split-section__media-column'
+							);
+
+							if (!columns || !copy || !heading || !media) {
+								return null;
+							}
+
+							const sectionBounds =
+								section.getBoundingClientRect();
+							const columnsBounds =
+								columns.getBoundingClientRect();
+							const copyBounds = copy.getBoundingClientRect();
+							const headingBounds =
+								heading.getBoundingClientRect();
+							const mediaBounds = media.getBoundingClientRect();
+							const copyStyles = getComputedStyle(copy);
+
+							return {
+								columnsLeft: columnsBounds.left,
+								columnsRight: columnsBounds.right,
+								copyContentLeft:
+									copyBounds.left +
+									parseFloat(copyStyles.paddingLeft),
+								copyContentRight:
+									copyBounds.right -
+									parseFloat(copyStyles.paddingRight),
+								headingLeft: headingBounds.left,
+								mediaLeft: mediaBounds.left,
+								mediaRight: mediaBounds.right,
+								sectionLeft: sectionBounds.left,
+								sectionRight: sectionBounds.right,
+								type,
+								variant,
+							};
+						})
+					);
+
+					return {
+						contentRail,
+						documentWidth: document.documentElement.scrollWidth,
+						variants,
+						viewportWidth: window.innerWidth,
+					};
+				} finally {
+					nativeSection.remove();
+				}
+			});
+
+			expect(contract).not.toBeNull();
+
+			if (!contract) {
+				continue;
+			}
+
+			expect(contract.contentRail).toBeCloseTo(32, 0);
+			expect(contract.variants.filter(Boolean)).toHaveLength(16);
+
+			for (const variant of contract.variants) {
+				expect(variant).not.toBeNull();
+
+				if (!variant) {
+					continue;
+				}
+
+				const label = `${variant.type}, ${variant.variant}, ${width}px`;
+
+				expect(variant.sectionLeft, label).toBeGreaterThanOrEqual(-1);
+				expect(variant.sectionRight, label).toBeLessThanOrEqual(
+					contract.viewportWidth + 1
+				);
+				expect(variant.columnsLeft, label).toBeGreaterThanOrEqual(-1);
+				expect(variant.columnsRight, label).toBeLessThanOrEqual(
+					contract.viewportWidth + 1
+				);
+				expect(variant.copyContentLeft, label).toBeCloseTo(
+					contract.contentRail,
+					0
+				);
+				expect(variant.copyContentRight, label).toBeCloseTo(
+					contract.viewportWidth - contract.contentRail,
+					0
+				);
+				expect(variant.headingLeft, label).toBeCloseTo(
+					contract.contentRail,
+					0
+				);
+
+				// Every stacked mobile variant keeps its coloured/media panel
+				// full bleed; only the copy content consumes the global rail.
+				expect(variant.mediaLeft, label).toBeCloseTo(0, 0);
+				expect(variant.mediaRight, label).toBeCloseTo(
+					contract.viewportWidth,
+					0
+				);
+			}
+
+			expect(contract.documentWidth).toBeLessThanOrEqual(
+				contract.viewportWidth + 1
+			);
+		}
 	}
 );
 
@@ -8437,17 +8835,25 @@ test(
 						'.pns-split-section__media-column'
 					);
 					const contentProbe = document.createElement('div');
+					const railProbe = document.createElement('div');
 
 					contentProbe.style.boxSizing = 'border-box';
 					contentProbe.style.inlineSize =
 						'var(--wp--style--global--content-size, 44rem)';
 					contentProbe.style.position = 'absolute';
 					contentProbe.style.visibility = 'hidden';
-					document.body.appendChild(contentProbe);
+					railProbe.style.boxSizing = 'border-box';
+					railProbe.style.inlineSize =
+						'var(--pns--layout--content-rail)';
+					railProbe.style.position = 'absolute';
+					railProbe.style.visibility = 'hidden';
+					document.body.append(contentProbe, railProbe);
 
 					const contentWidth =
 						contentProbe.getBoundingClientRect().width;
+					const contentRail = railProbe.getBoundingClientRect().width;
 					contentProbe.remove();
+					railProbe.remove();
 
 					function rect(element?: HTMLElement | null) {
 						if (!element) {
@@ -8472,6 +8878,7 @@ test(
 
 					return {
 						className: section?.className ?? null,
+						contentRail,
 						contentWidth,
 						copy: rect(copy),
 						heading: rect(heading),
@@ -8588,7 +8995,7 @@ test(
 		expect(splitLayout.copy?.width ?? 0).toBeLessThanOrEqual(
 			Math.min(splitLayout.contentWidth, splitLayout.viewportWidth) + 1
 		);
-		const expectedCopyPadding = viewportWidth >= 782 ? 32 : 16;
+		const expectedCopyPadding = splitLayout.contentRail;
 		expect(splitLayout.copy?.paddingTop ?? 0).toBeGreaterThanOrEqual(
 			expectedCopyPadding
 		);
