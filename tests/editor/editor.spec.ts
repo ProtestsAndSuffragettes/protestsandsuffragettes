@@ -138,6 +138,7 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 			':scope > .block-editor-inner-blocks > .block-editor-block-list__layout'
 		);
 		const gridStyles = grid ? getComputedStyle(grid) : null;
+		const collectionStyles = collection ? getComputedStyle(collection) : null;
 		const tiers = Array.from(
 			grid?.querySelectorAll<HTMLElement>(
 				':scope > [data-type="pns/membership-tier"]'
@@ -152,7 +153,13 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 		].join(',');
 
 		return {
-			collectionWidth: collection?.getBoundingClientRect().width ?? 0,
+			collection: rect(collection),
+			collectionPadding: {
+				bottom: Number.parseFloat(collectionStyles?.paddingBottom || '0'),
+				left: Number.parseFloat(collectionStyles?.paddingLeft || '0'),
+				right: Number.parseFloat(collectionStyles?.paddingRight || '0'),
+				top: Number.parseFloat(collectionStyles?.paddingTop || '0'),
+			},
 			columnGap: Number.parseFloat(gridStyles?.columnGap || '0'),
 			columns: (gridStyles?.gridTemplateColumns || '')
 				.trim()
@@ -199,13 +206,31 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 		};
 	});
 
-	const expectedColumns = geometry.collectionWidth >= 1280 ? 4 : 2;
+	const collection = geometry.collection!;
+	const collectionContentWidth =
+		collection.width -
+		geometry.collectionPadding.left -
+		geometry.collectionPadding.right;
+	const expectedColumns = collectionContentWidth >= 1280 ? 4 : 2;
 
 	expect(geometry.outerDisplay).toBe('block');
 	expect(geometry.columns).toHaveLength(expectedColumns);
+	expect(geometry.collection).not.toBeNull();
 	expect(geometry.grid).not.toBeNull();
 	expect(geometry.rootFontSize).toBe(16);
 	expect(geometry.tiers).toHaveLength(4);
+	expect(
+		Math.abs(
+			geometry.grid!.left -
+				(collection.left + geometry.collectionPadding.left)
+		)
+	).toBeLessThanOrEqual(1);
+	expect(
+		Math.abs(
+			geometry.grid!.right -
+				(collection.right - geometry.collectionPadding.right)
+		)
+	).toBeLessThanOrEqual(1);
 
 	for (const [index, tier] of geometry.tiers.entries()) {
 		const card = tier.card!;
@@ -276,6 +301,35 @@ async function expectMembershipEditorGeometry(editor: EditorDocument) {
 			);
 		}
 	}
+}
+
+async function expectMembershipEditorSpacing(editor: EditorDocument) {
+	const spacing = await editor.evaluate(() => {
+		const collection = document.querySelector<HTMLElement>(
+			'[data-type="pns/membership-tiers"]'
+		);
+		const styles = collection ? getComputedStyle(collection) : null;
+
+		return styles
+			? {
+					marginBottom: styles.marginBottom,
+					marginTop: styles.marginTop,
+					paddingBottom: styles.paddingBottom,
+					paddingLeft: styles.paddingLeft,
+					paddingRight: styles.paddingRight,
+					paddingTop: styles.paddingTop,
+				}
+			: null;
+	});
+
+	expect(spacing).toEqual({
+		marginBottom: '17px',
+		marginTop: '13px',
+		paddingBottom: '29px',
+		paddingLeft: '31px',
+		paddingRight: '23px',
+		paddingTop: '19px',
+	});
 }
 
 async function restoreAuthState(context: BrowserContext) {
@@ -1163,6 +1217,11 @@ test.describe('editor CSS regression harness', () => {
 			align: ['wide'],
 			customClassName: false,
 			html: false,
+			spacing: {
+				blockGap: false,
+				margin: true,
+				padding: true,
+			},
 		});
 		expect(blockState.tiers).toHaveLength(4);
 
@@ -1275,6 +1334,17 @@ test.describe('editor CSS regression harness', () => {
 
 				editorDispatch.updateBlockAttributes(collection.clientId, {
 					heading: 'Choose Your Edited Impact 🛠️',
+					style: {
+						spacing: {
+							margin: { bottom: '17px', top: '13px' },
+							padding: {
+								bottom: '29px',
+								left: '31px',
+								right: '23px',
+								top: '19px',
+							},
+						},
+					},
 				});
 				editorDispatch.updateBlockAttributes(media.clientId, {
 					alt: 'A representative membership image',
@@ -1403,6 +1473,32 @@ test.describe('editor CSS regression harness', () => {
 				);
 			}, editedTierClientId);
 			await expectNoBlockRecoveryWarnings(editor);
+			await expectMembershipEditorGeometry(editor);
+			await expectMembershipEditorSpacing(editor);
+			expect(
+				await page.evaluate(() => {
+					const collection = wp.data
+						.select('core/block-editor')
+						.getBlocks()
+						.find(
+							(block: Record<string, unknown>) =>
+								block.name === 'pns/membership-tiers'
+						);
+
+					return (collection?.attributes as Record<string, unknown>)
+						?.style;
+				})
+			).toEqual({
+				spacing: {
+					margin: { bottom: '17px', top: '13px' },
+					padding: {
+						bottom: '29px',
+						left: '31px',
+						right: '23px',
+						top: '19px',
+					},
+				},
+			});
 
 			await page.evaluate(async () => {
 				await wp.data.dispatch('core/editor').savePost();
@@ -1433,6 +1529,31 @@ test.describe('editor CSS regression harness', () => {
 				)
 			).toHaveText('Choose Your Edited Impact 🛠️');
 			await expectMembershipEditorGeometry(reopenedEditor);
+			await expectMembershipEditorSpacing(reopenedEditor);
+			expect(
+				await page.evaluate(() => {
+					const collection = wp.data
+						.select('core/block-editor')
+						.getBlocks()
+						.find(
+							(block: Record<string, unknown>) =>
+								block.name === 'pns/membership-tiers'
+						);
+
+					return (collection?.attributes as Record<string, unknown>)
+						?.style;
+				})
+			).toEqual({
+				spacing: {
+					margin: { bottom: '17px', top: '13px' },
+					padding: {
+						bottom: '29px',
+						left: '31px',
+						right: '23px',
+						top: '19px',
+					},
+				},
+			});
 
 			const reopenedState = await page.evaluate(() => {
 				const collection = wp.data
