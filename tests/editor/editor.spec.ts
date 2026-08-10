@@ -112,6 +112,172 @@ class EditorAuthSkip extends Error {}
 
 type EditorDocument = Page | Frame;
 
+async function expectMembershipEditorGeometry(editor: EditorDocument) {
+	const geometry = await editor.evaluate(() => {
+		const rect = (element: Element | null) => {
+			const bounds = element?.getBoundingClientRect();
+
+			return bounds
+				? {
+						bottom: bounds.bottom,
+						height: bounds.height,
+						left: bounds.left,
+						right: bounds.right,
+						top: bounds.top,
+						width: bounds.width,
+					}
+				: null;
+		};
+		const collection = document.querySelector<HTMLElement>(
+			'[data-type="pns/membership-tiers"]'
+		);
+		const outerGrid = collection?.querySelector<HTMLElement>(
+			':scope > .pns-membership-tiers__grid'
+		);
+		const grid = outerGrid?.querySelector<HTMLElement>(
+			':scope > .block-editor-inner-blocks > .block-editor-block-list__layout'
+		);
+		const gridStyles = grid ? getComputedStyle(grid) : null;
+		const tiers = Array.from(
+			grid?.querySelectorAll<HTMLElement>(
+				':scope > [data-type="pns/membership-tier"]'
+			) || []
+		);
+		const trackSelector = [
+			'.pns-membership-tier__media',
+			'.pns-membership-tier__introduction',
+			'.pns-membership-tier__price',
+			'.pns-membership-tier__action',
+			'.pns-membership-tier__benefits',
+		].join(',');
+
+		return {
+			collectionWidth: collection?.getBoundingClientRect().width ?? 0,
+			columnGap: Number.parseFloat(gridStyles?.columnGap || '0'),
+			columns: (gridStyles?.gridTemplateColumns || '')
+				.trim()
+				.split(/\s+/)
+				.filter(Boolean)
+				.map(Number.parseFloat),
+			grid: rect(grid),
+			outerDisplay: outerGrid
+				? getComputedStyle(outerGrid).display
+				: null,
+			rootFontSize: Number.parseFloat(
+				getComputedStyle(document.documentElement).fontSize
+			),
+			tiers: tiers.map((tier) => {
+				const innerLayout = tier.querySelector<HTMLElement>(
+					':scope > .block-editor-inner-blocks > .block-editor-block-list__layout'
+				);
+				const tracks = Array.from(
+					innerLayout?.querySelectorAll<HTMLElement>(
+						`:scope > :is(${trackSelector})`
+					) || []
+				);
+				const cover = tracks[0];
+				const price = tracks[2];
+				const benefits = tracks[4];
+				const coverRect = cover?.getBoundingClientRect();
+
+				return {
+					benefitsPaddingLeft: benefits
+						? Number.parseFloat(
+								getComputedStyle(benefits).paddingLeft
+							)
+						: null,
+					card: rect(tier),
+					coverHeight: coverRect?.height ?? 0,
+					coverWidth: coverRect?.width ?? 0,
+					inner: rect(innerLayout),
+					priceFontSize: price
+						? Number.parseFloat(getComputedStyle(price).fontSize)
+						: 0,
+					tracks: tracks.map(rect),
+				};
+			}),
+		};
+	});
+
+	const expectedColumns = geometry.collectionWidth >= 1280 ? 4 : 2;
+
+	expect(geometry.outerDisplay).toBe('block');
+	expect(geometry.columns).toHaveLength(expectedColumns);
+	expect(geometry.grid).not.toBeNull();
+	expect(geometry.rootFontSize).toBe(16);
+	expect(geometry.tiers).toHaveLength(4);
+
+	for (const [index, tier] of geometry.tiers.entries()) {
+		const card = tier.card!;
+		const grid = geometry.grid!;
+		const column = index % expectedColumns;
+		const expectedLeft =
+			grid.left +
+			geometry.columns
+				.slice(0, column)
+				.reduce((total, width) => total + width, 0) +
+			geometry.columnGap * column;
+
+		expect(Math.abs(card.left - expectedLeft)).toBeLessThanOrEqual(1);
+		expect(
+			Math.abs(card.width - geometry.columns[column])
+		).toBeLessThanOrEqual(1);
+		expect(card.left).toBeGreaterThanOrEqual(grid.left - 1);
+		expect(card.right).toBeLessThanOrEqual(grid.right + 1);
+		expect(tier.tracks).toHaveLength(5);
+		expect(tier.inner).not.toBeNull();
+
+		for (const track of tier.tracks) {
+			expect(track).not.toBeNull();
+			expect(track!.left).toBeGreaterThanOrEqual(card.left - 1);
+			expect(track!.right).toBeLessThanOrEqual(card.right + 1);
+			expect(track!.top).toBeGreaterThanOrEqual(card.top - 1);
+			expect(track!.bottom).toBeLessThanOrEqual(card.bottom + 1);
+		}
+
+		for (
+			let trackIndex = 1;
+			trackIndex < tier.tracks.length;
+			trackIndex += 1
+		) {
+			expect(tier.tracks[trackIndex]!.top).toBeGreaterThanOrEqual(
+				tier.tracks[trackIndex - 1]!.bottom - 1
+			);
+		}
+
+		expect(
+			Math.abs(tier.coverWidth - (tier.coverHeight * 4) / 3)
+		).toBeLessThanOrEqual(1);
+		expect(tier.priceFontSize).toBeGreaterThanOrEqual(20);
+		expect(tier.benefitsPaddingLeft).toBe(36);
+	}
+
+	for (let first = 0; first < geometry.tiers.length; first += 1) {
+		for (
+			let second = first + 1;
+			second < geometry.tiers.length;
+			second += 1
+		) {
+			const firstCard = geometry.tiers[first].card!;
+			const secondCard = geometry.tiers[second].card!;
+			const overlapInline = Math.max(
+				0,
+				Math.min(firstCard.right, secondCard.right) -
+					Math.max(firstCard.left, secondCard.left)
+			);
+			const overlapBlock = Math.max(
+				0,
+				Math.min(firstCard.bottom, secondCard.bottom) -
+					Math.max(firstCard.top, secondCard.top)
+			);
+
+			expect(Math.min(overlapInline, overlapBlock)).toBeLessThanOrEqual(
+				1
+			);
+		}
+	}
+}
+
 async function restoreAuthState(context: BrowserContext) {
 	if (!fs.existsSync(authStatePath)) {
 		return;
@@ -1026,81 +1192,7 @@ test.describe('editor CSS regression harness', () => {
 			]);
 		}
 
-		const editorGeometry = await editor.evaluate(() => {
-			const collection = document.querySelector<HTMLElement>(
-				'[data-type="pns/membership-tiers"]'
-			);
-			const grid = collection?.querySelector<HTMLElement>(
-				':scope > .pns-membership-tiers__grid > .block-editor-inner-blocks > .block-editor-block-list__layout'
-			);
-			const tiers = Array.from(
-				grid?.querySelectorAll<HTMLElement>(
-					':scope > [data-type="pns/membership-tier"]'
-				) || []
-			);
-
-			return {
-				collectionWidth: collection?.getBoundingClientRect().width ?? 0,
-				columns: grid
-					? getComputedStyle(grid)
-							.gridTemplateColumns.trim()
-							.split(/\s+/).length
-					: 0,
-				rootFontSize: Number.parseFloat(
-					getComputedStyle(document.documentElement).fontSize
-				),
-				tiers: tiers.map((tier) => {
-					const cover = tier.querySelector<HTMLElement>(
-						'.pns-membership-tier__media'
-					);
-					const price = tier.querySelector<HTMLElement>(
-						'.pns-membership-tier__price'
-					);
-					const benefits = tier.querySelector<HTMLElement>(
-						'.pns-membership-tier__benefits'
-					);
-					const coverRect = cover?.getBoundingClientRect();
-					const coverStyles = cover ? getComputedStyle(cover) : null;
-
-					return {
-						benefitsPaddingLeft: benefits
-							? Number.parseFloat(
-									getComputedStyle(benefits).paddingLeft
-								)
-							: null,
-						coverHeight: coverRect?.height ?? 0,
-						coverVisible: Boolean(
-							coverRect &&
-							coverRect.width > 0 &&
-							coverRect.height > 0 &&
-							coverStyles?.display !== 'none' &&
-							coverStyles?.visibility !== 'hidden'
-						),
-						coverWidth: coverRect?.width ?? 0,
-						priceFontSize: price
-							? Number.parseFloat(
-									getComputedStyle(price).fontSize
-								)
-							: 0,
-					};
-				}),
-			};
-		});
-
-		expect(editorGeometry.columns).toBe(
-			editorGeometry.collectionWidth >= 1280 ? 4 : 2
-		);
-		expect(editorGeometry.rootFontSize).toBe(16);
-		expect(editorGeometry.tiers).toHaveLength(4);
-
-		for (const tier of editorGeometry.tiers) {
-			expect(tier.coverVisible).toBe(true);
-			expect(
-				Math.abs(tier.coverWidth - (tier.coverHeight * 4) / 3)
-			).toBeLessThanOrEqual(1);
-			expect(tier.priceFontSize).toBeGreaterThanOrEqual(20);
-			expect(tier.benefitsPaddingLeft).toBe(36);
-		}
+		await expectMembershipEditorGeometry(editor);
 	});
 
 	test('Membership Tiers can be edited, reordered, saved, and reopened without recovery warnings', async ({
@@ -1340,6 +1432,7 @@ test.describe('editor CSS regression harness', () => {
 					'[data-type="pns/membership-tiers"] > .pns-membership-tiers__heading'
 				)
 			).toHaveText('Choose Your Edited Impact 🛠️');
+			await expectMembershipEditorGeometry(reopenedEditor);
 
 			const reopenedState = await page.evaluate(() => {
 				const collection = wp.data
