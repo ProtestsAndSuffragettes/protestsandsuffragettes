@@ -16,6 +16,8 @@ repository, WordPress installation path, and support boundary.
   proving editor reconstruction before formalising templates or components.
 - [CSS architecture](architecture/css.md) — authored/compiled delivery paths,
   ownership boundaries, bridge policy, and validation workflow.
+- [CSS metrics baseline](reference/css-metrics-baseline.md) — compiled-bundle
+  trend measurements and their limits.
 - [Ownership and integrations](architecture/ownership-and-integrations.md) —
   theme, plugin, vendor, and WordPress-database responsibilities; dependency
   contract; and safe handoff routing.
@@ -33,6 +35,8 @@ repository, WordPress installation path, and support boundary.
   WordPress/PHP policy and the current accepted Local evidence.
 - [Handoff checklist](operations/handoff-checklist.md) — the final evidence
   and external gates required before another developer takes over.
+- [Historical archive](archive/README.md) — dated implementation plans,
+  visual proof, site-review records, and ignored database-backup history.
 
 The template/component inventory reports the current code-backed surface but
 does not freeze future additions. Compatibility claims remain evidence-led;

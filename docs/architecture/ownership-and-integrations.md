@@ -45,6 +45,27 @@ check whether the change belongs in the owning plugin instead. Retire a bridge
 when its upstream plugin or a portable block/template path can own the
 behaviour cleanly.
 
+## Where to make a change
+
+Use this routing table before editing a file or opening the Site Editor:
+
+| Change                                                              | Authoritative owner                                   | Do not assume                                                                |
+| ------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Template structure, query placement, page chrome, or card reference | `templates/*.html` and the owning pattern             | A saved Site Editor template is the source without checking for an override. |
+| Header or footer structure and layout                               | `parts/header.html` or `parts/footer.html`            | Navigation labels or social URLs belong in the parts.                        |
+| Vertical or horizontal query cards                                  | `patterns/post-card*.php` and their component CSS     | A copied card in editor content will update when the PHP pattern changes.    |
+| Featured News or Herstory placement                                 | The template and the owning `pns/featured-post` block | It is an ordinary theme pattern.                                             |
+| Page, post, or Herstory copy, media, or blocks                      | The WordPress content record                          | A theme release should rewrite editor content.                               |
+| Synced section                                                      | Its saved `wp_block`, after comparing its fixture     | Editing a fixture publishes an existing record automatically.                |
+| Main, footer, or banner navigation                                  | WordPress Navigation UI                               | A release may overwrite navigation from a fixture.                           |
+| Footer social destinations                                          | **Appearance → Footer Social Links**                  | The footer template contains live social URLs.                               |
+| Ecwid product cards                                                 | Ecwid/project commerce runtime and the scoped adapter | A Query Loop pattern owns product markup.                                    |
+
+Classify the target as **code**, **editor data**, **administrator data**, or a
+**managed fixture**. Code files provide defaults; database records provide live
+editable state; fixtures seed or recover records. There is no automatic sync in
+either direction.
+
 ## Project-owned plugin contracts
 
 The runtime dependency contract is defined in
@@ -103,6 +124,11 @@ file-backed definition and the corresponding live database record. Preserve the
 current source of truth; do not overwrite an editor-owned record merely to make
 it resemble a file.
 
+The ownership audit in `scripts/audit-template-ownership.php` is read-only and
+should be run before any structural template or part change. If it finds a
+saved override, export and compare it before deciding whether code or the
+database should win.
+
 Theme activation seeds missing navigation and synced-pattern records from the
 theme fixtures. The normal seed path keeps existing records rather than
 overwriting them. The **Appearance → PNS Theme Setup** screen exposes the
@@ -133,3 +159,22 @@ plugin list, Site Health result, current template/part/navigation/synced-pattern
 ownership audit, and the relevant route-level visual checks. This gives them a
 safe starting point without treating a local database snapshot or a particular
 hosting/deployment configuration as portable theme documentation.
+
+## Safe release checks
+
+Run these from the theme repository when a release includes structural or
+database-backed work:
+
+```sh
+pnpm audit:template-ownership
+pnpm check:template-ownership
+pnpm capture:release-handoff
+pnpm verify:release-handoff
+pnpm check:release-handoff
+```
+
+These checks report or compare identity, state, and hashes; they do not dump or
+overwrite administrator-owned navigation, social links, or ordinary content.
+For code-owned templates, parts, and patterns, pair them with the relevant
+block-template and visual checks in the [development and release
+runbook](../operations/development-and-release.md).

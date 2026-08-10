@@ -1,7 +1,8 @@
 # CSS architecture
 
-The theme's authored CSS lives in `styles/`. `style.css` is WordPress metadata
-only. Do not edit the compiled files in `styles/dist/` by hand.
+This is the canonical CSS guide for the `protestsandsuffragettes` theme.
+Author styles in `styles/`; `style.css` contains WordPress metadata only. Do
+not edit generated files in `styles/dist/` by hand.
 
 ## Sources and delivery
 
@@ -13,68 +14,81 @@ only. Do not edit the compiled files in `styles/dist/` by hand.
 | Block-scoped CSS | `styles/blocks/*.css`      | Registered by `inc/block-styles.php` when the matching block renders |
 
 `inc/assets.php` prefers compiled CSS when it exists and falls back to the
-authored entry point. Compile with `pnpm compile:css` after a stylesheet change.
+authored entry point. Compile with `pnpm compile:css` after stylesheet changes.
+The compiled frontend bundle is measured in the [CSS metrics
+baseline](../reference/css-metrics-baseline.md).
 
-## Ownership layers
+## Ownership map
 
-The source tree groups the theme's CSS by owner rather than by an imagined
-generic framework:
+The source tree groups CSS by the system or component that owns the behaviour:
 
-- `shared/` — fonts, settings/tokens, and declared cascade-layer order;
-- `base/` — element defaults and form defaults;
-- `layout/` — shared page-shell layout rules;
+- `shared/` — fonts, tokens, and cascade-layer declarations;
+- `base/` — plain element and form defaults;
+- `layout/` — shared site-shell and width primitives;
 - `blocks/` — Core/Jetpack block contracts and editor-specific support;
-- `components/` — named PNS components such as header, hero, cards, buttons,
-  section surfaces, and post metadata;
-- `page-types/` — route/content-family behaviour such as content rhythm,
-  Herstories, layout stability, and shop surfaces;
-- `utilities/` — intentionally small opt-in helpers; and
-- `vendor-overrides/` — scoped adapters for Ecwid and EmailOctopus.
+- `components/` — named theme components such as header, hero, cards, buttons,
+  surfaces, and post metadata;
+- `page-types/` — route/content-family behaviour such as Herstories, content
+  rhythm, layout stability, and shop surfaces;
+- `utilities/` — intentionally small opt-in authoring helpers; and
+- `vendor-overrides/` — scoped Ecwid and EmailOctopus adapters.
 
-Project-owned structural blocks belong in the appropriate plugin. The theme
-may supply tokens and presentation adapters, but it should not duplicate plugin
-rendering code. Third-party runtime output remains an adapter boundary, not an
-invitation for broad global selectors.
+Project-owned structural blocks belong in their plugin. The theme supplies
+tokens, composition, and presentation adapters; it does not duplicate plugin
+rendering. Third-party output remains vendor-owned and must not be targeted by
+broad global selectors.
+
+Use `theme.json` first for WordPress-supported typography, palette, layout,
+spacing, and block settings. Use CSS only for presentation that the theme
+actually owns or for a documented compatibility boundary.
 
 ## Cascade policy
 
 WordPress Global Styles, Core block support, editor runtime styles, and vendor
-plugins can be unlayered or inline. Cascade layers are therefore useful for
+plugins can arrive unlayered or inline. Layers are therefore useful for
 low-conflict theme defaults, not a guarantee that every rule should be layered.
-When an unlayered or `!important` bridge is retained, keep it next to its
-actual owner with a comment that records the external pressure and removal
-condition.
+
+Layer low-conflict settings, base defaults, block defaults, reusable component
+defaults, and explicit utilities. Keep site-shell layout, Core conflict tails,
+editor parity shims, vendor adapters, and project-block compatibility rules
+unlayered when they must beat generated WordPress or vendor output.
 
 Allowed `!important` cases are narrow: Core inline block-support output,
 unavoidable Core CSS, third-party vendor output, or an explicit local utility.
-Avoid a generic priority-override pile; move a rule to its real component,
-block, layout, or vendor owner instead.
+Avoid a generic priority pile. Move a rule to its real component, block,
+layout, editor, or vendor owner instead. Every retained bridge must document
+the external pressure, current owner, and removal condition beside the rule.
+
+True block defaults should prefer `wp_enqueue_block_style()` through
+`inc/block-styles.php`. Do not duplicate a default in both a native block
+stylesheet and the global bundle unless the temporary duplication is recorded.
+Contextual page and component composition remains theme-owned CSS.
 
 ## Change and validation workflow
 
-1. Inspect the current working tree before touching styles.
+1. Inspect the working tree and identify the actual CSS owner.
 2. Change one ownership concern at a time under `styles/`.
-3. Run `pnpm compile:css`.
+3. Run `pnpm compile:css` and `pnpm lint:css`.
 4. Run the focused visual lane for the changed route or component. Use
    `pnpm test:visual:fast` for normal iteration and `pnpm test:visual` for a
    significant visual landing change.
-5. Run `pnpm lint:css`; use `pnpm audit:css-assets` to detect duplicate/dormant
-   delivery paths.
-6. Do not refresh a snapshot until a visual difference is classified and
-   approved.
+5. Run `pnpm audit:css-assets` when delivery paths or block styles change.
+6. Use the Local WordPress site for automated regression. Production is only a
+   visual-language reference; do not point the suite at production.
 
-The production site may be used only as a visual-language reference. Automated
-regression targets the Local WordPress site.
+Do not refresh snapshots until the visual difference is classified and
+approved. Selector removal requires content/template searches and rendered
+coverage; CSS metrics do not prove that a selector is unused.
 
 ## Maintenance contract
 
-**Audience:** theme developers.
+**Audience:** theme developers and reviewers.
 
-**Authoritative sources:** `styles/`, `inc/assets.php`,
+**Authoritative sources:** `styles/`, `theme.json`, `inc/assets.php`,
 `inc/block-styles.php`, `package.json`, and rendered Local verification.
 
 **Update this document when:** an entry point, output path, CSS ownership area,
-block delivery path, or allowed bridge policy changes.
+block delivery path, or bridge policy changes.
 
 **Validation:** `pnpm format:check`, `pnpm lint:css`, `pnpm audit:css-assets`,
 and the relevant visual lane.
