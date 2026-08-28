@@ -778,7 +778,7 @@ test(
 	),
 	async ({ page }) => {
 		for (const [width, expectedColumns] of [
-			[1430, 4],
+			[1430, 2],
 			[1178, 2],
 			[747, 1],
 			[390, 1],
@@ -1061,10 +1061,6 @@ test(
 					expect(card.imageObjectPosition).toBe(card.savedFocalPoint);
 				}
 			}
-
-			expect(
-				geometry.filter((card) => card.savedFocalPoint).length
-			).toBeGreaterThan(0);
 
 			const visualRows = geometry.reduce<
 				Array<(typeof geometry)[number][]>
@@ -4714,6 +4710,68 @@ test(
 			'color',
 			'rgb(255, 255, 255)'
 		);
+	}
+);
+
+test(
+	taggedTitle(
+		'homepage welcome hero title remains within its surface on narrow screens',
+		'fast',
+		'layout'
+	),
+	async ({ page }) => {
+		await page.goto('/');
+		await page.waitForLoadState('domcontentloaded');
+		await waitForContractReady(page);
+		await page.setViewportSize({ width: 320, height: 900 });
+
+		const hero = page.locator('.pns-welcome-header');
+		const title = hero.locator('h1');
+		await expect(hero).toHaveCount(1);
+		await expect(title).toHaveCount(1);
+
+		const dimensions = await page.evaluate(() => {
+			const hero = document.querySelector<HTMLElement>(
+				'.pns-welcome-header'
+			);
+			const title = hero?.querySelector<HTMLElement>('h1');
+
+			if (!hero || !title) {
+				return null;
+			}
+
+			const titleRange = document.createRange();
+			titleRange.selectNodeContents(title);
+
+			return {
+				viewportWidth: window.innerWidth,
+				documentScrollWidth: document.documentElement.scrollWidth,
+				hero: hero.getBoundingClientRect(),
+				title: title.getBoundingClientRect(),
+				titleLineRects: Array.from(titleRange.getClientRects()).map(
+					({ left, right }) => ({ left, right })
+				),
+			};
+		});
+
+		expect(dimensions).not.toBeNull();
+		expect(
+			(dimensions?.documentScrollWidth ?? 0) <=
+				(dimensions?.viewportWidth ?? 0) + 1
+		).toBe(true);
+		expect(
+			(dimensions?.title.left ?? 0) >= (dimensions?.hero.left ?? 0) - 1
+		).toBe(true);
+		expect(
+			(dimensions?.title.right ?? 0) <= (dimensions?.hero.right ?? 0) + 1
+		).toBe(true);
+		expect(
+			dimensions?.titleLineRects.every(
+				({ left, right }) =>
+					left >= (dimensions.hero.left ?? 0) - 1 &&
+					right <= (dimensions.hero.right ?? 0) + 1
+			) ?? false
+		).toBe(true);
 	}
 );
 

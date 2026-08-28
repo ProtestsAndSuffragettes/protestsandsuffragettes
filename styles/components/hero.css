@@ -8,11 +8,17 @@
 
 .pns-hero-copy {
 	align-self: center;
+	min-inline-size: 0;
 	max-inline-size: none;
 	margin: 0;
 	padding-block: var(--wp--preset--spacing--regular);
 	padding-inline-start: var(--pns--layout--content-rail);
 	padding-inline-end: 0;
+}
+
+.pns-hero-copy h1 {
+	hyphens: auto;
+	overflow-wrap: anywhere;
 }
 
 .pns-page-hero .pns-editorial-strapline {
