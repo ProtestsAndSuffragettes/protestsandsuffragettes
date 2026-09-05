@@ -11,6 +11,26 @@ release notes and the WordPress theme version.
 - Added the developer/release handbook and the production-readiness plan,
   including the RAN Booster beta deployment basis.
 
+## [0.5.0](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/compare/v0.4.0...v0.5.0) (2026-09-05)
+
+
+### Features
+
+* add support for Herstory entries in editorial search ([04edada](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/04edada08084020a5063f7293bf7894834668ae1))
+* enforce closed comments by default for new posts ([0dc72ba](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/0dc72ba1e5ea31892b4a7ee89e85ad6892a3b3b0))
+
+
+### Bug Fixes
+
+* 3/4 col jank on store hydration by removeing desktop media query ([a276657](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/a2766575aa00ad0edcf6d964cce257ad987f7ee1))
+* adjust margin for video cover alignment with post title when CTA banner is present ([678c51a](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/678c51a4cc5ec2f4693a455c0fa13019917350ea))
+* adjust media queries for responsive layout and improve card display ([56d69a3](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/56d69a313bcbf06c2f415e73568bcfd629167ee1))
+* align video cover with post title when CTA banner is present ([712d47f](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/712d47f97b4fc0276f4cd05d6a824506e76ed716))
+* contain narrow hero headings ([bc946a6](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/bc946a67d83d74fe790c4a90d5e96959fb97f73f))
+* correct aspect ratio for post featured image in post card ([6344b29](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/6344b29a0673375ca5f52a9fc02315e8d107c66c))
+* herstories hide featured post attribution/date ([704d269](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/704d269095dcb7c4baefea5e7aae35b436917947))
+* **layout:** widen mobile content rail ([9508dba](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/commit/9508dbadf0f2b0aa23dfb75f6f0cccb1c8542332))
+
 ## [0.4.0](https://github.com/ProtestsAndSuffragettes/protestsandsuffragettes/compare/v0.3.0...v0.4.0) (2026-08-04)
 
 
